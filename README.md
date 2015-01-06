@@ -1,6 +1,7 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+FRC Team 114 2015 game code.
+
 
 ### What is this repository for? ###
 
