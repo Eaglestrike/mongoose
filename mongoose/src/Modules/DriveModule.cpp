@@ -42,8 +42,8 @@ void DriveModule::drive(double throttle, double angle) {
 	driveFunc.transformThrottle(throttle);
 	driveFunc.transformAngle(angle);
 
-	double left =  0;
-	double right = 0;
+	double leftMotorOutput =  0;
+	double rightMotorOutput = 0;
 
 	if(throttle > 0.0) {
 		if(angle > 0.0) {
@@ -53,6 +53,7 @@ void DriveModule::drive(double throttle, double angle) {
 		else {
 			leftMotorOutput = -pow(throttle, -angle);
 			rightMotorOutput = throttle + angle;
+		}
 	}
 	else {
 	 	if(angle > 0.0) {
@@ -61,7 +62,7 @@ void DriveModule::drive(double throttle, double angle) {
 		}
 		else {
 			leftMotorOutput = throttle - angle;
-			rightMotorOutput = -Math.max(-throttle,-angle)
+			rightMotorOutput = -pow(-throttle,-angle);
 		} 
 	}
 	setPower(leftMotorOutput, rightMotorOutput);
