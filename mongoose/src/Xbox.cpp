@@ -6,66 +6,78 @@ Xbox::Xbox(int port): Joystick(port){
 }
 
 
-bool Xbox::GetA(){
+bool Xbox::getA(){
 	return GetRawButton(1);
 }
 
-bool Xbox::GetB(){
+bool Xbox::getB(){
 	return GetRawButton(2);
 }
 
-bool Xbox::GetX(){
+bool Xbox::getX(){
 	return GetRawButton(3);
 }
 
-bool Xbox::GetY(){
+bool Xbox::getY(){
 	return GetRawButton(4);
 }
 
-bool Xbox::GetRB(){
+bool Xbox::getRB(){
 	return GetRawButton(6);
 }
 
-bool Xbox::GetLB(){
+bool Xbox::getLB(){
 	return GetRawButton(5);
 }
 
-bool Xbox::GetStart(){
+bool Xbox::getStart(){
 	return GetRawButton(8);
 }
 
-bool Xbox::GetBack(){
+bool Xbox::getBack(){
 	return GetRawButton(7);
 }
 
-bool Xbox::GetR3(){
+bool Xbox::getR3(){
 	return GetRawButton(10);
 }
 
-bool Xbox::GetL3(){
+bool Xbox::getL3(){
 	return GetRawButton(9);
 }
 
-float Xbox::GetLT(){
+
+
+float Xbox::getLT(){
 	return GetRawAxis(3);
 }
 
-float Xbox::GetRT(){
+float Xbox::getRT(){
 	return GetRawAxis(3);
 }
 
-float Xbox::GetRX(){
+float Xbox::getRX(){
 	return GetRawAxis(4);
 }
 
-float Xbox::GetRY(){
+float Xbox::getRY(){
 	return -GetRawAxis(5);
 }
 
-float Xbox::GetLX(){
+float Xbox::getLX(){
 	return GetX();
 }
 
-float Xbox::GetLY(){
+float Xbox::getLY(){
 	return -GetY();
+}
+void Xbox::setRumble(float rumble){
+	SetRumble (kLeftRumble, rumble);
+	SetRumble (kRightRumble, rumble);
+}
+void Xbox::setLRumble(float rumble){
+	SetRumble (kLeftRumble, rumble);
+}
+void Xbox::setRRumble(float rumble){
+	SetRumble (kRightRumble, rumble);
 }
