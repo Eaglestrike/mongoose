@@ -46,14 +46,6 @@ bool Xbox::GetL3(){
 	return GetRawButton(9);
 }
 
-bool Xbox::GetRB() {
-    return GetRawButton(6);
-}
-
-bool Xbox::GetLB() {
-    return GetRawButton(5);
-}
-
 float Xbox::GetLT(){
 	return GetRawAxis(3);
 }

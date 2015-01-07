@@ -1,8 +1,9 @@
-#include "WPILIB.h"
+#include "WPILib.h"
 #include "RobotModule.h"
 
 /*   Linear Functions   */
 class DriveFunction {  // methods in this are defaults
+public:
 	double transformThrottle(double throttle) {
 		return throttle;
 	}
@@ -12,7 +13,7 @@ class DriveFunction {  // methods in this are defaults
 	}
 }; 
 
-class DriveModule : RobotModule{
+class DriveModule : public RobotModule{
 
 	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int r_EA, int r_EB) ;
 	~DriveModule();
@@ -22,6 +23,9 @@ public:
 	void resetEncoders();
 	void setPower(double left, double right);
 	void drive(double throttle, double angle);
+	void Enable();
+	void Disable();
+	void Reset();
 	//void setJoystickDrive();
 
 	double getPower();

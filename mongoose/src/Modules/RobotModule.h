@@ -3,13 +3,14 @@
 
 
 class RobotModule {
-	RobotModule(std::String std);
-	~RobotModule();
+public:
+	RobotModule(std::string){}
+	~RobotModule(){}
 
-	void Enable();
-	void Disable();
-	void Reset();
-	void GetLoggingData();
+	void Enable(){}
+	void Disable(){}
+	void Reset(){}
+	void GetLoggingData(){}
 
 
 

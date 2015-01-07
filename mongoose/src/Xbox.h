@@ -34,10 +34,6 @@ public:
 	float GetLY();
 	float GetPX();
 
-
-	bool GetRB();
-	bool GetLB();
-
 };
 
 
