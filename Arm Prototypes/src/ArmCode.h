@@ -20,6 +20,9 @@ public:
 	void setX(double x);
 	void setDeltaX(double deltaX);
 	void setDeltaAndX(double x, double deltaX);
+	void move(double x);
+	void calibrate();
+	// Left is x, Right is deltaX
 
 private:
 	/* Hardware */

@@ -22,7 +22,6 @@ rightButton(rB), leftButton(lB)
 
 void ArmCode::open() {
 
-
 }
 
 void ArmCode::closed() {
@@ -39,12 +38,29 @@ void ArmCode::setX(double x) {
 void ArmCode::setDeltaX(double deltaX) {
 	ArmCode::deltaX = deltaX;
 }
-void setDeltaAndX(double x, double deltaX) {
+void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
 }
 
-ArmCode::~ArmCode() {
-	// TODO Auto-generated destructor stub
+void ArmCode::move(double x) {
+
 }
+void ArmCode::calibrate() {
+	while(!rightButton.Get()) {
+
+	}
+	while(!leftButton.Get()) {
+
+	}
+	if(rightButton.Get() && leftButton.Get()) {
+		reset();
+	}
+}
+void ArmCode::reset() {
+	leftEnc.Reset();
+	rightEnc.Reset();
+}
+
+ArmCode::~ArmCode() {}
 
