@@ -1,0 +1,12 @@
+﻿Build started 1/6/2015 12:45:11 PM.
+     1>Project "c:\Users\LAHS\documents\visual studio 2013\Projects\cascade_detector\cascade_detector\cascade_detector.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\lahs\documents\visual studio 2013\Projects\cascade_detector\Debug\cascade_detector.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"c:\users\lahs\documents\visual studio 2013\Projects\cascade_detector\Debug\cascade_detector.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\lahs\documents\visual studio 2013\Projects\cascade_detector\Debug\cascade_detector.lib" /MACHINE:X86 Debug\cascadeDetector.obj
+     1>cascadeDetector.obj : error LNK2019: unresolved external symbol "public: __thiscall cv::CascadeClassifier::CascadeClassifier(void)" (??0CascadeClassifier@cv@@QAE@XZ) referenced in function _main
+     1>cascadeDetector.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall cv::CascadeClassifier::~CascadeClassifier(void)" (??1CascadeClassifier@cv@@UAE@XZ) referenced in function _main
+     1>c:\users\lahs\documents\visual studio 2013\Projects\cascade_detector\Debug\cascade_detector.exe : fatal error LNK1120: 2 unresolved externals
+     1>Done Building Project "c:\Users\LAHS\documents\visual studio 2013\Projects\cascade_detector\cascade_detector\cascade_detector.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.17
