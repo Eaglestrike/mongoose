@@ -9,7 +9,7 @@ set precalcidx=2048
 set vecfile=samples3.vec
 set dire=st%stages%mn%min%mx%max%
 md %dire%
-opencv_traincascade.exe -data %dire% -vec %vecfile% -bg neg.dat -precalcBufSize %precalcbuf% -precalcIdxBufSize %precalcidx% -numThreads %threads% -numPos 800 -numNeg 2000 -numStages %stages% -featureType LBP -w 50 -h 50 -minHitRate %min% -maxFalseAlarmRate %max%
+opencv_traincascade.exe -data %dire% -vec %vecfile% -bg neg.dat -precalcValBufSize %precalcbuf% -precalcIdxBufSize %precalcidx% -numThreads %threads% -numPos 800 -numNeg 2000 -numStages %stages% -featureType LBP -w 50 -h 50 -minHitRate %min% -maxFalseAlarmRate %max%
 echo done
 cascade_detector.exe %dire%/cascade.xml test.JPG
 PAUSE
