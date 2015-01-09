@@ -48,14 +48,16 @@ void ArmCode::move(double x) {
 }
 void ArmCode::calibrate() {
 	while(!rightButton.Get()) {
-
+		rightVic.Set(-.2);
 	}
 	while(!leftButton.Get()) {
-
+		leftVic.Set(.2);
 	}
 	if(rightButton.Get() && leftButton.Get()) {
 		reset();
 	}
+	rightVic.Set(0);
+	leftVic.Set(0);
 }
 void ArmCode::reset() {
 	leftEnc.Reset();
