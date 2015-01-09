@@ -12,8 +12,8 @@ leftVic(lV), rightVic(rV),
 leftEnc(lE1, lE2), rightEnc(rE1, rE2),
 rightButton(rB), leftButton(lB)
 {
-	leftEnc.Start();
-	rightEnc.Start();
+	leftEnc.Reset();
+	rightEnc.Reset();
 
 	// PID Controller
 	control1(p_1, i_1, d_1, leftEnc, leftVic, period);
@@ -29,8 +29,8 @@ void ArmCode::closed() {
 }
 
 void ArmCode::setVictors(double left, double right) {
-	leftVic.set(left);
-	rightVic.set(-right);
+	leftVic.Set(left);
+	rightVic.Set(-right);
 }
 void ArmCode::setX(double x) {
 	ArmCode::x = x;
