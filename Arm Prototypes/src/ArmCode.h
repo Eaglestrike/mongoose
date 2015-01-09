@@ -20,7 +20,7 @@ public:
 	void setX(double x);
 	void setDeltaX(double deltaX);
 	void setDeltaAndX(double x, double deltaX);
-	void move(double x);
+	void move();
 	void calibrate();
 	// Left is x, Right is deltaX
 
@@ -40,6 +40,7 @@ private:
 	/*variables */
 	double x;
 	double deltaX;
+
 };
 
 #endif /* ARMCODE_H_ */
