@@ -62,12 +62,20 @@ int main(int argc, char** argv){
 	}
 
 	cv::namedWindow("video", cv::WINDOW_AUTOSIZE);
+#if USE_GPU
+	cv::gpu::GpuMat image;
+	cv::Mat tmp;
+#else
 	cv::Mat image;
-
+#endif
 	while (true){
 
+#if USE_GPU
+		vc >> tmp;
+		image.upload(tmp);
+#else
 		vc >> image;
-
+#endif
 		if (!image.empty()){
 			cv::Mat grey;
 			vector<cv::Rect> objects;
