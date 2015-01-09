@@ -64,10 +64,13 @@ int main(int argc, char** argv){
 	cv::namedWindow("video", cv::WINDOW_AUTOSIZE);
 #if USE_GPU
 	cv::gpu::GpuMat image;
+	cv::gpu::GpuMat grey;
 	cv::Mat tmp;
 #else
 	cv::Mat image;
+	cv::Mat grey;
 #endif
+
 	while (true){
 
 #if USE_GPU
@@ -77,20 +80,48 @@ int main(int argc, char** argv){
 		vc >> image;
 #endif
 		if (!image.empty()){
-			cv::Mat grey;
+
+#if USE_GPU
+			cv::gpu::GpuMat faceBuf;
+			int detections = 0;
+#endif
+
 			vector<cv::Rect> objects;
 
+
+#if USE_GPU
+			cv::gpu::cvtColor(image, grey, CV_BGR2GRAY);
+			cv::gpu::equalizeHist(grey, grey);
+			detections = classifier.detectMultiScale(grey, faceBuf);
+
+			cv::Mat gpuDownload;
+			faceBuf.colRange(0, detections).download(gpuDownload);
+			cv::Rect* faceRects = gpuDownload.ptr<cv::Rect>();
+
+			for (int i = 0; i < detections; i++) {
+				objects.push_back(faceRects[i]);
+			}
+
+#else
 			cv::cvtColor(image, grey, CV_BGR2GRAY);
 			cv::equalizeHist(grey, grey);
-
 			classifier.detectMultiScale(grey, objects, 1.1, 2);
 
+#endif
+
+#if USE_GPU
+			for (size_t i = 0; i < objects.size(); i++){
+				cv::rectangle(tmp, objects[i], cv::Scalar(0, 0, 255), 6);
+			}
+
+			imshow("video", tmp);
+#else
 			for (size_t i = 0; i < objects.size(); i++){
 				cv::rectangle(image, objects[i], cv::Scalar(0, 0, 255), 6);
 			}
 
 			imshow("video", image);
-
+#endif
 		}
 		else{
 			cout << "Error with frame!" << endl;
@@ -101,6 +132,7 @@ int main(int argc, char** argv){
 			break;
 
 	}
+
 
 	return 0;
 }
