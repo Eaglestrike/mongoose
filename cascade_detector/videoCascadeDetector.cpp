@@ -1,6 +1,6 @@
 
 
-#define USE_GPU 1
+#define USE_GPU 0
 
 #include "opencv2/opencv.hpp"
 
@@ -10,44 +10,21 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <ctime>
 
 
 using namespace std;
 
 
-char* trim(char* str){
-	char *end;
-	while (isspace(*str)) str++;
-
-	if (*str == 0)
-		return str;
-
-	end = str + strlen(str) - 1;
-	while (end > str && isspace(*end)) end--;
-	*(end + 1) = 0;
-
-	return str;
-}
-
 int main(int argc, char** argv){
 
-	cv::VideoCapture vc;
 
-	if (argc < 3){
-		cout << "usage: " << argv[0] << " <cascade.xml> [-v <video> | -w <webcam> = 0]" << endl;
+	if (argc != 2){
+		cout << "usage: " << argv[0] << " <cascade.xml>" << endl;
 		return -1;
-	}else{
-		char* trimmed = trim(argv[2]);
-		if (strcmp(trimmed, "-v") > 0)
-			vc = cv::VideoCapture(argv[3]);
-		else if (strcmp(trimmed, "-w")){
-			if (argc == 3)
-				vc = cv::VideoCapture(0);
-			else
-				vc = cv::VideoCapture(atoi(argv[3]));
-		}
 	}
-		
+	
+	cv::VideoCapture vc = cv::VideoCapture(0);	
 	char* cascade = argv[1];
 
 #if USE_GPU
@@ -63,34 +40,34 @@ int main(int argc, char** argv){
 
 	cv::namedWindow("video", cv::WINDOW_AUTOSIZE);
 #if USE_GPU
-	cv::gpu::GpuMat image;
+	cv::gpu::GpuMat gpu_image;
 	cv::gpu::GpuMat grey;
-	cv::Mat tmp;
+	cv::Mat image;
 #else
 	cv::Mat image;
+	cv::Mat tmp;
 	cv::Mat grey;
 #endif
 
+	int frames = 0;
+	std::clock_t start;
+	double totalTime = 0, deltaTime = 0;
+
 	while (true){
 
-#if USE_GPU
-		vc >> tmp;
-		image.upload(tmp);
-#else
+		start = std::clock();
 		vc >> image;
-#endif
-		if (!image.empty()){
 
+		if (!image.empty()){
 #if USE_GPU
+			gpu_image.upload(image);
 			cv::gpu::GpuMat faceBuf;
 			int detections = 0;
 #endif
-
 			vector<cv::Rect> objects;
 
-
 #if USE_GPU
-			cv::gpu::cvtColor(image, grey, CV_BGR2GRAY);
+			cv::gpu::cvtColor(gpu_image, grey, CV_BGR2GRAY);
 			cv::gpu::equalizeHist(grey, grey);
 			detections = classifier.detectMultiScale(grey, faceBuf);
 
@@ -109,21 +86,14 @@ int main(int argc, char** argv){
 
 #endif
 
-#if USE_GPU
-			for (size_t i = 0; i < objects.size(); i++){
-				cv::rectangle(tmp, objects[i], cv::Scalar(0, 0, 255), 6);
-			}
-
-			imshow("video", tmp);
-#else
 			for (size_t i = 0; i < objects.size(); i++){
 				cv::rectangle(image, objects[i], cv::Scalar(0, 0, 255), 6);
 			}
 
+
 			imshow("video", image);
-#endif
-		}
-		else{
+
+		}else{
 			cout << "Error with frame!" << endl;
 			return -1;
 		}
@@ -131,6 +101,9 @@ int main(int argc, char** argv){
 		if (cv::waitKey(30) >= 0)
 			break;
 
+		deltaTime = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+		totalTime += deltaTime;
+		frames++;
 	}
 
 
