@@ -1,11 +1,11 @@
 @echo off
 echo starting training... this could take a few hours
-set stages=5
-set min=0.995
-set max=0.4
-set pos=4000
-set neg=2000
-set threads=4
+set stages=7
+set min=0.999
+set max=0.05
+set pos=3000
+set neg=1500
+set threads=6
 set precalcbuf=1024
 set precalcidx=1024
 set vecfile=samples4.vec
