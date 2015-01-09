@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cascade_detector", "cascade_detector.vcxproj", "{507E21A4-8560-4C37-BB63-F14A794E6035}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video_cascade_detector", "video_cascade_detector\video_cascade_detector.vcxproj", "{10AFB999-CA25-4480-AA75-3979DBDEF84F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{507E21A4-8560-4C37-BB63-F14A794E6035}.Debug|Win32.ActiveCfg = Debug|Win32
+		{507E21A4-8560-4C37-BB63-F14A794E6035}.Debug|Win32.Build.0 = Debug|Win32
+		{507E21A4-8560-4C37-BB63-F14A794E6035}.Release|Win32.ActiveCfg = Release|Win32
+		{507E21A4-8560-4C37-BB63-F14A794E6035}.Release|Win32.Build.0 = Release|Win32
+		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Debug|Win32.Build.0 = Debug|Win32
+		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Release|Win32.ActiveCfg = Release|Win32
+		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
