@@ -12,11 +12,19 @@ leftVic(lV), rightVic(rV),
 leftEnc(lE1, lE2), rightEnc(rE1, rE2),
 rightButton(rB), leftButton(lB)
 {
+<<<<<<< HEAD
+=======
+	leftEnc.Reset();
+	rightEnc.Reset();
+>>>>>>> 7802c51415aa44d18e4b700f1dee18c8bdab168a
 
 	// PID Controller
 	control1(p_1, i_1, d_1, leftEnc, leftVic, period);
 	control2(p_2, i_2, d_2, rightEnc, rightVic, period);
+<<<<<<< HEAD
 	calibrate();
+=======
+>>>>>>> 7802c51415aa44d18e4b700f1dee18c8bdab168a
 }
 
 void ArmCode::open() {
