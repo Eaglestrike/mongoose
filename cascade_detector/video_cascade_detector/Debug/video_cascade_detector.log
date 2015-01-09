@@ -1,0 +1,13 @@
+﻿Build started 1/9/2015 10:59:42 AM.
+     1>Project "C:\Robotics\mongoose\cascade_detector\video_cascade_detector\video_cascade_detector.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\videoCascadeDetector.cpp
+         videoCascadeDetector.cpp
+     1>c:\robotics\mongoose\cascade_detector\videocascadedetector.cpp(78): error C2664: 'int cv::gpu::CascadeClassifier_GPU::detectMultiScale(const cv::gpu::GpuMat &,cv::gpu::GpuMat &,cv::Size,cv::Size,double,int)' : cannot convert argument 1 from 'cv::Mat' to 'const cv::gpu::GpuMat &'
+                 Reason: cannot convert from 'cv::Mat' to 'const cv::gpu::GpuMat'
+                 No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+     1>Done Building Project "C:\Robotics\mongoose\cascade_detector\video_cascade_detector\video_cascade_detector.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.87
