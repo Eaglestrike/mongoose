@@ -12,12 +12,13 @@ leftVic(lV), rightVic(rV),
 leftEnc(lE1, lE2), rightEnc(rE1, rE2),
 rightButton(rB), leftButton(lB)
 {
-	leftEnc.Start();
-	rightEnc.Start();
+	leftEnc.Reset();
+	rightEnc.Reset();
 
 	// PID Controller
 	control1(p_1, i_1, d_1, leftEnc, leftVic, period);
 	control2(p_2, i_2, d_2, rightEnc, rightVic, period);
+	calibrate();
 }
 
 void ArmCode::open() {
@@ -26,37 +27,43 @@ void ArmCode::open() {
 
 void ArmCode::closed() {
 
+
 }
 
 void ArmCode::setVictors(double left, double right) {
-	leftVic.set(left);
-	rightVic.set(-right);
+	leftVic.Set(left);
+	rightVic.Set(-right);
 }
+
 void ArmCode::setX(double x) {
 	ArmCode::x = x;
 }
+
 void ArmCode::setDeltaX(double deltaX) {
 	ArmCode::deltaX = deltaX;
 }
+
 void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
-}
 
-void ArmCode::move(double x) {
 
 }
+
 void ArmCode::calibrate() {
 	while(!rightButton.Get()) {
-
+		rightVic.Set(-.2);
 	}
 	while(!leftButton.Get()) {
-
+		leftVic.Set(.2);
 	}
 	if(rightButton.Get() && leftButton.Get()) {
 		reset();
 	}
+	rightVic.Set(0);
+	leftVic.Set(0);
 }
+
 void ArmCode::reset() {
 	leftEnc.Reset();
 	rightEnc.Reset();
