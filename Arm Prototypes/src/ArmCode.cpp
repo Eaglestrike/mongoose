@@ -24,10 +24,10 @@ rightButton(rB), leftButton(lB)
 
 void ArmCode::open() {
 
+
 }
 
 void ArmCode::closed(bool tote) {
-
 
 }
 
@@ -47,6 +47,8 @@ void ArmCode::setDeltaX(double deltaX) {
 void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
+	setL(x);
+	setR(x + deltaX);
 }
 
 void ArmCode::setL(double L) {
