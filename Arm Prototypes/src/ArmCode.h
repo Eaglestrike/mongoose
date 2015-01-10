@@ -11,7 +11,7 @@
 
 class ArmCode {
 public:
-	ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int rB, int lB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2, float period);
+	ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int rB, int lB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2);
 	virtual ~ArmCode();
 	void setVictors(double left, double right);
 	void open(double width);
@@ -25,7 +25,7 @@ public:
 	void setL(double l);
 	void setR(double r);
 
-	// Left is x, Right is deltaX
+	// Left is positive, right is negative
 
 private:
 	/* Hardware */

@@ -7,7 +7,7 @@
 
 #include "ArmCode.h"
 
-ArmCode::ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int rB, int lB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2, float period) :
+ArmCode::ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int rB, int lB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2) :
 leftVic(lV), rightVic(rV),
 leftEnc(lE1, lE2), rightEnc(rE1, rE2),
 rightButton(rB), leftButton(lB)
@@ -44,10 +44,14 @@ void ArmCode::setX(double x) { //Sets left arm to x, and right arm to the curren
 }
 
 void ArmCode::setDeltaX(double deltaX) { //changes the deltaX, and opens both arms
-	setDeltaAndX(x, deltaX);
+	bool expand = (deltaX > ArmCode::deltaX);
+	double totalChange = std::abs((deltaX - ArmCode::deltaX)/2); //the amount the arm needs to expand/contract
+	if (expand) {
+		setDeltaAndX(x - totalChange , deltaX);
+	} else if (!expand) {
+		setDeltaAndX(x + totalChange, deltaX);
+	}
 
-	//TODO: change it to open both arms at once, instead of one
-	//TODO: make sure it doesn't go over the edge when it opens
 }
 
 void ArmCode::setDeltaAndX(double x, double deltaX) {
@@ -56,6 +60,7 @@ void ArmCode::setDeltaAndX(double x, double deltaX) {
 	if (deltaX >= totalLength) {
 		setL(safeDistance);
 		setR(-safeDistance);
+		ArmCode::deltaX = totalLength - 2*safeDistance;
 	} else {
 		setL(x);
 		setR(-totalLength + x + deltaX);
@@ -68,6 +73,7 @@ void ArmCode::setDeltaAndX(double x, double deltaX) {
 void ArmCode::setL(double L) {
 	if (L < safeDistance) {
 		control1->SetSetpoint(safeDistance);
+		ArmCode::x = safeDistance;
 	}
 	control1->SetSetpoint(L);
 }
@@ -75,6 +81,7 @@ void ArmCode::setL(double L) {
 void ArmCode::setR(double R) {
 	if (R > -safeDistance) {
 			control2->SetSetpoint(-safeDistance);
+			ArmCode::deltaX = totalLength - x - safeDistance;
 	}
 	control2->SetSetpoint(R);
 }
