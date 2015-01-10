@@ -45,7 +45,7 @@ void ArmCode::setX(double x) { //Sets left arm to x, and right arm to the curren
 
 void ArmCode::setDeltaX(double deltaX) { //changes the deltaX, and opens both arms
 	bool expand = (deltaX > ArmCode::deltaX);
-	double totalChange = std::abs((deltaX - ArmCode::deltaX)/2); //the amount the arm needs to expand/contract
+	double totalChange = (deltaX - ArmCode::deltaX)/2; //the amount the arm needs to expand/contract
 	if (expand) {
 		setDeltaAndX(x - totalChange , deltaX);
 	} else if (!expand) {
