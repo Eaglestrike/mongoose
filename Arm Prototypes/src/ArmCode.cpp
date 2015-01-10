@@ -25,7 +25,7 @@ void ArmCode::open() {
 
 }
 
-void ArmCode::closed() {
+void ArmCode::closed(bool tote) {
 
 
 }
@@ -46,8 +46,15 @@ void ArmCode::setDeltaX(double deltaX) {
 void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
+}
 
+void ArmCode::moveL(double L) {
+	control1.SetSetpoint(L);
 
+}
+
+void ArmCode::moveR(double R) {
+	control2.SetSetpoint(R);
 }
 
 void ArmCode::calibrate() {

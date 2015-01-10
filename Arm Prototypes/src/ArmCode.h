@@ -15,13 +15,16 @@ public:
 	virtual ~ArmCode();
 	void setVictors(double left, double right);
 	void open();
-	void closed();
+	void closed(bool tote);
 	void reset();
 	void setX(double x);
 	void setDeltaX(double deltaX);
 	void setDeltaAndX(double x, double deltaX);
 	void move();
 	void calibrate();
+	void setL(double l);
+	void setR(double r);
+
 	// Left is x, Right is deltaX
 
 private:
