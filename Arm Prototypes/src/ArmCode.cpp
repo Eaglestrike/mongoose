@@ -37,16 +37,17 @@ void ArmCode::setVictors(double left, double right) {
 }
 
 void ArmCode::setX(double x) {
-	ArmCode::x = x;
+	setDeltaAndX(x, deltaX);
 }
 
 void ArmCode::setDeltaX(double deltaX) {
-	ArmCode::deltaX = deltaX;
+	setDeltaAndX(x, deltaX);
 }
 
 void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
+	//TODO: make sure we're not on the edge
 	setL(x);
 	setR(x + deltaX);
 }
@@ -64,13 +65,14 @@ void ArmCode::calibrate() {
 	while(!rightButton.Get()) {
 		rightVic.Set(-.2);
 	}
+	rightVic.Set(0);
 	while(!leftButton.Get()) {
 		leftVic.Set(.2);
 	}
 	if(rightButton.Get() && leftButton.Get()) {
 		reset();
 	}
-	rightVic.Set(0);
+	
 	leftVic.Set(0);
 }
 
