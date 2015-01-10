@@ -62,18 +62,24 @@ void ArmCode::setR(double R) {
 }
 
 void ArmCode::calibrate() {
-	while(!rightButton.Get()) {
+	if(!rightButton.Get()) {
 		rightVic.Set(-.2);
 	}
-	rightVic.Set(0);
-	while(!leftButton.Get()) {
+	if(!leftButton.Get()) {
 		leftVic.Set(.2);
+	}
+	while(!rightButton.Get() && !leftButton.Get()) {
+		if (rightButton.Get()) {
+			rightVic.Set(0);
+		}
+		if (leftButton.Get()) {
+			leftVic.Set(0);
+		}
 	}
 	if(rightButton.Get() && leftButton.Get()) {
 		reset();
 	}
 	
-	leftVic.Set(0);
 }
 
 void ArmCode::reset() {
