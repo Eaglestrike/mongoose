@@ -22,42 +22,60 @@ rightButton(rB), leftButton(lB)
 	calibrate();
 }
 
-void ArmCode::open() {
-
-
+void ArmCode::open(double width) { //Opens arm to width
+	setDeltaX(width);
 }
 
-void ArmCode::closed(bool tote) {
-
+void ArmCode::closed(bool tote) { //Closes arm to the distance of a short-wise tote (tote), or a container (!tote)
+	if (tote) {
+		setDeltaX(shortToteWidth);
+	} else if (!tote) {
+		setDeltaX(containerWidth);
+	}
 }
 
-void ArmCode::setVictors(double left, double right) {
+void ArmCode::setVictors(double left, double right) { //Sets victor speeds
 	leftVic.Set(left);
 	rightVic.Set(-right);
 }
 
-void ArmCode::setX(double x) {
+void ArmCode::setX(double x) { //Sets left arm to x, and right arm to the current deltax
 	setDeltaAndX(x, deltaX);
 }
 
-void ArmCode::setDeltaX(double deltaX) {
+void ArmCode::setDeltaX(double deltaX) { //changes the deltaX, and opens both arms
 	setDeltaAndX(x, deltaX);
+
+	//TODO: change it to open both arms at once, instead of one
+	//TODO: make sure it doesn't go over the edge when it opens
 }
 
 void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
+	if (deltaX >= totalLength) {
+		setL(safeDistance);
+		setR(-safeDistance);
+	} else {
+		setL(x);
+		setR(-totalLength + x + deltaX);
+	}
 	//TODO: make sure we're not on the edge
 	//TODO: convert x and dx to setpoint. possibly in setL and setR methods
-	setL(x);
-	setR(x + deltaX);
+
 }
 
 void ArmCode::setL(double L) {
+	if (L < safeDistance) {
+		control1->SetSetpoint(safeDistance);
+	}
 	control1->SetSetpoint(L);
 }
 
 void ArmCode::setR(double R) {
+	if (R > -safeDistance) {
+			control2->SetSetpoint(-safeDistance);
+	}
 	control2->SetSetpoint(R);
 }
 
