@@ -25,6 +25,9 @@ int main(int argc, char** argv){
 	}
 	
 	cv::VideoCapture vc = cv::VideoCapture(0);	
+	vc.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+	vc.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+
 	char* cascade = argv[1];
 
 #if USE_GPU
@@ -53,7 +56,10 @@ int main(int argc, char** argv){
 	std::clock_t start;
 	double totalTime = 0, deltaTime = 0;
 
+
 	while (true){
+		vector<cv::Rect> objects;
+		cv::Rect largest;
 
 		start = std::clock();
 		vc >> image;
@@ -64,7 +70,7 @@ int main(int argc, char** argv){
 			cv::gpu::GpuMat faceBuf;
 			int detections = 0;
 #endif
-			vector<cv::Rect> objects;
+			
 
 #if USE_GPU
 			cv::gpu::cvtColor(gpu_image, grey, CV_BGR2GRAY);
@@ -85,8 +91,12 @@ int main(int argc, char** argv){
 			classifier.detectMultiScale(grey, objects, 1.1, 2);
 
 #endif
-
 			for (size_t i = 0; i < objects.size(); i++){
+				if (i == 0)
+					largest = objects[0];
+				if (objects[i].width > largest.width)
+					largest = objects[i];
+
 				cv::rectangle(image, objects[i], cv::Scalar(0, 0, 255), 6);
 			}
 
@@ -104,6 +114,10 @@ int main(int argc, char** argv){
 		deltaTime = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 		totalTime += deltaTime;
 		frames++;
+
+		if (frames % 20 == 0){
+			cout << "Frames: " << frames << " Average fps: " << frames / totalTime << " fps: " << 1 / deltaTime << " Rectangles: " << objects.size() << " Width: " << largest.width << endl;
+		}
 	}
 
 
