@@ -1,6 +1,6 @@
 
 
-#define USE_GPU 0
+#define USE_GPU 1
 
 #include "opencv2/opencv.hpp"
 
@@ -14,6 +14,10 @@
 
 
 using namespace std;
+
+double approximateDistance(double width){
+	return	((width > 0) ? 6475.3*pow(width, -1.074) : 0);
+}
 
 
 int main(int argc, char** argv){
@@ -124,4 +128,4 @@ int main(int argc, char** argv){
 	return 0;
 }
 
-
+ 
