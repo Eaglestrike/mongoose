@@ -48,13 +48,13 @@ void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::deltaX = deltaX;
 	ArmCode::x = x;
 	//TODO: make sure we're not on the edge
+	//TODO: convert x and dx to setpoint. possibly in setL and setR methods
 	setL(x);
 	setR(x + deltaX);
 }
 
 void ArmCode::setL(double L) {
 	control1->SetSetpoint(L);
-
 }
 
 void ArmCode::setR(double R) {
