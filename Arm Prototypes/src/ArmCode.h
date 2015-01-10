@@ -37,8 +37,8 @@ private:
 	DigitalInput leftButton;
 
 	/*   PID Controllers   */
-	PIDController control1;
-	PIDController control2;
+	PIDController* control1;
+	PIDController* control2;
 
 	/*variables */
 	double x;

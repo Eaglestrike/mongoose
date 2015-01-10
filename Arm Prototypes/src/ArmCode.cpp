@@ -16,8 +16,9 @@ rightButton(rB), leftButton(lB)
 	rightEnc.Reset();
 
 	// PID Controller
-	control1(p_1, i_1, d_1, leftEnc, leftVic, period);
-	control2(p_2, i_2, d_2, rightEnc, rightVic, period);
+	control1 =  new PIDController(p_1, i_1, d_1, &leftEnc, &leftVic);
+	control2 = new PIDController(p_2, i_2, d_2, &rightEnc, &rightVic);
+
 	calibrate();
 }
 
@@ -48,13 +49,13 @@ void ArmCode::setDeltaAndX(double x, double deltaX) {
 	ArmCode::x = x;
 }
 
-void ArmCode::moveL(double L) {
-	control1.SetSetpoint(L);
+void ArmCode::setL(double L) {
+	control1->SetSetpoint(L);
 
 }
 
-void ArmCode::moveR(double R) {
-	control2.SetSetpoint(R);
+void ArmCode::setR(double R) {
+	control2->SetSetpoint(R);
 }
 
 void ArmCode::calibrate() {
