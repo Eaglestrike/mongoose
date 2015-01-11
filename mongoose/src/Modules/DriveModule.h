@@ -26,8 +26,9 @@ public:
 	void Enable();
 	void Disable();
 	void Reset();
+	void *calibrate();
 	//void setJoystickDrive();
-
+	void setTargetVelocity(float vel);
 	double getPower();
 
 
@@ -48,6 +49,9 @@ private:
 
 	/*drive Functions */
 	DriveFunction driveFunc;
+
+	/*    */
+	float targetVelocity;
 
 
 };

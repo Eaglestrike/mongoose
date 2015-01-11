@@ -36,6 +36,10 @@ void DriveModule::setPower(double left, double right) {
 
 }
 
+void DriveModule::setTargetVelocity(float vel)  {
+	targetVelocity = vel;
+}
+
 void DriveModule::drive(double throttle, double angle) {
 	driveFunc.transformThrottle(throttle);
 	driveFunc.transformAngle(angle);
@@ -64,6 +68,14 @@ void DriveModule::drive(double throttle, double angle) {
 		} 
 	}
 	setPower(leftMotorOutput, rightMotorOutput);
+}
+
+void DriveModule::*calibrate() {
+	float currentVelocity = (lEncoder.getRate() + rEncoder.getRate())/2;
+	while(currentVelociy  != targetVelocity) {
+		currentVelocity = (lEncoder.getRate() + rEncoder.getRate())/2;
+	}
+
 }
 
 DriveModule::~DriveModule() {
