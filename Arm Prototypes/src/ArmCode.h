@@ -25,7 +25,7 @@ public:
 	void setL(double l);
 	void setR(double r);
 
-	// Left is positive, right is negative
+	// Both are positive from their respective sides
 
 private:
 	/* Hardware */
