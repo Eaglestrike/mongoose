@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#include <iostream>
 /*
  * ArmCode.h
  *
@@ -9,9 +10,11 @@
 #ifndef ARMCODE_H_
 #define ARMCODE_H_
 
+#define DEBUG 1
+
 class ArmCode {
 public:
-	ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int rB, int lB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2);
+	ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int lB, int rB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2);
 	virtual ~ArmCode();
 	void setVictors(double left, double right);
 	void open(double width);

@@ -7,7 +7,7 @@
 
 #include "ArmCode.h"
 
-ArmCode::ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int rB, int lB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2) :
+ArmCode::ArmCode(int lV, int rV, int lE1, int lE2, int rE1, int rE2, int lB, int rB, float p_1, float i_1, float d_1, float p_2, float i_2, float d_2) :
 leftVic(lV), rightVic(rV),
 leftEnc(lE1, lE2), rightEnc(rE1, rE2),
 rightButton(rB), leftButton(lB)
@@ -95,6 +95,10 @@ void ArmCode::calibrate() {
 		reset();
 	}
 	
+#if DEBUG
+	std::cout << "calibrate()" << std::endl;
+#endif
+
 }
 
 void ArmCode::reset() {
