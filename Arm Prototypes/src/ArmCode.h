@@ -27,6 +27,8 @@ public:
 	void calibrate();
 	void setL(double l);
 	void setR(double r);
+	int getRTick();
+	int getLTick();
 
 	// Both are positive from their respective sides
 

@@ -25,12 +25,16 @@ private:
 
 	void TeleopInit()
 	{
-		arm->calibrate();
+
 	}
 
 	void TeleopPeriodic()
 	{
-
+		std::cout << "Left ";
+		std::cout << arm->getLTick();
+		std::cout << "\nRight ";
+		std::cout << arm->getRTick();
+		Wait(100);
 	}
 
 	void TestPeriodic()

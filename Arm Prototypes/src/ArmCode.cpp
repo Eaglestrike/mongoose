@@ -106,5 +106,13 @@ void ArmCode::reset() {
 	rightEnc.Reset();
 }
 
+int ArmCode::getRTick() {
+	return rightEnc.Get();
+}
+
+int ArmCode::getLTick() {
+	return leftEnc.Get();
+}
+
 ArmCode::~ArmCode() {}
 
