@@ -6,11 +6,19 @@ import threading
 
 #socketbuffer = ""
 pygame.init()
-screen = pygame.display.set_mode((648, 480))
+screen = pygame.display.set_mode((1200, 900))
 pygame.display.set_caption('HUD')
 pygame.mouse.set_visible(0)
-while(True):
+screenrun = True
+
+battery = 12
+bat = False
+
+while screenrun:
 	#readbuffer = readbuffer+clientsocker.recv(1024)
 	#temp = str.split(readbuffer, "\n")
 	#readbuffer=temp.pop( )
-	pass
+	screen.fill((0,0,0))
+	pygame.display.flip()
+	pygame.draw.rect(screen,((255,0,0)), (0,0,50,50), 100 )
+pygame.quit()

@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cascade_detector", "cascade
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video_cascade_detector", "video_cascade_detector\video_cascade_detector.vcxproj", "{10AFB999-CA25-4480-AA75-3979DBDEF84F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "serial_com", "serial_com\serial_com.vcxproj", "{0E29B733-69A9-4309-AE67-596886722A32}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "serial_and_video", "serial_and_video\serial_and_video.vcxproj", "{0E6B0C14-D875-4F47-BF90-331C02FCCB24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +25,14 @@ Global
 		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Debug|Win32.Build.0 = Debug|Win32
 		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Release|Win32.ActiveCfg = Release|Win32
 		{10AFB999-CA25-4480-AA75-3979DBDEF84F}.Release|Win32.Build.0 = Release|Win32
+		{0E29B733-69A9-4309-AE67-596886722A32}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0E29B733-69A9-4309-AE67-596886722A32}.Debug|Win32.Build.0 = Debug|Win32
+		{0E29B733-69A9-4309-AE67-596886722A32}.Release|Win32.ActiveCfg = Release|Win32
+		{0E29B733-69A9-4309-AE67-596886722A32}.Release|Win32.Build.0 = Release|Win32
+		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Debug|Win32.Build.0 = Debug|Win32
+		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Release|Win32.ActiveCfg = Release|Win32
+		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
