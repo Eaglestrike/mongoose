@@ -16,10 +16,11 @@ up = False
 down = False
 battery = pygame.image.load("images/battery.png").convert_alpha()
 skin1 = pygame.image.load("images/claw.png").convert_alpha()
+clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
+clawskin = skin1
 timea = 2
 timeb = 30
 timekeep = 0
-roboarm = skin1
 skarm = ("")
 while running:
     screen.fill((255,255,255))
@@ -33,12 +34,16 @@ while running:
                 up = True
             if event.key == pygame.K_DOWN:
                 down = True
+            if event.key == pygame.K_SPACE:
+                clawskin = clawclosed
         if event.type == pygame.KEYUP:
             
             if event.key == pygame.K_UP:
                 up = False
             if event.key == pygame.K_DOWN:
                 down = False
+            if event.key == pyagame.K_SPACE:
+                clawskin = skin1
     if cy >= -300:
         down = False
     if cy <= -1200:
@@ -55,7 +60,7 @@ while running:
     timer1=font.render(str(timea) + ":" + str(skarm) + str(timeb), 1,(255,255,255))
     screen.blit(battery,(1000,50))
     pygame.draw.rect(screen, ((r,g,b)), (1010,240,80,bath), 0)
-    screen.blit(roboarm,(50,cy))
+    screen.blit(clawskin,(50,cy))
     
     screen.blit(battext, (1000, 250))
     screen.blit(timer1,(550,600))
@@ -65,7 +70,7 @@ while running:
     if timeb <10:
         skarm = ("0")
     if timeb <= 0:
-       timeb = 60
+       timeb = 59
        skarm = ("")
        timea -=1
     if bath >= -80:
