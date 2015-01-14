@@ -16,7 +16,8 @@ up = False
 down = False
 battery = pygame.image.load("images/battery.png").convert_alpha()
 skin1 = pygame.image.load("images/claw.png").convert_alpha()
-
+timea = 2
+timeb = 30
 
 roboarm = skin1
 while running:
@@ -48,13 +49,15 @@ while running:
 
     pygame.draw.rect(screen, ((0,0,0)), (900,0,300,900), 0)
     pygame.draw.rect(screen, ((0,0,0)), (0,0,300,900), 0)
+    pygame.draw.rect(screen, ((0,0,0)), (0,600,1200,300),0)
     battext=font.render(str(percent) + ("%"), 1,(255,255,255))
+    timer1=font.render(str(timea) + ":" + str(timeb), 1,(255,255,255))
     screen.blit(battery,(1000,50))
     pygame.draw.rect(screen, ((r,g,b)), (1010,240,80,bath), 0)
     screen.blit(roboarm,(50,cy))
     
     screen.blit(battext, (1000, 250))
-
+    screen.blit(timer1,(550,600))
 
                 
    
