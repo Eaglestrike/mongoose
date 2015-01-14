@@ -34,7 +34,7 @@ private:
 		std::cout << arm->getLTick();
 		std::cout << "\nRight ";
 		std::cout << arm->getRTick();
-		Wait(100);
+		Wait(.1);
 	}
 
 	void TestPeriodic()
