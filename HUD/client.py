@@ -75,5 +75,6 @@ while running:
             percent -= 1
     if timing:
         timer += 1
+    
     pygame.display.flip()
 pygame.quit()
