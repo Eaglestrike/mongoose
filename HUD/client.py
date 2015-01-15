@@ -8,6 +8,7 @@ import socket as socket
 clock = pygame.time.Clock()
 def runA():
     global img
+    print("running a")
     c = cv2.VideoCapture(0)
     
     In=1
@@ -37,10 +38,12 @@ def runA():
 
 def runB():
     global clawpos
+
     pygame.init()
     screen = pygame.display.set_mode((1200,900))
     bath = -160
     running = True
+    img = pygame.image.load("images/webcam.png").convert_alpha()
     r = 46 
     g = 204
     b = 113
@@ -161,9 +164,10 @@ def runB():
         pygame.display.flip()
     pygame.quit()
 def runC():
+    print('running c')
     global clawpos
     HOST="127.0.0.1"
-    PORT=1115
+    PORT=1114
     readbuffer = ""
     s=socket.socket( )
     s.connect((HOST, PORT))
@@ -176,7 +180,7 @@ def runC():
             line = str.rstrip(line)
             line = str.split(line)
             clawpos = int(line[0])
-            print("clawpos from socket is ", clawpos)
+           
 
 
 if __name__ == "__main__":
