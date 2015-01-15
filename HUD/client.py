@@ -18,6 +18,7 @@ battery = pygame.image.load("images/battery.png").convert_alpha()
 skin1 = pygame.image.load("images/claw.png").convert_alpha()
 clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
 clawskin = skin1
+clawpos = 1
 timea = 2
 timeb = 30
 timekeep = 0
@@ -31,9 +32,9 @@ while running:
         if event.type == pygame.KEYDOWN:
             
             if event.key == pygame.K_UP:
-                up = True
+                clawpos += 1
             if event.key == pygame.K_DOWN:
-                down = True
+                clawpos -= 1
             if event.key == pygame.K_SPACE:
                 clawskin = clawclosed
         if event.type == pygame.KEYUP:
@@ -52,17 +53,41 @@ while running:
         cy -= 1
     if down:
         cy += 1
-
-    pygame.draw.rect(screen, ((127, 140, 141)), (900,0,300,900), 0)
-    pygame.draw.rect(screen, ((127, 140, 141)), (0,0,300,900), 0)
+    if clawpos >= 3:
+        clawpos = 3
+    if clawpos <= 1:
+        clawpos = 1
+    if clawpos == 1:
+        if cy > -550:
+            cy -= 10
+            print ("yas")
+        if cy < -550:
+            cy += 10
+            print ("yas")
+    if clawpos == 2:
+        if cy > -825:
+            cy -= 10
+            print ("yas")
+        if cy < -825:
+            cy += 10
+            print ("yas")
+    if clawpos == 3:
+        if cy > -1100:
+            cy -= 10
+            print ("yas")
+        if cy < -1100:
+            cy += 10
+            print ("yas")
+    pygame.draw.rect(screen, ((127, 140, 141)), (1000,0,200,900), 0)
+    pygame.draw.rect(screen, ((127, 140, 141)), (0,0,200,900), 0)
     pygame.draw.rect(screen, ((127, 140, 141)), (0,600,1200,300),0)
     battext=font.render(str(percent) + ("%"), 1,(255,255,255))
     timer1=font.render(str(timea) + ":" + str(skarm) + str(timeb), 1,(255,255,255))
-    screen.blit(battery,(1000,50))
-    pygame.draw.rect(screen, ((r,g,b)), (1005,244,90,bath), 0)
-    screen.blit(clawskin,(50,cy))
+    screen.blit(battery,(1025,50))
+    pygame.draw.rect(screen, ((r,g,b)), (1030,244,90,bath), 0)
+    screen.blit(clawskin,(35,cy))
     
-    screen.blit(battext, (1000, 250))
+    screen.blit(battext, (1025, 250))
     screen.blit(timer1,(550,600))
     if timekeep >= 300:
         timeb -=1
