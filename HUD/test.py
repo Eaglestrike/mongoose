@@ -3,6 +3,8 @@ import cv2
 import pygame
 import numpy as np
 import time
+import socket as socket
+
 clock = pygame.time.Clock()
 def runA():
     global img
@@ -34,16 +36,18 @@ def runA():
     cv2.destroyAllWindows()
 
 def runB():
+    global clawpos
     pygame.init()
     screen = pygame.display.set_mode((1200,900))
     bath = -160
     running = True
-    r = 34
-    g = 139
-    b = 34
+    r = 46 
+    g = 204
+    b = 113
     timer = 0
     timing = True
     font=pygame.font.Font(None,100)
+    batteryf = pygame.font.Font(None, 50)
     percent = 100
     count = 0
     cy = -750
@@ -51,11 +55,18 @@ def runB():
     down = False
     battery = pygame.image.load("images/battery.png").convert_alpha()
     skin1 = pygame.image.load("images/claw.png").convert_alpha()
-    
-    
-    roboarm = skin1
+    clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
+    clawskin = skin1
+
+    timea = 2
+    timeb = 30
+    timekeep = 0
+    skarm = ("")
     while running:
-        screen.fill((255,255,255))
+        
+        print(clawpos)
+
+        screen.fill((127, 140, 141))
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -63,15 +74,19 @@ def runB():
             if event.type == pygame.KEYDOWN:
                 
                 if event.key == pygame.K_UP:
-                    up = True
+                    clawpos += 1
                 if event.key == pygame.K_DOWN:
-                    down = True
+                    clawpos -= 1
+                if event.key == pygame.K_SPACE:
+                    clawskin = clawclosed
             if event.type == pygame.KEYUP:
                 
                 if event.key == pygame.K_UP:
                     up = False
                 if event.key == pygame.K_DOWN:
                     down = False
+                if event.key == pygame.K_SPACE:
+                    clawskin = skin1
         if cy >= -300:
             down = False
         if cy <= -1200:
@@ -80,27 +95,59 @@ def runB():
             cy -= 1
         if down:
             cy += 1
-        pygame.draw.rect(screen, ((0,0,0)), (950,0,250,900), 0)
-        pygame.draw.rect(screen, ((0,0,0)), (0,0,250,900), 0)
-        battext=font.render(str(percent) + ("%"), 1,(255,255,255))
-        screen.blit(battery,(1000,50))
-        pygame.draw.rect(screen, ((r,g,b)), (1010,240,80,bath), 0)
-        screen.blit(roboarm,(50,cy))
+        if clawpos >= 3:
+            clawpos = 3
+        if clawpos <= 1:
+            clawpos = 1
+        if clawpos == 1:
+            if cy > -550:
+                cy -= 10
+                  
+            if cy < -550:
+                cy += 10
+                  
+        if clawpos == 2:
+            if cy > -825:
+                cy -= 10
+                  
+            if cy < -825:
+                cy += 10
+                  
+        if clawpos == 3:
+            if cy > -1100:
+                cy -= 10
+                  
+            if cy < -1100:
+                cy += 10
+                  
         
-        screen.blit(battext, (1000, 250))
-        screen.blit(img,(300,0))
-    
-    
-                    
-       
+
+        battext=batteryf.render(str(percent) + ("%"), 1,(255,255,255))
+        timer1=font.render(str(timea) + ":" + str(skarm) + str(timeb), 1,(255,255,255))
+        screen.blit(battery,(1025,50))
+        pygame.draw.rect(screen, ((r,g,b)), (1030,244,90,bath), 0)
+        screen.blit(clawskin,(35,cy))
+        screen.blit(img, (285, 100))
+        
+        screen.blit(battext, (1047, 150))
+        screen.blit(timer1,(550,600))
+        if timekeep >= 300:
+            timeb -=1
+            timekeep = 0
+        if timeb <10:
+            skarm = ("0")
+        if timeb <= 0:
+           timeb = 59
+           skarm = ("")
+           timea -=1
         if bath >= -80:
-            r = 255
-            g = 215
-            b = 0
+            r = 241
+            g = 196
+            b = 15 
         if bath >= -40:
-            r = 178
-            g = 34
-            b = 34
+            r = 192
+            g = 57
+            b = 43  
         if bath >= -1:
             timing = False
         if timing:
@@ -110,16 +157,38 @@ def runB():
                 percent -= 1
         if timing:
             timer += 1
+        timekeep += 1
         pygame.display.flip()
-        clock.tick(60)
     pygame.quit()
+def runC():
+    global clawpos
+    HOST="127.0.0.1"
+    PORT=1115
+    readbuffer = ""
+    s=socket.socket( )
+    s.connect((HOST, PORT))
+    while(True):
+        readbuffer = readbuffer+s.recv(2).decode("UTF-8")
+        temp = str.split(readbuffer, "\n")
+
+        readbuffer=temp.pop( )
+        for line in temp:
+            line = str.rstrip(line)
+            line = str.split(line)
+            clawpos = int(line[0])
+            print("clawpos from socket is ", clawpos)
+
 
 if __name__ == "__main__":
     t1 = Thread(target = runA)
-    t2 = Thread(target = runB)
+    t2 = Thread(target = runC)
+    t3 = Thread(target = runB)
+
     t1.setDaemon(True)
     t2.setDaemon(True)
+    t3.setDaemon(True)
     t1.start()
     t2.start()
+    t3.start()
     while True:
         pass

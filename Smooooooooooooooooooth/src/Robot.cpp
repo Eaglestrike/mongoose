@@ -30,7 +30,6 @@ private:
 
 
 	/*    */
-	float maxAcceleration = 6;
 	double maxVelocity;
 	int pressed = 1;
 	float targetVelocity;
@@ -76,15 +75,14 @@ private:
 //		}
 //		maxAcceleration = sqrt(rom->getX()*rom->getX() + rom->getY()*rom->getY() + rom->getZ()*rom->getZ());
 
-		std::thread calibrating;
-
+		setTargetVelocity();
 		if(ljoy->GetRawButton(10)){
 			pressed++;
 		}
 		if(pressed % 4 == 0) {
-			calibrate();
+			calibrate(targetVelocity);
 		}
-		setTargetVelocity();
+
 
 	}
 
