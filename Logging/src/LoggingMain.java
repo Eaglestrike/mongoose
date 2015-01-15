@@ -50,9 +50,8 @@ public class LoggingMain extends JPanel{
 		public Data(String path) throws FileNotFoundException {
 				Scanner dataFile = new Scanner(new FileReader(path));
 				
-				ArrayList<Object> tempLine = new ArrayList<Object>();
-				
 				while(dataFile.hasNextLine()) {
+					ArrayList<Object> tempLine = new ArrayList<Object>();
 					Scanner temp = new Scanner(dataFile.nextLine());
 					temp.useDelimiter(",");
 					while (temp.hasNext()) {
