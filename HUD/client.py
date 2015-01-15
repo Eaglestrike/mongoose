@@ -1,10 +1,10 @@
 from threading import Thread
-import cv2
+
 import pygame
 import numpy as np
 import time
 import socket as socket
-
+vision = False
 clock = pygame.time.Clock()
 def runA():
     global img
@@ -184,15 +184,20 @@ def runC():
 
 
 if __name__ == "__main__":
-    t1 = Thread(target = runA)
-    t2 = Thread(target = runC)
+
+    t1 = Thread(target = runC)
+    if vision == True:
+        import cv2
+        t2 = Thread(target = runA)
     t3 = Thread(target = runB)
 
     t1.setDaemon(True)
-    t2.setDaemon(True)
+    if vision == True:
+        t2.setDaemon(True)
     t3.setDaemon(True)
     t1.start()
-    t2.start()
+    if vision == True:
+        t2.start()
     t3.start()
     while True:
         pass
