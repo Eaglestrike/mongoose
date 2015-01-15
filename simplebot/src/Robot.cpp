@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include <vector>
+//#include <algorithm>
 
 class Robot: public IterativeRobot
 {
@@ -17,6 +18,7 @@ private:
 	BuiltInAccelerometer* rom;
 	Timer* tim;
 	Encoder* lEnc;
+
 
 	void RobotInit()
 	{
@@ -41,6 +43,8 @@ private:
 	std::vector<float> throttleReadings;
 	int size = 25;
 	int times = 0;
+	int count = 0;
+	bool lastTime;
 
 	void TeleopPeriodic()
 	{
@@ -54,13 +58,25 @@ private:
 		else if(counter % 2 == 0)
 			cole->Set(false);
 		i++;
+		if(lastTime != rightJoy->GetRawButton(5)) {
+			count++;
+		}
+		lastTime = rightJoy->GetRawButton(5);
 		throttleReadings.insert(throttleReadings.begin(), leftJoy->GetY());
 		float power = 0;
-		for(int k = 0; k < throttleReadings.size(); k++) {
-			power+=throttleReadings.at(k);
+		if(count % 4 == 0){
+			power = throttleReadings.at(0);
 		}
-		power = power/throttleReadings.size();
-		drive(power, rightJoy->GetX());
+		else if(count % 2 == 0){
+			for(int k = 0; k < throttleReadings.size(); k++) {
+				power+=throttleReadings.at(k);
+			}
+			power = power/throttleReadings.size();
+		}
+		if(i % 60 == 0) {
+			std::cout << -rightJoy->GetX() << std::endl;
+		}
+		drive(power, -rightJoy->GetX());
 //		left1->Set(power);
 //		left2->Set(power);
 //		right1->Set(-power);
@@ -86,8 +102,9 @@ private:
 		lw->Run();
 	}
 
-	void Disable() {
+	void DisabledPeriodic() {
 		throttleReadings.clear();
+		std::cout << "PI" << std::endl;
 	}
 	void drive(double throttle, double angle) {
 
@@ -97,23 +114,23 @@ private:
 		//std::cout << angle <<std::endl;
 
 		if(throttle > 0.0) {
-			if(angle > 0.0) {
+			if(angle < 0.0) {
 				leftMotorOutput = throttle - angle;
-				rightMotorOutput = pow(throttle, angle);
+				rightMotorOutput = fmin(throttle, angle);
 			}
 			else {
-				leftMotorOutput = -pow(throttle, -angle);
+				leftMotorOutput = fmin(throttle, -angle);
 				rightMotorOutput = throttle + angle;
 			}
 		}
 		else {
 		 	if(angle > 0.0) {
-				leftMotorOutput = -pow(-throttle, angle);
+				leftMotorOutput = -fmin(-throttle, angle);
 				rightMotorOutput = throttle + angle;
 			}
 			else {
 				leftMotorOutput = throttle - angle;
-				rightMotorOutput = -pow(-throttle,-angle);
+				rightMotorOutput = -fmin(-throttle,-angle);
 			}
 		}
 		if(throttle == 0 && angle == 0) {
@@ -125,7 +142,6 @@ private:
 			rightMotorOutput = throttle;
 		}
 
-		std::cout <<"leftMotor:"<<leftMotorOutput <<" RightMotor: "<< rightMotorOutput << std::endl;
 		left1->Set(leftMotorOutput);
 		left2->Set(leftMotorOutput);
 		right1->Set(-rightMotorOutput);
