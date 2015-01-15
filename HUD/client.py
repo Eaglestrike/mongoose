@@ -3,9 +3,9 @@ pygame.init()
 screen = pygame.display.set_mode((1200,900))
 bath = -160
 running = True
-r = 34
-g = 139
-b = 34
+r = 46 
+g = 204
+b = 113
 timer = 0
 timing = True
 font=pygame.font.Font(None,100)
@@ -42,7 +42,7 @@ while running:
                 up = False
             if event.key == pygame.K_DOWN:
                 down = False
-            if event.key == pyagame.K_SPACE:
+            if event.key == pygame.K_SPACE:
                 clawskin = skin1
     if cy >= -300:
         down = False
@@ -53,13 +53,13 @@ while running:
     if down:
         cy += 1
 
-    pygame.draw.rect(screen, ((0,0,0)), (900,0,300,900), 0)
-    pygame.draw.rect(screen, ((0,0,0)), (0,0,300,900), 0)
-    pygame.draw.rect(screen, ((0,0,0)), (0,600,1200,300),0)
+    pygame.draw.rect(screen, ((127, 140, 141)), (900,0,300,900), 0)
+    pygame.draw.rect(screen, ((127, 140, 141)), (0,0,300,900), 0)
+    pygame.draw.rect(screen, ((127, 140, 141)), (0,600,1200,300),0)
     battext=font.render(str(percent) + ("%"), 1,(255,255,255))
     timer1=font.render(str(timea) + ":" + str(skarm) + str(timeb), 1,(255,255,255))
     screen.blit(battery,(1000,50))
-    pygame.draw.rect(screen, ((r,g,b)), (1010,240,80,bath), 0)
+    pygame.draw.rect(screen, ((r,g,b)), (1005,244,90,bath), 0)
     screen.blit(clawskin,(50,cy))
     
     screen.blit(battext, (1000, 250))
@@ -74,13 +74,13 @@ while running:
        skarm = ("")
        timea -=1
     if bath >= -80:
-        r = 255
-        g = 215
-        b = 0
+        r = 241
+        g = 196
+        b = 15 
     if bath >= -40:
-        r = 178
-        g = 34
-        b = 34
+        r = 192
+        g = 57
+        b = 43  
     if bath >= -1:
         timing = False
     if timing:
