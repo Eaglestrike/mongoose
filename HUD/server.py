@@ -17,6 +17,13 @@ while True:
     print(sys.stderr, 'connection from', client_address)
      #Receive the data in small chunks and retransmit it
     while True:
-        connection.send(bytes("3 \n", "utf-8"))
-        print("sent 3")
+        connection.send(bytes("3 -160\n", "utf-8"))
+        time.sleep(2)
+        connection.send(bytes("2 -60\n", "utf-8"))
+        time.sleep(2)
+        connection.send(bytes("1 -25\n", "utf-8"))
+        time.sleep(2)
+
+
+
         

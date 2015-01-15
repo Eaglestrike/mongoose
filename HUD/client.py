@@ -38,10 +38,10 @@ def runA():
 
 def runB():
     global clawpos
-
+    global bath
     pygame.init()
     screen = pygame.display.set_mode((1200,900))
-    bath = -160
+
     running = True
     img = pygame.image.load("images/webcam.png").convert_alpha()
     r = 46 
@@ -143,29 +143,29 @@ def runB():
            timeb = 59
            skarm = ("")
            timea -=1
-        if bath >= -80:
-            r = 241
-            g = 196
-            b = 15 
-        if bath >= -40:
-            r = 192
-            g = 57
-            b = 43  
-        if bath >= -1:
-            timing = False
-        if timing:
-            if timer == 100:
-                bath += 1.6
-                timer = 0
-                percent -= 1
-        if timing:
-            timer += 1
-        timekeep += 1
+
+        if bath >= -2000:
+                r = 46 
+                g = 204
+                b = 113
+                if bath > -80:
+                    r = 241
+                    g = 196
+                    b = 15 
+                    if bath >= -40:
+                        r = 192
+                        g = 57
+                        b = 43  
+
+        
+        percent = bath/-1.6
+
         pygame.display.flip()
     pygame.quit()
 def runC():
     print('running c')
     global clawpos
+    global bath
     HOST="127.0.0.1"
     PORT=1114
     readbuffer = ""
@@ -180,6 +180,7 @@ def runC():
             line = str.rstrip(line)
             line = str.split(line)
             clawpos = int(line[0])
+            bath = int(line[1])
            
 
 
