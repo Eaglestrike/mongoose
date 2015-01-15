@@ -48,24 +48,32 @@ void DriveModule::drive(double throttle, double angle) {
 	double rightMotorOutput = 0;
 
 	if(throttle > 0.0) {
-		if(angle > 0.0) {
+		if(angle < 0.0) {
 			leftMotorOutput = throttle - angle;
-			rightMotorOutput = pow(throttle, angle);
+			rightMotorOutput = fmin(throttle, angle);
 		}
 		else {
-			leftMotorOutput = -pow(throttle, -angle);
+			leftMotorOutput = fmin(throttle, -angle);
 			rightMotorOutput = throttle + angle;
 		}
 	}
 	else {
 	 	if(angle > 0.0) {
-			leftMotorOutput = -pow(-throttle, angle);
+			leftMotorOutput = -fmin(-throttle, angle);
 			rightMotorOutput = throttle + angle;
 		}
 		else {
 			leftMotorOutput = throttle - angle;
-			rightMotorOutput = -pow(-throttle,-angle);
-		} 
+			rightMotorOutput = -fmin(-throttle,-angle);
+		}
+	}
+	if(throttle == 0 && angle == 0) {
+		leftMotorOutput = 0;
+		rightMotorOutput = 0;
+	}
+	if(angle == 0) {
+		leftMotorOutput = throttle;
+		rightMotorOutput = throttle;
 	}
 	setPower(leftMotorOutput, rightMotorOutput);
 }
