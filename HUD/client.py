@@ -1,9 +1,10 @@
 from threading import Thread
-
+import math
 import pygame
 import numpy as np
 import time
 import socket as socket
+
 vision = False
 clock = pygame.time.Clock()
 def runA():
@@ -39,9 +40,12 @@ def runA():
 def runB():
     global clawpos
     global bath
+    percent=0
+    timem="2:30"
+    clawpos=0
     pygame.init()
     screen = pygame.display.set_mode((1200,900))
-
+    bath = -160
     running = True
     img = pygame.image.load("images/webcam.png").convert_alpha()
     r = 46 
@@ -51,7 +55,7 @@ def runB():
     timing = True
     font=pygame.font.Font(None,100)
     batteryf = pygame.font.Font(None, 50)
-    percent = 100
+
     count = 0
     cy = -750
     up = False
@@ -61,13 +65,12 @@ def runB():
     clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
     clawskin = skin1
 
-    timea = 2
-    timeb = 30
+
     timekeep = 0
     skarm = ("")
     while running:
         
-        print(clawpos)
+
 
         screen.fill((127, 140, 141))
         
@@ -126,7 +129,7 @@ def runB():
         
 
         battext=batteryf.render(str(percent) + ("%"), 1,(255,255,255))
-        timer1=font.render(str(timea) + ":" + str(skarm) + str(timeb), 1,(255,255,255))
+        timer1=font.render(timem, 1,(255,255,255))
         screen.blit(battery,(1025,50))
         pygame.draw.rect(screen, ((r,g,b)), (1030,244,90,bath), 0)
         screen.blit(clawskin,(35,cy))
@@ -134,15 +137,11 @@ def runB():
         
         screen.blit(battext, (1047, 150))
         screen.blit(timer1,(550,600))
-        if timekeep >= 300:
-            timeb -=1
-            timekeep = 0
-        if timeb <10:
-            skarm = ("0")
-        if timeb <= 0:
-           timeb = 59
-           skarm = ("")
-           timea -=1
+
+        timetemp=150-matchtime
+
+        timem = str(timetemp//60)+":"+str(timetemp%60)
+        print(timem)
 
         if bath >= -2000:
                 r = 46 
@@ -158,7 +157,7 @@ def runB():
                         b = 43  
 
         
-        percent = bath/-1.6
+        percent = math.floor(bath/-1.6)
 
         pygame.display.flip()
     pygame.quit()
@@ -166,6 +165,7 @@ def runC():
     print('running c')
     global clawpos
     global bath
+    global matchtime
     HOST="127.0.0.1"
     PORT=1114
     readbuffer = ""
@@ -181,6 +181,7 @@ def runC():
             line = str.split(line)
             clawpos = int(line[0])
             bath = int(line[1])
+            matchtime=int(line[2])
            
 
 
