@@ -25,6 +25,9 @@ def runA():
         
         imgf = cv2.cvtColor(f, cv2.COLOR_BGR2RGB); 
         img = cvimage_to_pygame(imgf)
+ # update the display
+ # only three images per second
+        In += 1
         if cv2.waitKey(5)==27:
             break
         clock.tick(60)
@@ -51,7 +54,7 @@ def runB():
     
     
     roboarm = skin1
-    while(True):
+    while running:
         screen.fill((255,255,255))
         
         for event in pygame.event.get():
@@ -77,15 +80,15 @@ def runB():
             cy -= 1
         if down:
             cy += 1
-        screen.blit(img,(0,0))
-        pygame.draw.rect(screen, ((0,0,0)), (900,0,300,900), 0)
-        pygame.draw.rect(screen, ((0,0,0)), (0,0,300,900), 0)
+        pygame.draw.rect(screen, ((0,0,0)), (950,0,250,900), 0)
+        pygame.draw.rect(screen, ((0,0,0)), (0,0,250,900), 0)
         battext=font.render(str(percent) + ("%"), 1,(255,255,255))
         screen.blit(battery,(1000,50))
         pygame.draw.rect(screen, ((r,g,b)), (1010,240,80,bath), 0)
         screen.blit(roboarm,(50,cy))
         
         screen.blit(battext, (1000, 250))
+        screen.blit(img,(300,0))
     
     
                     
@@ -105,6 +108,8 @@ def runB():
                 bath += 1.6
                 timer = 0
                 percent -= 1
+        if timing:
+            timer += 1
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
@@ -116,3 +121,5 @@ if __name__ == "__main__":
     t2.setDaemon(True)
     t1.start()
     t2.start()
+    while True:
+        pass
