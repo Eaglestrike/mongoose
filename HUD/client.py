@@ -4,39 +4,50 @@ import pygame
 import numpy as np
 import time
 import socket as socket
-
-vision = False
+global vision
+import cv2
+from urllib.request import urlopen
+vision = True
 clock = pygame.time.Clock()
 def runA():
-    global img
-    print("running a")
-    c = cv2.VideoCapture(0)
-    
-    In=1
-    
-    
-    
-    def cvimage_to_pygame(image):
-        """Convert cvimage into a pygame image"""
-        return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],
-                                       "RGB")
-    
-    
-    
-    while(1):
-        _,f = c.read()
-        #cv2.imshow('e2',f)
-        
-        imgf = cv2.cvtColor(f, cv2.COLOR_BGR2RGB); 
-        img = cvimage_to_pygame(imgf)
- # update the display
- # only three images per second
-        In += 1
-        if cv2.waitKey(5)==27:
-            break
-        clock.tick(60)
-    cv2.destroyAllWindows()
+    while(True):
+            global img
+            print("running a")
+            
+            def cvimage_to_pygame(image):
+                """Convert cvimage into a pygame image"""
+                return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],
+                                               "RGB")
+            stream=urlopen('http://127.0.0.1:8080/?action=stream')
+            buff=b''
+            while True:
+                buff+=stream.read(8112)
+                a = buff.find(b'\xff\xd8')
+                b = buff.find(b'\xff\xd9')
+                if a!=-1 and b!=-1:
+                    jpg = buff[a:b+2]
+                    buff= buff[b+2:]
+                    i = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),1)
+                    imgf=cv2.cvtColor(i, cv2.COLOR_BGR2RGB)
+                    #imgf = cv2.resize(imgf,None,fx=.5, fy=.5, interpolation = cv2.INTER_CUBIC)
+                    img=cvimage_to_pygame(imgf)
+                    clock.tick(60)
+                    if cv2.waitKey(1) ==27:
+                        exit(0)   
+                        
+                        
+            
+            
+            
 
+    
+ # u    pdate the display
+ # o    nly three images per second
+
+
+        #except:
+            print("Vision not ready or working")
+    
 def runB():
     global clawpos
     global bath
@@ -47,7 +58,7 @@ def runB():
     screen = pygame.display.set_mode((1200,900))
     bath = -160
     running = True
-    img = pygame.image.load("images/webcam.png").convert_alpha()
+    
     r = 46 
     g = 204
     b = 113
@@ -101,8 +112,8 @@ def runB():
             cy -= 1
         if down:
             cy += 1
-        if clawpos >= 3:
-            clawpos = 3
+        if clawpos >= 6:
+            clawpos = 6
         if clawpos <= 1:
             clawpos = 1
         if clawpos == 1:
@@ -113,17 +124,37 @@ def runB():
                 cy += 10
                   
         if clawpos == 2:
-            if cy > -825:
+            if cy > -683:
                 cy -= 10
                   
-            if cy < -825:
+            if cy < -683:
                 cy += 10
                   
         if clawpos == 3:
-            if cy > -1100:
+            if cy > -816:
                 cy -= 10
                   
-            if cy < -1100:
+            if cy < -816:
+                cy += 10
+        if clawpos == 4:
+            if cy > -949:
+                cy -= 10
+                  
+            if cy < -949:
+                cy += 10
+                  
+        if clawpos == 5:
+            if cy > -1082:
+                cy -= 10
+                  
+            if cy < -1082:
+                cy += 10
+                  
+        if clawpos == 6:
+            if cy > -1215:
+                cy -= 10
+                  
+            if cy < -1215:
                 cy += 10
                   
         
@@ -133,15 +164,18 @@ def runB():
         screen.blit(battery,(1025,50))
         pygame.draw.rect(screen, ((r,g,b)), (1030,244,90,bath), 0)
         screen.blit(clawskin,(35,cy))
-        screen.blit(img, (285, 100))
+        
         
         screen.blit(battext, (1047, 150))
         screen.blit(timer1,(550,600))
-
+        try:
+            screen.blit(img, (285, 100))
+        except:
+            pass
         timetemp=150-matchtime
 
         timem = str(timetemp//60)+":"+str(timetemp%60)
-        print(timem)
+
 
         if bath >= -2000:
                 r = 46 
@@ -188,18 +222,15 @@ def runC():
 if __name__ == "__main__":
 
     t1 = Thread(target = runC)
-    if vision == True:
-        import cv2
-        t2 = Thread(target = runA)
+
+    t2 = Thread(target = runA)
     t3 = Thread(target = runB)
 
     t1.setDaemon(True)
-    if vision == True:
-        t2.setDaemon(True)
+    t2.setDaemon(True)
     t3.setDaemon(True)
     t1.start()
-    if vision == True:
-        t2.start()
+    t2.start()
     t3.start()
     while True:
         pass

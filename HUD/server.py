@@ -18,12 +18,21 @@ while True:
      #Receive the data in small chunks and retransmit it
     timem=0
     while True:
-        connection.send(bytes("3 -160 "+str(timem)+"\n", "utf-8"))
+        connection.send(bytes("1 -160 "+str(timem)+"\n", "utf-8"))
         timem+=1
         time.sleep(1)
         connection.send(bytes("2 -60 "+str(timem)+"\n", "utf-8"))
         timem+=1
         time.sleep(1)
-        connection.send(bytes("1 -25 "+str(timem)+"\n", "utf-8"))
+        connection.send(bytes("3 -25 "+str(timem)+"\n", "utf-8"))
+        timem+=1
+        time.sleep(1)
+        connection.send(bytes("4 -160 "+str(timem)+"\n", "utf-8"))
+        timem+=1
+        time.sleep(1)
+        connection.send(bytes("5 -60 "+str(timem)+"\n", "utf-8"))
+        timem+=1
+        time.sleep(1)
+        connection.send(bytes("6 -25 "+str(timem)+"\n", "utf-8"))
         timem+=1
         time.sleep(1)
