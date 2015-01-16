@@ -11,7 +11,6 @@ private:
 	{
 		lw = LiveWindow::GetInstance();
 		arm = new ArmCode(0,1,0,1,2,3,4,5,0,0,0,0,0,0);
-		std::cout << "ROBOT INIT!!!!";
 	}
 
 	void AutonomousInit()
@@ -35,6 +34,10 @@ private:
 		std::cout << arm->getLTick();
 		std::cout << "\nRight ";
 		std::cout << arm->getRTick();
+		std::cout << "Left ";
+		std::cout << arm->getLButton();
+		std::cout << "\nRight ";
+		std::cout << arm->getRButton();
 		Wait(.1);
 	}
 

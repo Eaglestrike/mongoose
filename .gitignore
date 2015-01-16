@@ -2,3 +2,4 @@
 *.exe
 Debug/
 Release/
+language.settings.xml

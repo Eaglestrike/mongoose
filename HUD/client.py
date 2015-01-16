@@ -1,13 +1,14 @@
 from threading import Thread
-import cv2
+
 import pygame
 import numpy as np
 import time
 import socket as socket
-
+vision = False
 clock = pygame.time.Clock()
 def runA():
     global img
+    print("running a")
     c = cv2.VideoCapture(0)
     
     In=1
@@ -37,10 +38,12 @@ def runA():
 
 def runB():
     global clawpos
+    global bath
     pygame.init()
     screen = pygame.display.set_mode((1200,900))
-    bath = -160
+
     running = True
+    img = pygame.image.load("images/webcam.png").convert_alpha()
     r = 46 
     g = 204
     b = 113
@@ -140,30 +143,31 @@ def runB():
            timeb = 59
            skarm = ("")
            timea -=1
-        if bath >= -80:
-            r = 241
-            g = 196
-            b = 15 
-        if bath >= -40:
-            r = 192
-            g = 57
-            b = 43  
-        if bath >= -1:
-            timing = False
-        if timing:
-            if timer == 100:
-                bath += 1.6
-                timer = 0
-                percent -= 1
-        if timing:
-            timer += 1
-        timekeep += 1
+
+        if bath >= -2000:
+                r = 46 
+                g = 204
+                b = 113
+                if bath > -80:
+                    r = 241
+                    g = 196
+                    b = 15 
+                    if bath >= -40:
+                        r = 192
+                        g = 57
+                        b = 43  
+
+        
+        percent = bath/-1.6
+
         pygame.display.flip()
     pygame.quit()
 def runC():
+    print('running c')
     global clawpos
+    global bath
     HOST="127.0.0.1"
-    PORT=1115
+    PORT=1114
     readbuffer = ""
     s=socket.socket( )
     s.connect((HOST, PORT))
@@ -176,19 +180,25 @@ def runC():
             line = str.rstrip(line)
             line = str.split(line)
             clawpos = int(line[0])
-            print("clawpos from socket is ", clawpos)
+            bath = int(line[1])
+           
 
 
 if __name__ == "__main__":
-    t1 = Thread(target = runA)
-    t2 = Thread(target = runC)
+
+    t1 = Thread(target = runC)
+    if vision == True:
+        import cv2
+        t2 = Thread(target = runA)
     t3 = Thread(target = runB)
 
     t1.setDaemon(True)
-    t2.setDaemon(True)
+    if vision == True:
+        t2.setDaemon(True)
     t3.setDaemon(True)
     t1.start()
-    t2.start()
+    if vision == True:
+        t2.start()
     t3.start()
     while True:
         pass
