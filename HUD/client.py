@@ -7,34 +7,41 @@ import socket as socket
 global vision
 import cv2
 from urllib.request import urlopen
-vision = True
+vision = False
 clock = pygame.time.Clock()
+global pdp
+pdp = [[0, 1126, 524],[0, 1126, 552],[0, 1126, 580],[0, 1126, 608],[0, 1121, 367],[0, 1121, 406],[0, 1121, 444],[0, 1121, 482],[0, 980, 367],[0, 980, 406],[0, 980, 444],[0, 980, 482],[0, 985, 524],[0, 985, 552],[0, 985, 580],[0, 985, 608]]
+
 def runA():
+    global vision
     while(True):
             global img
-            print("running a")
             
             def cvimage_to_pygame(image):
                 """Convert cvimage into a pygame image"""
                 return pygame.image.frombuffer(image.tostring(), image.shape[1::-1],
                                                "RGB")
-            stream=urlopen('http://127.0.0.1:8080/?action=stream')
-            buff=b''
-            while True:
-                buff+=stream.read(8112)
-                a = buff.find(b'\xff\xd8')
-                b = buff.find(b'\xff\xd9')
-                if a!=-1 and b!=-1:
-                    jpg = buff[a:b+2]
-                    buff= buff[b+2:]
-                    i = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),1)
-                    imgf=cv2.cvtColor(i, cv2.COLOR_BGR2RGB)
-                    #imgf = cv2.resize(imgf,None,fx=.5, fy=.5, interpolation = cv2.INTER_CUBIC)
-                    img=cvimage_to_pygame(imgf)
-                    clock.tick(60)
-                    if cv2.waitKey(1) ==27:
-                        exit(0)   
-                        
+            try:    
+                stream=urlopen('http://127.0.0.1:8080/?action=stream')
+                buff=b''
+                vision = True
+                while True:
+                    buff+=stream.read(8112)
+                    a = buff.find(b'\xff\xd8')
+                    b = buff.find(b'\xff\xd9')
+                    if a!=-1 and b!=-1:
+                        jpg = buff[a:b+2]
+                        buff= buff[b+2:]
+                        i = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),1)
+                        imgf=cv2.cvtColor(i, cv2.COLOR_BGR2RGB)
+                        #imgf = cv2.resize(imgf,None,fx=.5, fy=.5, interpolation = cv2.INTER_CUBIC)
+                        img=cvimage_to_pygame(imgf)
+                        clock.tick(60)
+                        if cv2.waitKey(1) ==27:
+                            exit(0)
+            except:
+                #print("Streaming not working or Robot not on")   
+                vision = False
                         
             
             
@@ -45,17 +52,21 @@ def runA():
  # o    nly three images per second
 
 
-        #except:
-            print("Vision not ready or working")
+
     
 def runB():
+    global serverstat
     global clawpos
     global bath
+    global matchtime
+    global pdp
+    matchtime = 0
     percent=0
     timem="2:30"
     clawpos=0
     pygame.init()
     screen = pygame.display.set_mode((1200,900))
+    pygame.display.set_caption("HUD")
     bath = -160
     running = True
     
@@ -65,6 +76,7 @@ def runB():
     timer = 0
     timing = True
     font=pygame.font.Font(None,100)
+    visfont = pygame.font.Font(None,50)
     batteryf = pygame.font.Font(None, 50)
 
     count = 0
@@ -74,6 +86,7 @@ def runB():
     battery = pygame.image.load("images/battery.png").convert_alpha()
     skin1 = pygame.image.load("images/claw.png").convert_alpha()
     clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
+    pdpimg = pygame.image.load("images/pdp.png").convert_alpha()
     clawskin = skin1
 
 
@@ -161,9 +174,31 @@ def runB():
 
         battext=batteryf.render(str(percent) + ("%"), 1,(255,255,255))
         timer1=font.render(timem, 1,(255,255,255))
+        if vision == False:
+            vistext = visfont.render("Vision not working or Robot not on", 1,(255,255,255))
+            screen.blit(vistext,(285, 100))
+        if serverstat == False:
+            servtext = visfont.render("Server not connected or Robot not on", 1,(255,255,255))
+            screen.blit(servtext,(385, 700))
         screen.blit(battery,(1025,50))
         pygame.draw.rect(screen, ((r,g,b)), (1030,244,90,bath), 0)
         screen.blit(clawskin,(35,cy))
+        screen.blit(pdpimg, (950, 300))
+        portcount = 0
+        for port in pdp:
+            if portcount > 3 and portcount < 12:
+                if pdp[portcount][0] == 1:
+                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1], pdp[portcount][2], 37, 37))
+                if pdp[portcount][0] == 0:
+                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1], pdp[portcount][2], 37, 37))
+            if portcount < 4 or portcount > 11:
+                if pdp[portcount][0] == 1:
+                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1], pdp[portcount][2], 29, 27))
+                if pdp[portcount][0] == 0:
+                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1], pdp[portcount][2], 29, 27))
+            portcount +=1
+
+
         
         
         screen.blit(battext, (1047, 150))
@@ -196,26 +231,52 @@ def runB():
         pygame.display.flip()
     pygame.quit()
 def runC():
-    print('running c')
+    global pdp
+    
     global clawpos
+    global serverstat
     global bath
     global matchtime
     HOST="127.0.0.1"
-    PORT=1114
+    PORT=1115
     readbuffer = ""
     s=socket.socket( )
-    s.connect((HOST, PORT))
     while(True):
-        readbuffer = readbuffer+s.recv(2).decode("UTF-8")
-        temp = str.split(readbuffer, "\n")
+        try:
+            
+            s.connect((HOST, PORT))
+            serverstat = True
+            while(True):
+                readbuffer = readbuffer+s.recv(2).decode("UTF-8")
+                temp = str.split(readbuffer, "\n")
+        
+                readbuffer=temp.pop( )
+                for line in temp:
+                    #print("in socket for")
+                    line = str.rstrip(line)
+                    line = str.split(line)
+                    clawpos = int(line[0])
+                    bath = int(line[1])
+                    matchtime=int(line[2])
+                    portcount = 0
+                    for port in pdp:
+                        try:
+                            if int(line[portcount+3]) > 1.5:
+                                
+                                pdp[portcount][0] = 1
+                            else:
+                        
+                                pdp[portcount][0] = 0
+                            portcount+=1
+                        except:
+                            print("error")
 
-        readbuffer=temp.pop( )
-        for line in temp:
-            line = str.rstrip(line)
-            line = str.split(line)
-            clawpos = int(line[0])
-            bath = int(line[1])
-            matchtime=int(line[2])
+
+
+
+        except:
+            #print("Server not running")
+            serverstat=False
            
 
 
