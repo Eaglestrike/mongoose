@@ -131,6 +131,7 @@ private:
 			throttle = - throttle * throttle;
 
 		if(throttle > 0.0) {
+			angle = -angle;
 			if(angle < 0.0) {
 				leftMotorOutput = (throttle + angle);
 				rightMotorOutput = fmax(throttle, -angle);
