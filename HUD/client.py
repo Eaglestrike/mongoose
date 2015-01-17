@@ -10,12 +10,14 @@ from urllib.request import urlopen
 vision = False
 clock = pygame.time.Clock()
 global pdp
+global aspect
 pdp = [[0, 1126, 524],[0, 1126, 552],[0, 1126, 580],[0, 1126, 608],[0, 1121, 367],[0, 1121, 406],[0, 1121, 444],[0, 1121, 482],[0, 980, 367],[0, 980, 406],[0, 980, 444],[0, 980, 482],[0, 985, 524],[0, 985, 552],[0, 985, 580],[0, 985, 608]]
 
 def runA():
     global vision
     while(True):
             global img
+            global aspect
             
             def cvimage_to_pygame(image):
                 """Convert cvimage into a pygame image"""
@@ -34,8 +36,11 @@ def runA():
                         buff= buff[b+2:]
                         i = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),1)
                         imgf=cv2.cvtColor(i, cv2.COLOR_BGR2RGB)
-                        #imgf = cv2.resize(imgf,None,fx=.5, fy=.5, interpolation = cv2.INTER_CUBIC)
+                        height, width = imgf.shape[:2]
+                        #imgf = cv2.resize(imgf,(aspect*width, aspect*height), interpolation = cv2.INTER_CUBIC)
+                        imgf = cv2.resize(imgf,None,fx=aspect, fy=aspect, interpolation = cv2.INTER_CUBIC)
                         img=cvimage_to_pygame(imgf)
+                        
                         clock.tick(60)
                         if cv2.waitKey(1) ==27:
                             exit(0)
@@ -59,14 +64,18 @@ def runB():
     global clawpos
     global bath
     global matchtime
+    global aspect
     global pdp
     matchtime = 0
     percent=0
     timem="2:30"
     clawpos=0
     pygame.init()
-    screen = pygame.display.set_mode((1200,900))
+    screen = pygame.display.set_mode((320,240))#((1200,900))
     pygame.display.set_caption("HUD")
+    
+    aspect = (screen.get_width()/1200)
+    #pygame.display.toggle_fullscreen()
     bath = -160
     running = True
     
@@ -75,18 +84,24 @@ def runB():
     b = 113
     timer = 0
     timing = True
-    font=pygame.font.Font(None,100)
-    visfont = pygame.font.Font(None,50)
-    batteryf = pygame.font.Font(None, 50)
+    font=pygame.font.Font(None,int(100*aspect))
+    visfont = pygame.font.Font(None,int(50*aspect))
+    batteryf = pygame.font.Font(None, int(50*aspect))
 
     count = 0
     cy = -750
     up = False
     down = False
     battery = pygame.image.load("images/battery.png").convert_alpha()
+    battery = pygame.transform.scale(battery, (int(battery.get_rect().size[0]*aspect), int(battery.get_rect().size[1]*aspect)))
     skin1 = pygame.image.load("images/claw.png").convert_alpha()
+    #print(skin1.get_rect().size[1])
+    skin1 = pygame.transform.scale(skin1, (int(skin1.get_rect().size[0]*aspect), int(skin1.get_rect().size[1]*aspect)))
     clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
+    clawclosed = pygame.transform.scale(clawclosed, (int(clawclosed.get_rect().size[0]*aspect), int(clawclosed.get_rect().size[1]*aspect)))
     pdpimg = pygame.image.load("images/pdp.png").convert_alpha()
+    pdpimg = pygame.transform.scale(pdpimg, (int(pdpimg.get_rect().size[0]*aspect), int(pdpimg.get_rect().size[1]*aspect)))
+
     clawskin = skin1
 
 
@@ -115,6 +130,7 @@ def runB():
                     up = False
                 if event.key == pygame.K_DOWN:
                     down = False
+                    pygame.display.toggle_fullscreen()
                 if event.key == pygame.K_SPACE:
                     clawskin = skin1
         if cy >= -300:
@@ -176,35 +192,35 @@ def runB():
         timer1=font.render(timem, 1,(255,255,255))
         if vision == False:
             vistext = visfont.render("Vision not working or Robot not on", 1,(255,255,255))
-            screen.blit(vistext,(285, 100))
+            screen.blit(vistext,(2858*aspect, 100*aspect))
         if serverstat == False:
             servtext = visfont.render("Server not connected or Robot not on", 1,(255,255,255))
-            screen.blit(servtext,(385, 700))
-        screen.blit(battery,(1025,50))
-        pygame.draw.rect(screen, ((r,g,b)), (1030,244,90,bath), 0)
-        screen.blit(clawskin,(35,cy))
-        screen.blit(pdpimg, (950, 300))
+            screen.blit(servtext,(385*aspect, 700*aspect))
+        screen.blit(battery,(1025*aspect,50*aspect))
+        pygame.draw.rect(screen, ((r,g,b)), (1030*aspect,244*aspect,90*aspect,bath*aspect), 0)
+        screen.blit(clawskin,(35*aspect,cy*aspect))
+        screen.blit(pdpimg, (950*aspect, 300*aspect))
         portcount = 0
         for port in pdp:
             if portcount > 3 and portcount < 12:
                 if pdp[portcount][0] == 1:
-                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1], pdp[portcount][2], 37, 37))
+                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
                 if pdp[portcount][0] == 0:
-                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1], pdp[portcount][2], 37, 37))
+                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
             if portcount < 4 or portcount > 11:
                 if pdp[portcount][0] == 1:
-                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1], pdp[portcount][2], 29, 27))
+                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
                 if pdp[portcount][0] == 0:
-                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1], pdp[portcount][2], 29, 27))
+                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
             portcount +=1
 
 
         
         
-        screen.blit(battext, (1047, 150))
-        screen.blit(timer1,(550,600))
+        screen.blit(battext, (1047*aspect, 150*aspect))
+        screen.blit(timer1,(550*aspect,600*aspect))
         try:
-            screen.blit(img, (285, 100))
+            screen.blit(img, (285*aspect, 100*aspect))
         except:
             pass
         timetemp=150-matchtime
@@ -238,7 +254,7 @@ def runC():
     global bath
     global matchtime
     HOST="127.0.0.1"
-    PORT=1115
+    PORT=5801
     readbuffer = ""
     s=socket.socket( )
     while(True):
@@ -279,7 +295,7 @@ def runC():
             serverstat=False
            
 
-
+#um
 if __name__ == "__main__":
 
     t1 = Thread(target = runC)
