@@ -1,6 +1,6 @@
 #include "WPILib.h"
 #include <vector>
-//#include <algorithm>
+#include <algorithm>
 
 class Robot: public IterativeRobot
 {
@@ -104,6 +104,10 @@ private:
 	void TestPeriodic()
 	{
 		lw->Run();
+		if(i % 60 == 0)
+			std::cout << leftJoy->GetY() << std::endl;
+		i++;
+
 	}
 
 	void DisabledPeriodic() {
@@ -128,35 +132,25 @@ private:
 
 		if(throttle > 0.0) {
 			if(angle < 0.0) {
-				rightMotorOutput = throttle - angle;
-				leftMotorOutput = fmin(throttle, angle);
+				leftMotorOutput = (throttle + angle);
+				rightMotorOutput = fmax(throttle, -angle);
 			}
 			else {
-				rightMotorOutput = fmin(throttle, -angle);
-				leftMotorOutput = throttle + angle;
+				leftMotorOutput = fmax(throttle, angle);
+				rightMotorOutput = (throttle - angle);
 			}
 		}
 		else {
 		 	if(angle > 0.0) {
-				leftMotorOutput = -fmin(-throttle, angle);
+				leftMotorOutput = -fmax(-throttle, angle);
 				rightMotorOutput = throttle + angle;
+				std::cout << rightMotorOutput << std::endl;
 			}
 			else {
 				leftMotorOutput = throttle - angle;
-				rightMotorOutput = -fmin(-throttle,-angle);
+				rightMotorOutput = -fmax(-throttle,-angle);
 			}
 
-		}
-		if(throttle == 0 && angle == 0) {
-			leftMotorOutput = 0;
-			rightMotorOutput = 0;
-		}
-		if(angle == 0) {
-			leftMotorOutput = throttle;
-			rightMotorOutput = throttle;
-		}
-		if(i%60 == 0) {
-			std::cout << "Left Motor: " << leftMotorOutput << " , Right Motor: " << -rightMotorOutput << std::endl;
 		}
 		left1->Set(leftMotorOutput);
 		left2->Set(leftMotorOutput);
