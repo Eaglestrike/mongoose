@@ -8,11 +8,11 @@
 #ifndef SRC_DISTANCEPROFILE_H_
 #define SRC_DISTANCEPROFILE_H_
 
-#include <LogisticFunction.h>
+#include "LogisticFunction.h"
 
 class DistanceProfile {
 public:
-	DistanceProfile(float start, float end, float totalTime);
+	DistanceProfile(double start, double end, double totalTime);
 	virtual ~DistanceProfile();
 
 	double getSetPoint(double time);
