@@ -1,7 +1,70 @@
 #include "WPILib.h"
 #include <vector>
 #include <algorithm>
+#include <thread>
+#include <string>
+#include "ServerSocket.h"
+#include "SocketException.h"
+PowerDistributionPanel* pdp;
+Timer hudtime;
+    void *HUD(void *) {
+    	try
+    	    {
+    	      // Create the socket
+    	      ServerSocket server ( 5801 );
 
+    	      while ( true )
+    	        {
+
+    	          ServerSocket new_sock;
+    	          server.accept ( new_sock );
+
+    	          try
+    	            {
+    	              while ( true )
+    	                {
+    	            	  float port0=pdp->GetCurrent(0);
+						  float port1=pdp->GetCurrent(1);
+						  float port2=pdp->GetCurrent(2);
+						  float port3=pdp->GetCurrent(3);
+						  float port4=pdp->GetCurrent(4);
+						  float port5=pdp->GetCurrent(5);
+						  float port6=pdp->GetCurrent(6);
+						  float port7=pdp->GetCurrent(7);
+						  float port8=pdp->GetCurrent(8);
+						  float port9=pdp->GetCurrent(9);
+						  float port10=pdp->GetCurrent(10);
+						  float port11=pdp->GetCurrent(11);
+						  float port12=pdp->GetCurrent(12);
+						  float port13=pdp->GetCurrent(13);
+						  float port14=pdp->GetCurrent(14);
+						  float port15=pdp->GetCurrent(15);
+						  int clawpos = 2;
+						  float bath;
+						  float voltage = pdp->GetVoltage()*-0.076875;
+						  if(voltage >= 12.5)
+						  {
+							  bath = -160;
+						  }
+						  else{
+							  bath = pdp->GetVoltage()*-0.076875;
+						  }
+
+						  int matchtime = hudtime.Get();
+
+    	                  new_sock << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+    	                }
+    	            }
+    	          catch ( SocketException& ) {}
+
+    	        }
+    	    }
+    	  catch ( SocketException& e )
+    	    {
+    	      std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+    	    }
+    	  return NULL;
+    }
 class Robot: public IterativeRobot
 {
 private:
@@ -16,6 +79,7 @@ private:
 	Compressor* comp;
 	Solenoid* cole;
 	BuiltInAccelerometer* rom;
+
 	Timer* tim;
 	Encoder* lEnc;
 
@@ -35,6 +99,15 @@ private:
 		rom = new BuiltInAccelerometer();
 		lEnc = new Encoder(0,1);
 		tim = new Timer();
+		pthread_t t;
+		pthread_create(&t, NULL, HUD, NULL);
+
+		        //Join the thread with the main thread
+		pthread_join(t, NULL);
+
+
+
+				    //Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
 
 	}
 
@@ -45,6 +118,9 @@ private:
 	int times = 0;
 	int count = 0;
 	bool lastTime;
+	void AutonomousInit	(){
+		hudtime.Start();
+	}
 
 	void TeleopPeriodic()
 	{
