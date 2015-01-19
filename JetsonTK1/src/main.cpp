@@ -6,22 +6,19 @@
  */
 
 #include <iostream>
+#include <math.h>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
 
+
 int main(){
 
-	cv::VideoCapture vc(0);
 
-	cv::Mat matrix;
-	cv::gpu::GpuMat gpuMat;
+	std::cout << "test " << pow(-2.1,2.1) ;
 
-	vc >> matrix;
-	gpuMat.upload(matrix);
 
-	std::cout << matrix;
-
+	return 0;
 }
 
 
