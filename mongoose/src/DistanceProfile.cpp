@@ -7,6 +7,7 @@
 
 #include <DistanceProfile.h>
 #include <math.h>
+#include <iostream>
 //#include <complex>
 
 DistanceProfile::DistanceProfile(double start, double end, double totalTime) {
@@ -29,11 +30,26 @@ double DistanceProfile::getSetPoint(double time) {
 }
 
 LogisticFunction DistanceProfile::getFunction() {
-	double K = end -start;
-	double h = start;
-	double j = 10;
-	double k = log((end/(end - .5) - 1))/-(totalTime - j);
-	double A = 1;
-	LogisticFunction model(K, A, k, h, j);
-	return model;
+	if(start < end) {
+		double K = end -start;
+		double h = start;
+		double exp1 = log((K - .5)/.5);
+		double exp2 = log(K/(K-.5) - 1);
+		double j = totalTime * exp1/(exp1 - exp2);
+		double k = (-log((K/(K - .5) - 1)) + log((K - .5)/.5))/totalTime;
+		double A = 1;
+		LogisticFunction model(K, A, k, h, j);
+		return model;
+	}
+	else {
+		double K = start - end;
+		double h = end;
+		double exp1 = log((K - .5)/.5);
+		double exp2 = log(K/(K-.5) - 1);
+		double j = totalTime * exp2/(exp2 - exp1);
+		double k = (-exp1 + exp2)/totalTime;
+		double A = 1;
+		LogisticFunction model(K, A, k, h, j);
+		return model;
+	}
 }

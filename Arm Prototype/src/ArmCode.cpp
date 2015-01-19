@@ -77,7 +77,7 @@ void ArmCode::setR(double R) {
 
 void ArmCode::calibrate() {
 	if(!rightButton.Get()) {
-		setRVictor(.3);
+		setRVictor(-.3);
 	}
 	if(!leftButton.Get()) {
 		setLVictor(-.3);
@@ -131,7 +131,7 @@ void ArmCode::setLVictor(float power) {
 }
 
 void ArmCode::setRVictor(float power) {
-	if(rightButton.Get() && power > 0)
+	if(rightButton.Get() && power < 0)
 		rightVic.Set(0);
 	else
 		rightVic.Set(power);
