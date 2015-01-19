@@ -176,7 +176,7 @@ private:
 		}
 		if(i % 60 == 0)
 			std::cout<<  3*leftJoy->GetZ() << std::endl;
-		drive(power, angle, 3*leftJoy->GetZ());
+		drive(power, angle, 1.842);
 //		left1->Set(power);
 //		left2->Set(power);
 //		right1->Set(-power);
