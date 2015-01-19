@@ -34,7 +34,7 @@ private:
 	int counter = 0;
 	void TeleopPeriodic()
 	{
-		arm->setRVictor(controller->getRX());
+		arm->setRVictor(-controller->getRX());
 		arm->setLVictor(controller->getLX());
 		if(controller->getStart()) {
 			arm->calibrate();
