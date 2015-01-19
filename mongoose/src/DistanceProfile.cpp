@@ -31,7 +31,7 @@ double DistanceProfile::getSetPoint(double time) {
 LogisticFunction DistanceProfile::getFunction() {
 	double K = end -start;
 	double h = start;
-	double j = 2;
+	double j = 10;
 	double k = log((end/(end - .5) - 1))/-(totalTime - j);
 	double A = 1;
 	LogisticFunction model(K, A, k, h, j);
