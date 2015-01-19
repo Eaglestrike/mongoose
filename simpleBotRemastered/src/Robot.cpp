@@ -4,23 +4,28 @@
 #include <thread>
 #include <string>
 #include "ServerSocket.h"
+
 #include "SocketException.h"
 PowerDistributionPanel* pdp;
-Timer hudtime;
+Timer* hudtime;
     void *HUD(void *) {
     	try
     	    {
     	      // Create the socket
+    		  std::cout << "test \n";
     	      ServerSocket server ( 5801 );
-
+    	      std::cout << "test \n";
     	      while ( true )
     	        {
 
     	          ServerSocket new_sock;
+    	          printf("declared serversocket");
     	          server.accept ( new_sock );
+    	          printf("accepting new sockets");
 
     	          try
     	            {
+    	        	  int clawpos = 0;
     	              while ( true )
     	                {
     	            	  float port0=pdp->GetCurrent(0);
@@ -39,20 +44,26 @@ Timer hudtime;
 						  float port13=pdp->GetCurrent(13);
 						  float port14=pdp->GetCurrent(14);
 						  float port15=pdp->GetCurrent(15);
-						  int clawpos = 2;
+
 						  float bath;
-						  float voltage = pdp->GetVoltage()*-0.076875;
+						  float voltage = pdp->GetVoltage()*-12.721875;
 						  if(voltage >= 12.5)
 						  {
 							  bath = -160;
 						  }
 						  else{
-							  bath = pdp->GetVoltage()*-0.076875;
+							  bath = pdp->GetVoltage()*-12.721875;
 						  }
 
-						  int matchtime = hudtime.Get();
-
-    	                  new_sock << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+                          int matchtime = hudtime->Get() + 15;
+						  clawpos = clawpos+1;
+						  if(clawpos > 6){
+						  	  clawpos = 1;
+						  }
+						  //std::string message = std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+						  new_sock << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+						  //std::cout << "Hud Message: " << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+						  sleep(1);
     	                }
     	            }
     	          catch ( SocketException& ) {}
@@ -61,7 +72,7 @@ Timer hudtime;
     	    }
     	  catch ( SocketException& e )
     	    {
-    	      std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+    	      //std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
     	    }
     	  return NULL;
     }
@@ -99,11 +110,15 @@ private:
 		rom = new BuiltInAccelerometer();
 		lEnc = new Encoder(0,1);
 		tim = new Timer();
+		pdp = new PowerDistributionPanel();
+		hudtime = new Timer();
+
 		pthread_t t;
+		std::cout << "declared thread \n";
 		pthread_create(&t, NULL, HUD, NULL);
 
 		        //Join the thread with the main thread
-		pthread_join(t, NULL);
+		//pthread_join(t, NULL);
 
 
 
@@ -119,9 +134,12 @@ private:
 	int count = 0;
 	bool lastTime;
 	void AutonomousInit	(){
-		hudtime.Start();
-	}
+		//hudtime.Start();
 
+	}
+	void TeleopInit (){
+		hudtime->Start();
+	}
 	void TeleopPeriodic()
 	{
 		tim->Start();
@@ -188,6 +206,8 @@ private:
 
 	void DisabledPeriodic() {
 		throttleReadings.clear();
+		hudtime->Stop();
+		hudtime->Reset();
 		//std::cout << "PI" << std::endl;
 	}
 	void drive(double throttle, double angle) {
