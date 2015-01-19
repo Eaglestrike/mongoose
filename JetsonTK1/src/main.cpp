@@ -6,31 +6,17 @@
  */
 
 #include <iostream>
+#include <math.h>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
 
-#include <thread>
-
-void printHi(){
-	std::cout << "hi" << std::endl;
-
-}
-
-void printHi2(){
-	std::cout << "hi 2" << std::endl;
-}
-
 
 int main(){
 
-	std::thread hi1 (printHi);
-	std::thread hi2 (printHi2);
 
-	hi1.join();
-	hi2.join();
+	std::cout << "test " << pow(-2.1,2.1) ;
 
-	std::cout << "done" << std::endl;
 
 	return 0;
 }
