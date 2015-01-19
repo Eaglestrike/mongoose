@@ -14,7 +14,7 @@ global aspect
 pdp = [[0, 1126, 524],[0, 1126, 552],[0, 1126, 580],[0, 1126, 608],[0, 1121, 367],[0, 1121, 406],[0, 1121, 444],[0, 1121, 482],[0, 980, 367],[0, 980, 406],[0, 980, 444],[0, 980, 482],[0, 985, 524],[0, 985, 552],[0, 985, 580],[0, 985, 608]]
 
 def runA():
-    global vision
+    global visio
     while(True):
             global img
             global aspect
@@ -124,15 +124,18 @@ def runB():
                     clawpos -= 1
                 if event.key == pygame.K_SPACE:
                     clawskin = clawclosed
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.toggle_fullscreen()
             if event.type == pygame.KEYUP:
                 
                 if event.key == pygame.K_UP:
                     up = False
                 if event.key == pygame.K_DOWN:
                     down = False
-                    pygame.display.toggle_fullscreen()
+                    #pygame.display.toggle_fullscreen()
                 if event.key == pygame.K_SPACE:
                     clawskin = skin1
+
         if cy >= -300:
             down = False
         if cy <= -1200:
@@ -202,12 +205,12 @@ def runB():
         screen.blit(pdpimg, (950*aspect, 300*aspect))
         portcount = 0
         for port in pdp:
-            if portcount > 3 and portcount < 12:
+            if portcount < 4 and portcount > 11:
                 if pdp[portcount][0] == 1:
                     pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
                 if pdp[portcount][0] == 0:
                     pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
-            if portcount < 4 or portcount > 11:
+            if portcount > 3 or portcount < 12:
                 if pdp[portcount][0] == 1:
                     pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
                 if pdp[portcount][0] == 0:
@@ -253,7 +256,7 @@ def runC():
     global serverstat
     global bath
     global matchtime
-    HOST="127.0.0.1"
+    HOST="10.1.14.2"
     PORT=5801
     readbuffer = ""
     s=socket.socket( )
@@ -263,31 +266,37 @@ def runC():
             s.connect((HOST, PORT))
             serverstat = True
             while(True):
-                readbuffer = readbuffer+s.recv(2).decode("UTF-8")
-                temp = str.split(readbuffer, "\n")
-        
-                readbuffer=temp.pop( )
-                for line in temp:
-                    #print("in socket for")
-                    line = str.rstrip(line)
-                    line = str.split(line)
-                    clawpos = int(line[0])
-                    bath = int(line[1])
-                    matchtime=int(line[2])
-                    portcount = 0
-                    for port in pdp:
-                        try:
-                            if int(line[portcount+3]) > 1.5:
-                                
-                                pdp[portcount][0] = 1
-                            else:
-                        
-                                pdp[portcount][0] = 0
-                            portcount+=1
-                        except:
-                            print("error")
+                try:
+                    readbuffer = readbuffer+s.recv(2).decode("UTF-8")
+                    temp = str.split(readbuffer, "\n")
+            
+                    readbuffer=temp.pop( )
+                    for line in temp:
+                        #print("in socket for")
+                        line = str.rstrip(line)
+                        line = str.split(line)
+                        print(line)
+                        clawpos = int(line[0])
+                        print("clawpos: ", clawpos, " matchtime: ", matchtime)
+                        bath = float(line[1])
+                        matchtime=int(line[2])
 
-
+                        portcount = 0
+                        for port in pdp:
+                            try:
+                                if float(line[portcount+3]) > 1.5:
+                                    
+                                    pdp[portcount][0] = 1
+                                else:
+                            
+                                    pdp[portcount][0] = 0
+                                portcount+=1
+                            except:
+                                print("error")
+                        print("clawpos: ", clawpos, " matchtime: ", matchtime)
+                except: 
+                    print("read error")
+    
 
 
         except:
