@@ -7,6 +7,7 @@
 
 #include <DistanceProfile.h>
 #include <math.h>
+//#include <complex>
 
 DistanceProfile::DistanceProfile(double start, double end, double totalTime) {
 	// TODO Auto-generated constructor stub
@@ -23,14 +24,15 @@ DistanceProfile::~DistanceProfile() {
 
 double DistanceProfile::getSetPoint(double time) {
 	//use function to calculate setPoint
+	if(end == start) return 0;
 	return model.applyFunction(time);
 }
 
 LogisticFunction DistanceProfile::getFunction() {
-	double K = end;
+	double K = end -start;
 	double h = start;
 	double j = 10;
-	double k = log(K/(K - h) - 1)/totalTime;
+	double k = log((end/(end - .5) - 1))/-(totalTime - j);
 	double A = 1;
 	LogisticFunction model(K, A, k, h, j);
 	return model;
