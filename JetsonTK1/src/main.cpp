@@ -10,18 +10,29 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
 
+#include <thread>
+
+void printHi(){
+	std::cout << "hi" << std::endl;
+
+}
+
+void printHi2(){
+	std::cout << "hi 2" << std::endl;
+}
+
+
 int main(){
 
-	cv::VideoCapture vc(0);
+	std::thread hi1 (printHi);
+	std::thread hi2 (printHi2);
 
-	cv::Mat matrix;
-	cv::gpu::GpuMat gpuMat;
+	hi1.join();
+	hi2.join();
 
-	vc >> matrix;
-	gpuMat.upload(matrix);
+	std::cout << "done" << std::endl;
 
-	std::cout << matrix;
-
+	return 0;
 }
 
 
