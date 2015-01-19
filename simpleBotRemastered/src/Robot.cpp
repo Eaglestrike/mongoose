@@ -174,7 +174,9 @@ private:
 		if(angle < .04 && angle > -.04) {
 			angle = 0;
 		}
-		drive(power, angle);
+		if(i % 60 == 0)
+			std::cout<<  3*leftJoy->GetZ() << std::endl;
+		drive(power, angle, 3*leftJoy->GetZ());
 //		left1->Set(power);
 //		left2->Set(power);
 //		right1->Set(-power);
@@ -210,16 +212,21 @@ private:
 		hudtime->Reset();
 		//std::cout << "PI" << std::endl;
 	}
-	void drive(double throttle, double angle) {
+	void drive(double throttle, double angle, double power) {
 
 		double leftMotorOutput =  0;
 		double rightMotorOutput = 0;
 
 		//std::cout << angle <<std::endl;
-		if(angle < 0.0)
-			angle = -(angle * angle);
-		else
-			angle = angle * angle;
+//		if(angle < 0.0)
+//			angle = -(angle * angle);
+//		else
+//			angle = angle * angle;
+		if(angle ==0) angle = 0;
+		else if(angle < 0.0) {
+			angle  = - pow(-angle, power);
+		}
+		else angle = pow(angle, power);
 
 		if(throttle > 0.0)
 			throttle = throttle * throttle;
