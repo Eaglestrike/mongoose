@@ -42,12 +42,12 @@ LogisticFunction DistanceProfile::getFunction() {
 		return model;
 	}
 	else {
-		double K = start - end;
-		double h = end;
-		double exp1 = log((K - .5)/.5);
-		double exp2 = log(K/(K-.5) - 1);
-		double j = totalTime * exp2/(exp2 - exp1);
-		double k = (-exp1 + exp2)/totalTime;
+		double K = -start + end;
+		double h = -end;
+		double exp1 = log((K + .5)/-.5);
+		double exp2 = log(K/(K+.5) - 1);
+		double k = (exp1 - exp2)/totalTime;
+		double j = exp1/k;
 		double A = 1;
 		LogisticFunction model(K, A, k, h, j);
 		return model;
