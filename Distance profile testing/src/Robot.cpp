@@ -13,21 +13,23 @@ private:
 	PIDController *control1;
 	Timer *time;
 	Xbox *controller;
-	float p;
+	DistanceProfile *prof1;
+	bool nextProf = false;
+	bool notEnded = true;
+	float p = .007;
 	float i;
 	float d;
 	int in = 0;
 
 	void RobotInit()
 	{
-		p = 0;
-		i = 0;
-		d = 0;
+		std::cout<< "PI" << std::endl;
 		lw = LiveWindow::GetInstance();
 		mot = new Victor(0);
 		enc = new Encoder(0,1);
-		control1 = new PIDController(p, i, d, enc, mot);
-		prof = new DistanceProfile(0, 15, 5);
+		control1 = new PIDController(.007, 0, 0, enc, mot);
+		prof = new DistanceProfile(3000, 0, 5);
+		prof1 = new DistanceProfile(0, 1500, 2);
 		time = new Timer();
 		controller = new Xbox(0);
 	}
@@ -45,27 +47,35 @@ private:
 	void TeleopInit()
 	{
 		time->Start();
+		control1->Enable();
+
 	}
 
 	void TeleopPeriodic()
 	{
-		if(controller->getX()) p += .01;
-		if(controller->getY()) i += .01;
-		if(controller->getA()) d += .01;
-		control1->SetPID(p, i ,d);
+
 		control1->SetSetpoint(prof->getSetPoint(time->Get()));
 		in++;
-		if(in % 60 == 0) std::cout << " P:" << p << " D:" << d << " I:" << i << std::endl;
+		if(in % 60 == 0) {
+			std::cout << " P:"  << control1->GetP() << " I:" << i << " D:" << d << std::endl;
+			std::cout << "enc" << enc->Get() << " GIGG " <<  control1->GetError() << " setPoint" << control1->GetSetpoint()<< " time: " << time->Get() <<std::endl;
+		}
 	}
-
 	void DisabledPeriodic() {
+		time->Reset();
 		time->Stop();
+		enc->Reset();
+		//mot->Set(0);
 	}
 	void TestPeriodic()
 	{
 		std::cout << "GIT" << std::endl;
 		lw->Run();
 	}
+	void queDistanceProfiles() {
+
+	}
+
 };
 
 START_ROBOT_CLASS(Robot);
