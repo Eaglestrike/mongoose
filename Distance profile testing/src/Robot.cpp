@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "DistanceProfile.h"
+#include "DistanceProfileManager.h"
 #include "Xbox.h"
 #include <iostream>
 #include <vector>
@@ -56,7 +57,7 @@ private:
 	{
 		time->Start();
 		control1->Enable();
-
+		std::cout << "8==D" << std::endl;
 	}
 
 	void TeleopPeriodic()

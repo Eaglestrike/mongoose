@@ -5,6 +5,7 @@
  *      Author: Team 114
  */
 #include "DistanceProfile.h"
+#include "WPILib.h"
 #include <iostream>
 #include <vector>
 

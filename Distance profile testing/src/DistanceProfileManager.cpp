@@ -19,7 +19,7 @@ DistanceProfileManager::~DistanceProfileManager() {
 }
 
 double DistanceProfileManager::getSetPoint(Timer &time, Encoder &enc) {
-	if(currentProf == profs.size()) {
+	if(currentProf == profs.size() - 1) {
 		isDone = true;
 		return 0;
 	}
