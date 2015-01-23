@@ -2,6 +2,7 @@
 #include "DistanceProfile.h"
 #include "Xbox.h"
 #include <iostream>
+#include <vector>
 
 class Robot: public IterativeRobot
 {
@@ -14,6 +15,8 @@ private:
 	Timer *time;
 	Xbox *controller;
 	DistanceProfile *prof1;
+	DistanceProfileManager *manager;
+	std::vector<DistanceProfile> profs;
 	bool nextProf = false;
 	bool notEnded = true;
 	float p = .007;
@@ -27,9 +30,14 @@ private:
 		lw = LiveWindow::GetInstance();
 		mot = new Victor(0);
 		enc = new Encoder(0,1);
-		control1 = new PIDController(.007, 0, 0, enc, mot);
+		control1 = new PIDController(.002, 0, 0, enc, mot);
 		prof = new DistanceProfile(3000, 0, 5);
 		prof1 = new DistanceProfile(0, 1500, 2);
+		DistanceProfile profs1(3000,0,5);
+		DistanceProfile profs2(0, 1500, 2);
+		profs.push_back(profs1);
+		profs.push_back(profs2);
+		manager = new DistanceProfileManager(profs);
 		time = new Timer();
 		controller = new Xbox(0);
 	}
@@ -53,12 +61,21 @@ private:
 
 	void TeleopPeriodic()
 	{
-
-		control1->SetSetpoint(prof->getSetPoint(time->Get()));
+		if(!manager->isDone)
+			control1->SetSetpoint((float)manager->getSetPoint(*time, *enc));
+//		if(!prof->isDone)
+//			control1->SetSetpoint(prof->getSetPoint(time->Get()));
+//		if(time->Get() >= 6 && prof->isDone && !prof1->isDone) {
+//			time->Reset();
+//			enc->Reset();
+//		}
+//		if(prof->isDone && !prof1->isDone && time->Get() < 5) {
+//			control1->SetSetpoint(prof1->getSetPoint(time->Get()));
+//		}
 		in++;
 		if(in % 60 == 0) {
 			std::cout << " P:"  << control1->GetP() << " I:" << i << " D:" << d << std::endl;
-			std::cout << "enc" << enc->Get() << " GIGG " <<  control1->GetError() << " setPoint" << control1->GetSetpoint()<< " time: " << time->Get() <<std::endl;
+			std::cout << "enc" << enc->Get() << " GE " <<  control1->GetError() << " setPoint" << control1->GetSetpoint()<< " time: " << time->Get() <<std::endl;
 		}
 	}
 	void DisabledPeriodic() {
