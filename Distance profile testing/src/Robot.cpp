@@ -37,6 +37,7 @@ private:
 		DistanceProfile profs2(0, 1500, 2);
 		profs.push_back(profs1);
 		profs.push_back(profs2);
+		manager = new DistanceProfileManager(profs);
 		time = new Timer();
 		controller = new Xbox(0);
 	}
@@ -60,15 +61,17 @@ private:
 
 	void TeleopPeriodic()
 	{
-		if(!prof->isDone)
-			control1->SetSetpoint(prof->getSetPoint(time->Get()));
-		if(time->Get() >= 6 && prof->isDone && !prof1->isDone) {
-			time->Reset();
-			enc->Reset();
-		}
-		if(prof->isDone && !prof1->isDone && time->Get() < 5) {
-			control1->SetSetpoint(prof1->getSetPoint(time->Get()));
-		}
+		if(!manager->isDone)
+			control1->SetSetpoint((float)manager->getSetPoint(*time, *enc));
+//		if(!prof->isDone)
+//			control1->SetSetpoint(prof->getSetPoint(time->Get()));
+//		if(time->Get() >= 6 && prof->isDone && !prof1->isDone) {
+//			time->Reset();
+//			enc->Reset();
+//		}
+//		if(prof->isDone && !prof1->isDone && time->Get() < 5) {
+//			control1->SetSetpoint(prof1->getSetPoint(time->Get()));
+//		}
 		in++;
 		if(in % 60 == 0) {
 			std::cout << " P:"  << control1->GetP() << " I:" << i << " D:" << d << std::endl;
