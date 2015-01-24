@@ -26,6 +26,7 @@ DistanceProfile::~DistanceProfile() {
 double DistanceProfile::getSetPoint(double time) {
 	//use function to calculate setPoint
 	if(end == start) return 0;
+	if(time > totalTime) isDone = true;
 	return model.applyFunction(time);
 }
 
