@@ -15,8 +15,8 @@ class Logger {
 public:
 	Logger(char*);
 	virtual ~Logger();
-	void writeHeader(string[]);
-	void writeData(double[]);
+	void writeHeader(string[], int);
+	void writeData(double[], int);
 };
 
 #endif /* LOGGER_H_ */
