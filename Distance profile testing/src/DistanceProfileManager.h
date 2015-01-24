@@ -14,12 +14,13 @@
 
 class DistanceProfileManager {
 public:
-	DistanceProfileManager(std::vector<DistanceProfile> dists);
+	DistanceProfileManager(std::vector<DistanceProfile*> dists);
 	virtual ~DistanceProfileManager();
 	double getSetPoint(Timer &time, Encoder &enc);
+	void reset();
 	bool isDone = false;
 private:
-	std::vector<DistanceProfile> profs;
+	std::vector<DistanceProfile*> profs;
 	int currentProf = 0;
 };
 
