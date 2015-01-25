@@ -5,11 +5,26 @@
 #include <iostream>
 #include <vector>
 
+
+class PIDOut: public PIDOutput {
+		float power = 0;
+		void PIDWrite(float output) {
+			power = output;
+		}
+		float getPower() {
+			return power;
+		}
+};
+
 class Robot: public IterativeRobot
 {
 private:
 	LiveWindow *lw;
-	Victor *mot;
+	Victor *right1;
+	Victor *right2;
+	Victor *left1;
+	Victor *left2;
+	PIDOut *output;
 	Encoder *enc;
 	DistanceProfile *prof;
 	PIDController *control1;
@@ -29,9 +44,13 @@ private:
 	{
 		std::cout<< "PI" << std::endl;
 		lw = LiveWindow::GetInstance();
-		mot = new Victor(0);
+		right1 = new Victor(3);
+		right2 = new Victor(2);
+		left1  = new Victor(0);
+		left2 = new Victor(1);
+		output = new PIDOut();
 		enc = new Encoder(0,1);
-		control1 = new PIDController(.002, 0, 0, enc, mot);
+		control1 = new PIDController(.002, 0, 0, enc, output);
 		prof = new DistanceProfile(3000, 0, 5);
 		prof1 = new DistanceProfile(0, 1500, 2);
 		DistanceProfile profs1(3000,0,5);
@@ -64,6 +83,8 @@ private:
 	{
 		if(!manager->isDone)
 			control1->SetSetpoint((float)manager->getSetPoint(*time, *enc));
+
+		setPower(control1->Get(), control1->Get());
 //		if(!prof->isDone)
 //			control1->SetSetpoint(prof->getSetPoint(time->Get()));
 //		if(time->Get() >= 6 && prof->isDone && !prof1->isDone) {
@@ -93,6 +114,13 @@ private:
 	void queDistanceProfiles() {
 
 	}
+	void setPower(double left, double right) {
+		right1->Set(-right);
+		right2->Set(-right);
+		left1->Set(left);
+		left2->Set(left);
+	}
+
 
 };
 
