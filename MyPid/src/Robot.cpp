@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#include <iostream>
 
 class Robot: public IterativeRobot
 {
