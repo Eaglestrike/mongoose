@@ -24,13 +24,11 @@ int main() {
 	testFile.open("test.csv");
 	testFile.close();
 	string headers[5] = {"time", "motor", "encoder", "button", "qqqq"};
-	int headerSize = sizeof(headers);
 	double data[3] = {time, motor, encoder};
-	int dataSize = sizeof(data);
 	cout << sizeof(headers) << endl;
-	log.writeHeader(headers, headerSize);
-	log.writeData(data, dataSize);
-	log.writeData(data, dataSize);
+	log.writeHeader(headers, 5);
+	log.writeData(data, 5);
+	log.writeData(data, 5);
 	return 0;
 }
 
