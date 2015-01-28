@@ -34,8 +34,8 @@ private:
 
 	void TeleopPeriodic()
 	{
-		rVictor->Set(controller->getRX()/2);
-		lVictor->Set(controller->getLX()/2);
+		rVictor->Set(controller->getRX());
+		lVictor->Set(controller->getLX());
 	}
 
 	void TestPeriodic()
