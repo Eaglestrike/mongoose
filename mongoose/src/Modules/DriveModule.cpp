@@ -1,5 +1,6 @@
 #include "DriveModule.h"
 #include <math.h> 
+#include <algorithm>
 
 
 DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int r_EA, int r_EB) : 
@@ -47,33 +48,44 @@ void DriveModule::drive(double throttle, double angle) {
 	double leftMotorOutput =  0;
 	double rightMotorOutput = 0;
 
+			//std::cout << angle <<std::endl;
+	//		if(angle < 0.0)
+	//			angle = -(angle * angle);
+	//		else
+	//			angle = angle * angle;
+	if(angle ==0) angle = 0;
+	else if(angle < 0.0) {
+		angle  = - pow(-angle, 1.842);
+	}
+	else angle = pow(angle, 1.842);
+
+	if(throttle > 0.0)
+		throttle = throttle * throttle;
+	else
+		throttle = - throttle * throttle;
+
 	if(throttle > 0.0) {
+		angle = -angle;
 		if(angle < 0.0) {
-			leftMotorOutput = throttle - angle;
-			rightMotorOutput = fmin(throttle, angle);
+			leftMotorOutput = (throttle + angle);
+			rightMotorOutput = fmax(throttle, -angle);
 		}
 		else {
-			leftMotorOutput = fmin(throttle, -angle);
-			rightMotorOutput = throttle + angle;
+			leftMotorOutput = fmax(throttle, angle);
+			rightMotorOutput = (throttle - angle);
 		}
 	}
 	else {
-	 	if(angle > 0.0) {
-			leftMotorOutput = -fmin(-throttle, angle);
+		if(angle > 0.0) {
+			leftMotorOutput = -fmax(-throttle, angle);
 			rightMotorOutput = throttle + angle;
+			//std::cout << rightMotorOutput << std::endl;
 		}
 		else {
 			leftMotorOutput = throttle - angle;
-			rightMotorOutput = -fmin(-throttle,-angle);
+			rightMotorOutput = -fmax(-throttle,-angle);
 		}
-	}
-	if(throttle == 0 && angle == 0) {
-		leftMotorOutput = 0;
-		rightMotorOutput = 0;
-	}
-	if(angle == 0) {
-		leftMotorOutput = throttle;
-		rightMotorOutput = throttle;
+
 	}
 	setPower(leftMotorOutput, rightMotorOutput);
 }

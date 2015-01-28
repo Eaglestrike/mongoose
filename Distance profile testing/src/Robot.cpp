@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "DistanceProfile.h"
+#include "DistanceProfileManager.h"
 #include "Xbox.h"
 #include <iostream>
 #include <vector>
@@ -48,6 +49,17 @@ public:
 		return a;
 	}
 };
+
+class PIDOut: public PIDOutput {
+		float power = 0;
+		void PIDWrite(float output) {
+			power = output;
+		}
+		float getPower() {
+			return power;
+		}
+};
+
 class Robot: public IterativeRobot
 {
 private:
@@ -69,7 +81,7 @@ private:
 	Xbox *controller;
 	DistanceProfile *prof1;
 	DistanceProfileManager *manager;
-	std::vector<DistanceProfile> profs;
+	std::vector<DistanceProfile*> profs;
 	bool nextProf = false;
 	bool notEnded = true;
 	float p = .007;
@@ -97,8 +109,8 @@ private:
 		prof1 = new DistanceProfile(0, 1500, 2);
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
-		profs.push_back(profs1);
-		profs.push_back(profs2);
+		profs.push_back(prof);
+		profs.push_back(prof1);
 		manager = new DistanceProfileManager(profs);
 		time = new Timer();
 		controller = new Xbox(0);
@@ -121,13 +133,13 @@ private:
 		time->Start();
 		angleControl->Enable();
 		driveControl->Enable();
-
 	}
 
 	void TeleopPeriodic()
 	{
 		if(!manager->isDone)
 			driveControl->SetSetpoint((float)manager->getSetPoint(*time, *renc, *lenc));
+
 //		if(!prof->isDone)
 //			control1->SetSetpoint(prof->getSetPoint(time->Get()));
 //		if(time->Get() >= 6 && prof->isDone && !prof1->isDone) {
