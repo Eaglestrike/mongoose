@@ -79,6 +79,7 @@ private:
 	PIDOUT* angleOut;
 	Timer *time;
 	Xbox* controller;
+	Compressor* comp;
 	DistanceProfile *prof1;
 	DistanceProfileManager *manager;
 	std::vector<DistanceProfile*> profs;
@@ -113,6 +114,8 @@ private:
 		controller = new Xbox(2);
 		angleControl->Enable();
 		driveControl->Enable();
+		comp = new Compressor(0);
+		comp->SetClosedLoopControl(true);
 		std::cout<<"F" << std::endl;
 	}
 
