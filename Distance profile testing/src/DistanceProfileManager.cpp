@@ -28,5 +28,23 @@ double DistanceProfileManager::getSetPoint(Timer &time, Encoder &enc) {
 		time.Reset();
 		enc.Reset();
 	}
-	return profs.at(currentProf).getSetPoint(time.Get());
+	if(currentProf != profs.size())
+		return profs.at(currentProf).getSetPoint(time.Get());
+	return 0;
+}
+
+double DistanceProfileManager::getSetPoint(Timer &time, Encoder &enc1, Encoder &enc2) {
+	if(currentProf == profs.size()) {
+		isDone = true;
+		return 0;
+	}
+	if(profs.at(currentProf).isDone) {
+		currentProf++;
+		time.Reset();
+		enc1.Reset();
+		enc2.Reset();
+	}
+	if(currentProf != profs.size())
+		return profs.at(currentProf).getSetPoint(time.Get());
+	return 0;
 }
