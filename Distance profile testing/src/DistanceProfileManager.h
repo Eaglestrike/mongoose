@@ -17,11 +17,8 @@ public:
 	DistanceProfileManager(std::vector<DistanceProfile*> dists);
 	virtual ~DistanceProfileManager();
 	double getSetPoint(Timer &time, Encoder &enc);
-<<<<<<< HEAD
 	double getSetPoint(Timer &time, Encoder &enc1, Encoder &enc2);
-=======
 	void reset();
->>>>>>> 078537835c2e64d173015a8cd498f485c7f95fe9
 	bool isDone = false;
 private:
 	std::vector<DistanceProfile*> profs;

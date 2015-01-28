@@ -14,7 +14,7 @@ public:
 		enc1 = encs1;
 		enc2 = encs2;
 	}
-	float PIDGet() {
+	double PIDGet() {
 		return enc1->Get() - enc2->Get();
 	}
 };
@@ -78,15 +78,12 @@ private:
 	PIDOUT* driveOut;
 	PIDOUT* angleOut;
 	Timer *time;
-	Xbox *controller;
+	Xbox* controller;
 	DistanceProfile *prof1;
 	DistanceProfileManager *manager;
 	std::vector<DistanceProfile*> profs;
 	bool nextProf = false;
 	bool notEnded = true;
-	float p = .007;
-	float i;
-	float d;
 	int in = 0;
 
 	void RobotInit()
@@ -103,19 +100,20 @@ private:
 		angSource = new AnglePIDIN(renc, lenc);
 		driveOut = new PIDOUT();
 		angleOut = new PIDOUT();
-		angleControl = new PIDController(.002, 0, 0, angSource, angleOut);
-		driveControl = new PIDController(0, 0, 0, driSource, driveOut);
-		prof = new DistanceProfile(3000, 0, 5);
-		prof1 = new DistanceProfile(0, 1500, 2);
+		angleControl = new PIDController(.015, 0, 0, angSource, angleOut);
+		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
+		prof = new DistanceProfile(3000, 0, 3);
+		prof1 = new DistanceProfile(0, 2000, 3);
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
 		profs.push_back(prof);
 		profs.push_back(prof1);
 		manager = new DistanceProfileManager(profs);
 		time = new Timer();
-		controller = new Xbox(0);
+		controller = new Xbox(2);
 		angleControl->Enable();
 		driveControl->Enable();
+		std::cout<<"F" << std::endl;
 	}
 
 	void AutonomousInit()
@@ -152,20 +150,36 @@ private:
 		setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
 		in++;
 		if(in % 60 == 0) {
-			std::cout << " P:"  << angleControl->GetP() << " I:" << i << " D:" << d << std::endl;
-			std::cout << "enc" << renc->Get() << " GE " <<  angleControl->GetError() << " setPoint" << control1->GetSetpoint()<< " time: " << time->Get() <<std::endl;
+			std::cout << " P:"  << angleControl->GetP() <<  std::endl;
+			std::cout << "enc" << renc->Get() << " GE " <<  angleControl->GetError() << " setPoint" << driveControl->GetSetpoint()<< " time: " << time->Get() <<std::endl;
 		}
 	}
 	void DisabledPeriodic() {
 		time->Reset();
 		time->Stop();
 		renc->Reset();
+		lenc->Reset();
 		//mot->Set(0);
 	}
 	void TestPeriodic()
 	{
-		std::cout << "GIT" << std::endl;
+		if(controller->getY()) {
+			angleControl->SetPID(angleControl->GetP() + .001, 0, 0);
+		}
+		else if(controller->getA()) {
+			angleControl->SetPID(angleControl->GetP() - .001, 0, 0);
+		}
+		else if(controller->getX()) {
+			angleControl->SetSetpoint(1000);
+		}
+		else angleControl->SetSetpoint(0);
+		if(in % 60 == 0) {
+			std::cout<<angleControl->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
+		}
+		setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
+		//std::cout << "GIT" << std::endl;
 		lw->Run();
+		in++;
 	}
 	void queDistanceProfiles() {
 

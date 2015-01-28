@@ -30,9 +30,8 @@ double DistanceProfileManager::getSetPoint(Timer &time, Encoder &enc) {
 		enc.Reset();
 		std::cout<<"It reset" << std::endl;
 	}
-<<<<<<< HEAD
 	if(currentProf != profs.size())
-		return profs.at(currentProf).getSetPoint(time.Get());
+		return profs.at(currentProf)->getSetPoint(time.Get());
 	return 0;
 }
 
@@ -41,17 +40,14 @@ double DistanceProfileManager::getSetPoint(Timer &time, Encoder &enc1, Encoder &
 		isDone = true;
 		return 0;
 	}
-	if(profs.at(currentProf).isDone) {
+	if(profs.at(currentProf)->isDone) {
 		currentProf++;
 		time.Reset();
 		enc1.Reset();
 		enc2.Reset();
 	}
 	if(currentProf != profs.size())
-		return profs.at(currentProf).getSetPoint(time.Get());
+		return profs.at(currentProf)->getSetPoint(time.Get());
 	return 0;
-=======
-	//std::cout<<profs.at(currentProf)->getSetPoint(time.Get());
-	return profs.at(currentProf)->getSetPoint(time.Get());
->>>>>>> 078537835c2e64d173015a8cd498f485c7f95fe9
+	//std::cout<<profs.at(currentProf)->getSetPoint(time.Get());s
 }
