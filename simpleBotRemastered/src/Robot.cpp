@@ -1,0 +1,287 @@
+#include "WPILib.h"
+#include <vector>
+#include <algorithm>
+#include <thread>
+#include <string>
+#include "ServerSocket.h"
+
+#include "SocketException.h"
+PowerDistributionPanel* pdp;
+Timer* hudtime;
+    void *HUD(void *) {
+    	try
+    	    {
+    	      // Create the socket
+    		  std::cout << "test \n";
+    	      ServerSocket server ( 5801 );
+    	      std::cout << "test \n";
+    	      while ( true )
+    	        {
+    	    	  //open the socket to incoming connections
+    	          ServerSocket new_sock;
+    	          printf("declared serversocket");
+    	          server.accept ( new_sock );
+    	          printf("accepting new sockets");
+
+    	          try
+    	            {
+    	        	  int clawpos = 0;
+    	              while ( true )
+    	                {
+    	            	  //Get amps from all the PDP ports... should clean this up
+    	            	  float port0=pdp->GetCurrent(0);
+						  float port1=pdp->GetCurrent(1);
+						  float port2=pdp->GetCurrent(2);
+						  float port3=pdp->GetCurrent(3);
+						  float port4=pdp->GetCurrent(4);
+						  float port5=pdp->GetCurrent(5);
+						  float port6=pdp->GetCurrent(6);
+						  float port7=pdp->GetCurrent(7);
+						  float port8=pdp->GetCurrent(8);
+						  float port9=pdp->GetCurrent(9);
+						  float port10=pdp->GetCurrent(10);
+						  float port11=pdp->GetCurrent(11);
+						  float port12=pdp->GetCurrent(12);
+						  float port13=pdp->GetCurrent(13);
+						  float port14=pdp->GetCurrent(14);
+						  float port15=pdp->GetCurrent(15);
+
+						  float bath;
+						  //declare the battery height
+						  float voltage = pdp->GetVoltage();
+						  //this gets the battery voltage
+						  if(voltage >= 12.5)
+						  {
+							  bath = -160;
+							  //if the voltage is higher than 12.5, just say it's 100%
+						  }
+						  else{
+							  bath = pdp->GetVoltage()*-12.721875;
+							  //otherwise, use some fancy ratios to set the battery height
+						  }
+
+                          int matchtime = hudtime->Get() + 15;
+                          //Getting the time (this starts in teleop, due to HUD being unplugged during auton)
+						  clawpos = clawpos+1;
+						  //dummy clawpos for now
+						  if(clawpos > 6){
+						  	  clawpos = 1;
+						  }
+
+						  //std::string message = std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+						  new_sock << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+						  //std::cout << "Hud Message: " << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
+						  sleep(1);
+						  //please don't spam the socket.. this isn't a good thing to do
+    	                }
+    	            }
+    	          catch ( SocketException& ) {}
+
+    	        }
+    	    }
+    	  catch ( SocketException& e )
+    	    {
+    	      //std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+    		  //eh, we don't need error handling
+    	    }
+    	  return NULL;
+    }
+class Robot: public IterativeRobot
+{
+private:
+	LiveWindow *lw;
+	int i =0;
+	Victor* left1;
+	Victor* left2;
+	Victor* right1;
+	Victor* right2;
+	Joystick* leftJoy;
+	Joystick* rightJoy;
+	Compressor* comp;
+	Solenoid* cole;
+	BuiltInAccelerometer* rom;
+
+	Timer* tim;
+	Encoder* lEnc;
+
+
+	void RobotInit()
+	{
+		lw = LiveWindow::GetInstance();
+		left1 = new Victor(0);
+		left2 = new Victor(1);
+		right1 = new Victor(3);
+		right2 = new Victor(2);
+		leftJoy = new Joystick(0);
+		rightJoy = new Joystick(1);
+		comp = new Compressor(0);
+		comp->SetClosedLoopControl(true);
+		cole = new Solenoid(0);
+		rom = new BuiltInAccelerometer();
+		lEnc = new Encoder(0,1);
+		tim = new Timer();
+		pdp = new PowerDistributionPanel();
+		hudtime = new Timer();
+		//timer to be called in teleop
+		pthread_t t;
+		std::cout << "declared thread \n";
+		pthread_create(&t, NULL, HUD, NULL);
+
+		//Join the thread with the main thread (bad idea, prevents robot code from being initialized)
+		//pthread_join(t, NULL);
+
+
+
+	}
+
+	int counter = 0;
+	bool last;
+	std::vector<float> throttleReadings;
+	int size = 25;
+	int times = 0;
+	int count = 0;
+	bool lastTime;
+	void AutonomousInit	(){
+		//hudtime.Start(); //unneeded because HUD is unplugged during auton
+
+	}
+	void TeleopInit (){
+		hudtime->Start();
+		//start counting the match time (minus auton)
+	}
+	void TeleopPeriodic()
+	{
+		tim->Start();
+		if(last != rightJoy->GetRawButton(4))
+			counter++;
+		last = rightJoy->GetRawButton(4);
+
+		if(counter % 4 == 0)
+			cole->Set(true);
+		else if(counter % 2 == 0)
+			cole->Set(false);
+		i++;
+		if(lastTime != rightJoy->GetRawButton(5)) {
+			count++;
+		}
+		lastTime = rightJoy->GetRawButton(5);
+		throttleReadings.insert(throttleReadings.begin(), leftJoy->GetY());
+		float power = 0;
+		if(count % 4 == 0){
+			power = throttleReadings.at(0);
+		}
+		else if(count % 2 == 0){
+			for(int k = 0; k < throttleReadings.size(); k++) {
+				power+=throttleReadings.at(k);
+			}
+			power = power/throttleReadings.size();
+		}
+		if(i % 60 == 0) {
+			//std::cout << -rightJoy->GetX() << std::endl;
+		}
+		float angle = -rightJoy->GetX();
+		if(angle < .04 && angle > -.04) {
+			angle = 0;
+		}
+		if(i % 60 == 0)
+			std::cout<<  3*leftJoy->GetZ() << std::endl;
+		drive(power, angle, 1.842);
+//		left1->Set(power);
+//		left2->Set(power);
+//		right1->Set(-power);
+//		right2->Set(-power);
+		times++;
+//		left1->Set(leftJoy->GetY());
+//		left2->Set(leftJoy->GetY());
+//		right1->Set(-leftJoy->GetY());
+//		right2->Set(-leftJoy->GetY());
+
+//		float acceleration = lEnc->GetRate()/tim->Get();
+		if(throttleReadings.size() > size) {
+			throttleReadings.pop_back();
+			//throttleReadings.erase(throttleReadings.begin());
+		}
+		tim->Stop();
+		Wait(0.005);
+
+	}
+
+	void TestPeriodic()
+	{
+		lw->Run();
+		if(i % 60 == 0)
+			std::cout << leftJoy->GetY() << std::endl;
+		i++;
+
+	}
+
+	void DisabledPeriodic() {
+		throttleReadings.clear();
+		hudtime->Stop();
+		hudtime->Reset();
+		//std::cout << "PI" << std::endl;
+	}
+	void drive(double throttle, double angle, double power) {
+
+		double leftMotorOutput =  0;
+		double rightMotorOutput = 0;
+
+		//std::cout << angle <<std::endl;
+//		if(angle < 0.0)
+//			angle = -(angle * angle);
+//		else
+//			angle = angle * angle;
+		if(angle ==0) angle = 0;
+		else if(angle < 0.0) {
+			angle  = - pow(-angle, power);
+		}
+		else angle = pow(angle, power);
+
+		if(throttle > 0.0)
+			throttle = throttle * throttle;
+		else
+			throttle = - throttle * throttle;
+
+		if(throttle > 0.0) {
+			angle = -angle;
+			if(angle < 0.0) {
+				leftMotorOutput = (throttle + angle);
+				rightMotorOutput = fmax(throttle, -angle);
+			}
+			else {
+				leftMotorOutput = fmax(throttle, angle);
+				rightMotorOutput = (throttle - angle);
+			}
+		}
+		else {
+		 	if(angle > 0.0) {
+				leftMotorOutput = -fmax(-throttle, angle);
+				rightMotorOutput = throttle + angle;
+				std::cout << rightMotorOutput << std::endl;
+			}
+			else {
+				leftMotorOutput = throttle - angle;
+				rightMotorOutput = -fmax(-throttle,-angle);
+			}
+
+		}
+		left1->Set(leftMotorOutput);
+		left2->Set(leftMotorOutput);
+		right1->Set(-rightMotorOutput);
+		right2->Set(-rightMotorOutput);
+	}
+
+//	void slowDown(float targetAcceleration, float currentAcceleration) {
+//		float error = currentAcceleration - targetAcceleration;
+//		if(error <= 100) return;
+//		float p = .0005;
+//		left1->Set(left1->Get() + error*p);
+//		left2->Set(left2->Get() + error*p);
+//		right1->Set(-right1->Get() - error*p);
+//		right2->Set(-right2->Get() - error*p);
+//		std::cout << "in the method" << std::endl;
+//
+//	}
+};
+
+START_ROBOT_CLASS(Robot);
