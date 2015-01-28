@@ -10,6 +10,9 @@
 #include <fstream>
 #include <cstdlib>
 #include <string>
+#include <exception>
+#include <stdexcept>
+#include <cstring>
 using namespace std;
 
 char* filename;
@@ -24,8 +27,9 @@ Logger::Logger(char* file_name) {
 }
 
 void Logger::writeHeader(string headers[], int length) {
+	try{
 	cout << length << endl;
-	if (length == 0) { cout << "The array has no length" << endl; return; }
+	if (length == 0) { throw length_error("zero"); }
 	if (!headed) {
 		cout << "writing" << endl;
 		writeFile.open(filename, std::ios_base::app);
@@ -39,19 +43,36 @@ void Logger::writeHeader(string headers[], int length) {
 	}
 	headed = true;
 	catagories = length;
+	} catch (const length_error e) {
+		if (strcmp(e.what(), "zero") == 0) {
+			cerr << "There is no data passed in";
+		}
+		return;
+	}
 }
 
 void Logger::writeData(double data[], int length) {
-	if (length == 0) { cout << "The array has no length" << endl; return; }
-	if (length != catagories) { cout << "The array length is not compatible" << endl; return; }
-	writeFile.open(filename, std::ios_base::app);
-	cout << length << endl;
-	for(int i = 0; i < length-1; i++)  {
-		writeFile << data[i] << ", ";
+	try {
+		if (length == 0) { throw length_error("zero"); }
+		if (length != catagories) { throw length_error("matching"); }
+		writeFile.open(filename, std::ios_base::app);
+		cout << length << endl;
+		for(int i = 0; i < length-1; i++)  {
+			writeFile << data[i] << ", ";
+		}
+		writeFile << data[length - 1] << "\n";
+		writeFile.close();
+	} catch (const length_error e) {
+		if (strcmp(e.what(), "matching") == 0) {
+			cerr << "The number of arguments does not match the number of headers";
+		}
+		if (strcmp(e.what(), "zero") == 0) {
+			cerr << "There is no data passed in";
+		}
+		return;
 	}
-	writeFile << data[length - 1] << "\n";
-	writeFile.close();
 }
+
 
 Logger::~Logger() {
 	// TODO Auto-generated destructor stub

@@ -28,7 +28,7 @@ int main() {
 	cout << sizeof(headers) << endl;
 	log.writeHeader(headers, 5);
 	log.writeData(data, 5);
-	log.writeData(data, 5);
+	log.writeData(data, 3);
 	return 0;
 }
 
