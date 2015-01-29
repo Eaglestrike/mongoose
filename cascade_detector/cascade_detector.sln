@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "serial_com", "serial_com\se
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "serial_and_video", "serial_and_video\serial_and_video.vcxproj", "{0E6B0C14-D875-4F47-BF90-331C02FCCB24}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mjpeg", "mjpeg\mjpeg.vcxproj", "{60E49F82-4FAE-4589-8DD9-C954C6632C4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -33,6 +35,10 @@ Global
 		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Debug|Win32.Build.0 = Debug|Win32
 		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Release|Win32.ActiveCfg = Release|Win32
 		{0E6B0C14-D875-4F47-BF90-331C02FCCB24}.Release|Win32.Build.0 = Release|Win32
+		{60E49F82-4FAE-4589-8DD9-C954C6632C4F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{60E49F82-4FAE-4589-8DD9-C954C6632C4F}.Debug|Win32.Build.0 = Debug|Win32
+		{60E49F82-4FAE-4589-8DD9-C954C6632C4F}.Release|Win32.ActiveCfg = Release|Win32
+		{60E49F82-4FAE-4589-8DD9-C954C6632C4F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
