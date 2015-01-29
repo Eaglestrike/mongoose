@@ -101,8 +101,8 @@ private:
 		driveOut = new PIDOUT();
 		angleOut = new PIDOUT();
 		angleControl = new PIDController(.015, 0, 0, angSource, angleOut);
-		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
-		prof = new DistanceProfile(3000, 0, 3);
+		driveControl = new PIDController(.00314, 0, 0, driSource, driveOut);
+		prof = new DistanceProfile(3000, 0, 5);
 		prof1 = new DistanceProfile(0, 2000, 3);
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
