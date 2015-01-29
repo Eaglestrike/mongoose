@@ -1,6 +1,7 @@
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -11,7 +12,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 
-public class LineChart extends JFrame {
+public class LineChart extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	String applicationTitle;
@@ -22,8 +23,6 @@ public class LineChart extends JFrame {
 	JFreeChart chart;
 
 	public LineChart(String applicationTitle, String chartTitle, String xAxis, String yAxis, String legend, Double[] xValues, Double[] yValues) {
-		
-		super(applicationTitle);
 		dataset = createDataSet(legend, xValues, yValues);
 		init();
 		
@@ -31,8 +30,6 @@ public class LineChart extends JFrame {
 	}
 	
 	public LineChart(String applicationTitle, String chartTitle, String xAxis, String yAxis, String[] legend, Double[][] xValues, Double[][] yValues) {
-		
-		super(applicationTitle);		
 		dataset = createDataSet(legend, xValues, yValues);
 		init();
 			
@@ -43,12 +40,7 @@ public class LineChart extends JFrame {
 		
 		chart = createChart(chartTitle, yAxis, xAxis, dataset);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new java.awt.Dimension(1000, 500));
-		this.setSize(new java.awt.Dimension(1000, 500));
-		this.setLocation(200,200);
-        setContentPane(chartPanel);
-        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        this.setVisible(true);
+		this.add(chartPanel);
 	}
 		
 	private XYDataset createDataSet(String legend, Double[] xValues, Double[] yValues) {
@@ -68,9 +60,10 @@ public class LineChart extends JFrame {
 	private XYDataset createDataSet(String[] legend, Double[][] xValues, Double[][] yValues) {
 			
 			XYSeriesCollection dataset = new XYSeriesCollection();
-			
 			for (int set = 1; set < legend.length; set++) {
 				XYSeries series = new XYSeries(legend[set]);
+				if (xValues[set - 1] == null)
+					continue;
 				for (int i = 0; i < xValues[set-1].length; i++) {
 					series.add(xValues[set-1][i], yValues[0][i]);
 				}
