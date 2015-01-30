@@ -11,7 +11,7 @@ import javax.swing.*;
 public class LoggingFrame extends JFrame {
 	
 	LoggingMain loggingPanel;
-	Listener listener = new Listener();
+	Listener listener; 
 	JButton graphButton; 
 	final String GRAPH = "graph";
 	JCheckBox[] checkBoxes;
@@ -22,29 +22,44 @@ public class LoggingFrame extends JFrame {
 		loggingPanel = new LoggingMain();
 		this.add(loggingPanel, BorderLayout.CENTER);
 		
-		JPanel controlPanel = new JPanel();
-		this.add(controlPanel, BorderLayout.WEST);		
+		listener = new Listener();
+		
+		JPanel controlPanel = new JPanel(new GridLayout(1,0));
+		this.add(controlPanel, BorderLayout.NORTH);		
 		controlPanel.setLayout(new GridLayout(0,1));
 		
 		graphButton = new JButton(GRAPH);
 		controlPanel.add(graphButton);
+		graphButton.doClick();
+		graphButton.setSize(200, 100);
 		graphButton.addActionListener(listener);
 		
-		for (int i = 0; i < loggingPanel.data.getLegend().length; i++) {
-			checkBoxes[i] = new JCheckBox("Enable dataset #" + i);
+		checkBoxes = new JCheckBox[loggingPanel.data.getLegend().length];
+		for (int i = 1; i < loggingPanel.data.getLegend().length; i++) {
+			checkBoxes[i] = new JCheckBox("Enable dataset " + loggingPanel.data.getLegend()[i]);
+			checkBoxes[i].setActionCommand("" + i);
+			checkBoxes[i].setSize(200, 100);
+			checkBoxes[i].setSelected(true);;
+			checkBoxes[i].addActionListener(listener);
+			checkBoxes[i].setEnabled(true);
+			controlPanel.add(checkBoxes[i]);
 		}
 		
+		this.setVisible(true);
 		
 	}
 	
 	private class Listener implements ActionListener {
 		
-		ArrayList<Integer> include = new ArrayList<Integer>();
+		ArrayList<Integer> include;
+		int includeSize;
 		
 		public Listener() {
 			super();
-			for (int i = 0; i < loggingPanel.data.getLegend().length; i++) {
+			include = new ArrayList<Integer>();
+			for (int i = 1; i < loggingPanel.data.getLegend().length; i++) {
 				include.add(i);
+				includeSize++;
 			}
 		}
 
@@ -54,7 +69,19 @@ public class LoggingFrame extends JFrame {
 				loggingPanel.graphData(include);
 			}
 			else {
-				String
+				for (int i = 1; i < includeSize; i++) {
+					if (ev.getActionCommand().contains("" + i)) {
+						if (((JCheckBox) ev.getSource()).isSelected() == false) {
+							include.remove((Integer) i);
+							System.out.println("Removed");
+						}
+						else {
+							include.add((Integer) i);
+							System.out.println("Added");
+						}
+						break;
+					}					
+				}
 			}
 			
 				
@@ -69,37 +96,42 @@ public class LoggingFrame extends JFrame {
 		LineChart chart;
 		
 		public LoggingMain() throws FileNotFoundException {
-			super(new GridLayout(1,0));
+			super(new BorderLayout());
 			data = new Data(path);
 	        final JTable table = new JTable(data.getData(), data.getColumnNames());
 	        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 	        table.setFillsViewportHeight(true); 
 	        JScrollPane scrollPane = new JScrollPane(table);
-	        add(scrollPane);
+	        add(scrollPane, BorderLayout.NORTH);
 	        chart = new LineChart("Sample text", "Sample text", "xAxis", "yAxis", data.getLegend(), data.getXValues(), data.getYValues());	        
+	               
+	        add(chart, BorderLayout.CENTER);
 		}
 		
 		public void graphData(ArrayList<Integer> include) {
 			String[] legend = data.getLegend();
-			String[] filteredLegend = new String[include.size()];
-			for (int i = 0; i < legend.length; i++) {
+			String[] filteredLegend = new String[include.size() + 1];
+			filteredLegend[0] = legend[0];
+			for (int i = 1, j = 1; i < legend.length; i++) {				
 				if (include.contains(i)) {
-					filteredLegend[i] = legend[i];
+					filteredLegend[j] = legend[i];
+					j++;
 				}
 			}
 			
 			Double[][] xValues = data.getXValues();
 			Double[][] filteredXValues = new Double[include.size()][];
-			for (int i = 0; i < xValues.length; i++) {
-				if (include.contains(i)) {
-					filteredXValues[i] = xValues[i];
+			for (int dataset = 1, g = 0, j = 0; g < xValues.length; dataset++, g++) {
+				if (include.contains(dataset)) {
+					filteredXValues[j] = xValues[g];
+					j++;
 				}
 			}
 			
 			Double[][] yValues = data.getYValues();
 			Double[][] filteredYValues = new Double[include.size()][];
 			for (int i = 0; i < include.size(); i++) {
-				filteredYValues[i] = yValues[0]; //All y values are the same for any x data set
+				filteredYValues[i] = yValues[i]; //All y values are the same for any x data set
 			}	
 			
 			
