@@ -4,6 +4,7 @@
 #include "Xbox.h"
 #include <iostream>
 #include <vector>
+#include <String.h>
 
 class AnglePIDIN : public PIDSource {
 private:
@@ -66,14 +67,19 @@ private:
 	DistanceProfile *prof;
 	PIDController *angleControl;
 	PIDController* driveControl;
+	PIDController* turns;
 	PIDOUT* driveOut;
 	PIDOUT* angleOut;
+	PIDOUT* turnsOut;
 	Timer *time;
 	Xbox* controller;
 	Compressor* comp;
 	DistanceProfile *prof1;
 	DistanceProfileManager *manager;
+	DistanceProfileManager *manager1;
+	AnglePIDIN *pin;
 	std::vector<DistanceProfile*> profs;
+	std::vector<DistanceProfile*> profs1;
 	Joystick* ljoy;
 	Joystick* rjoy;
 	bool nextProf = false;
@@ -95,17 +101,22 @@ private:
 		lenc = new Encoder(2,3);
 		driSource = new DrivePIDIN(renc, lenc);
 		angSource = new AnglePIDIN(renc, lenc);
+		pin = new AnglePIDIN(renc, lenc);
 		driveOut = new PIDOUT();
 		angleOut = new PIDOUT();
+		turnsOut = new PIDOUT();
 		angleControl = new PIDController(.020, 0, 0, angSource, angleOut);
 		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
+		turns = new PIDController(.003, 0 , 0, pin , turnsOut);
 		prof = new DistanceProfile(500, 0, 5);
-		prof1 = new DistanceProfile(0, 500, 5);
+		prof1 = new DistanceProfile(500, 0, 5);
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
 		profs.push_back(prof);
-		profs.push_back(prof1);
-		manager = new DistanceProfileManager(profs);
+		//profs1.push_back(prof1);
+		//profs.push_back(prof1);
+
+		manager = new DistanceProfileManager(profs, lenc, renc, time);
 		time = new Timer();
 		controller = new Xbox(2);
 		angleControl->Enable();
@@ -139,21 +150,16 @@ private:
 					count++;
 		last = rjoy->GetRawButton(4);
 		if(count % 4 == 0) {
-			if(!manager->isDone)
-				driveControl->SetSetpoint((float)manager->getSetPoint(*time, *renc, *lenc));
-			angleControl->SetSetpoint(0);
+			if(!manager->isDone) {
+				driveControl->SetSetpoint((float)manager->getSetPoint());
+				angleControl->SetSetpoint(0);
+				setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
+				in++;
+			}
+			else {
+				turns->SetSetpoint(100);
 
-//		if(!prof->isDone)
-//			control1->SetSetpoint(prof->getSetPoint(time->Get()));
-//		if(time->Get() >= 6 && prof->isDone && !prof1->isDone) {
-//			time->Reset();
-//			enc->Reset();
-//		}
-//		if(prof->isDone && !prof1->isDone && time->Get() < 5) {
-//			control1->SetSetpoint(prof1->getSetPoint(time->Get()));
-//		}
-			setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
-			in++;
+			}
 		}
 		else if(count % 2 ==0) {
 			setPower(ljoy->GetY(), rjoy->GetY());
@@ -174,22 +180,22 @@ private:
 	void TestPeriodic()
 	{
 		if(controller->getY()) {
-			driveControl->SetPID(driveControl->GetP() + .001, 0, 0);
+			turns->SetPID(turns->GetP() + .001, 0, 0);
 		}
 		else if(controller->getA()) {
-			driveControl->SetPID(driveControl->GetP() - .001, 0, 0);
+			turns->SetPID(turns->GetP() - .001, 0, 0);
 		}
 		else if(controller->getX()) {
-			driveControl->SetSetpoint(500);
+			turns->SetSetpoint(500);
 		}
-		else driveControl->SetSetpoint(0);
+		else turns->SetSetpoint(0);
 		if(in % 60 == 0) {
-			std::cout<<driveControl->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
+			std::cout<<turns->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
 		}
 
-		angleControl->SetSetpoint(0);
+		//angleControl->SetSetpoint(0);
 
-		setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
+		setPower(/*driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA()*/turnsOut->getA(), -turnsOut->getA());
 		//std::cout << "GIT" << std::endl;
 		lw->Run();
 		in++;

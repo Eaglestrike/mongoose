@@ -41,10 +41,8 @@ private:
 		rom = new BuiltInAccelerometer();
 		lEnc = new Encoder(0,1);
 		tim = new Timer();
-		std::thread t1(task1);
 
 		    //Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
-		t1.join();
 
 
 

@@ -226,11 +226,11 @@ private:
 		double leftMotorOutput =  0;
 		double rightMotorOutput = 0;
 
-		//std::cout << angle <<std::endl;
-//		if(angle < 0.0)
-//			angle = -(angle * angle);
-//		else
-//			angle = angle * angle;
+		std::cout << angle <<std::endl;
+		if(angle < 0.0)
+			angle = -sqrt(-angle);//-(angle * angle);
+		else
+			angle = sqrt(angle);//angle * angle;
 		if(angle ==0) angle = 0;
 		else if(angle < 0.0) {
 			angle  = - pow(-angle, power);
