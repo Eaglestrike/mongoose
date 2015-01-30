@@ -39,8 +39,9 @@ public class LoggingFrame extends JFrame {
 			checkBoxes[i] = new JCheckBox("Enable dataset " + loggingPanel.data.getLegend()[i]);
 			checkBoxes[i].setActionCommand("" + i);
 			checkBoxes[i].setSize(200, 100);
-			checkBoxes[i].doClick();
+			checkBoxes[i].setSelected(true);;
 			checkBoxes[i].addActionListener(listener);
+			checkBoxes[i].setEnabled(true);
 			controlPanel.add(checkBoxes[i]);
 		}
 		
@@ -51,12 +52,14 @@ public class LoggingFrame extends JFrame {
 	private class Listener implements ActionListener {
 		
 		ArrayList<Integer> include;
+		int includeSize;
 		
 		public Listener() {
 			super();
 			include = new ArrayList<Integer>();
-			for (int i = 0; i < loggingPanel.data.getLegend().length - 1; i++) {
+			for (int i = 1; i < loggingPanel.data.getLegend().length; i++) {
 				include.add(i);
+				includeSize++;
 			}
 		}
 
@@ -66,12 +69,18 @@ public class LoggingFrame extends JFrame {
 				loggingPanel.graphData(include);
 			}
 			else {
-				for (int i = 0; i < loggingPanel.data.getLegend().length; i++) {
+				for (int i = 1; i < includeSize; i++) {
 					if (ev.getActionCommand().contains("" + i)) {
-						if (include.remove(new Integer(i)) == false) {
-							include.add(new Integer(i));
+						if (((JCheckBox) ev.getSource()).isSelected() == false) {
+							include.remove((Integer) i);
+							System.out.println("Removed");
 						}
-					}
+						else {
+							include.add((Integer) i);
+							System.out.println("Added");
+						}
+						break;
+					}					
 				}
 			}
 			
@@ -103,7 +112,7 @@ public class LoggingFrame extends JFrame {
 			String[] legend = data.getLegend();
 			String[] filteredLegend = new String[include.size() + 1];
 			filteredLegend[0] = legend[0];
-			for (int i = 0, j = 1; i < legend.length; i++) {				
+			for (int i = 1, j = 1; i < legend.length; i++) {				
 				if (include.contains(i)) {
 					filteredLegend[j] = legend[i];
 					j++;
@@ -112,9 +121,9 @@ public class LoggingFrame extends JFrame {
 			
 			Double[][] xValues = data.getXValues();
 			Double[][] filteredXValues = new Double[include.size()][];
-			for (int i = 0, j = 0; i < xValues.length; i++) {
-				if (include.contains(i)) {
-					filteredXValues[j] = xValues[i];
+			for (int dataset = 1, g = 0, j = 0; g < xValues.length; dataset++, g++) {
+				if (include.contains(dataset)) {
+					filteredXValues[j] = xValues[g];
 					j++;
 				}
 			}
@@ -122,7 +131,7 @@ public class LoggingFrame extends JFrame {
 			Double[][] yValues = data.getYValues();
 			Double[][] filteredYValues = new Double[include.size()][];
 			for (int i = 0; i < include.size(); i++) {
-				filteredYValues[i] = yValues[0]; //All y values are the same for any x data set
+				filteredYValues[i] = yValues[i]; //All y values are the same for any x data set
 			}	
 			
 			
