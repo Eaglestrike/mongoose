@@ -60,7 +60,7 @@ private:
 
 		std::cout << rightJoy->GetZ() << std::endl;
 
-		drive(leftJoy->GetY(), -rightJoy->GetX(), rightJoy->GetZ()*3);
+		drive(leftJoy->GetY(), -rightJoy->GetX(), 1.872);
 
 		Wait(0.05);
 

@@ -38,3 +38,15 @@ double DistanceProfileManager::getSetPoint() {
 		return profs.at(currentProf)->getSetPoint(time->Get());
 	return 0;
 }
+void DistanceProfileManager::reset() {
+	currentProf = 0;
+	isDone = false;
+	for(int i = 0; i < profs.size(); i++) {
+		profs.at(i)->isDone = false;
+	}
+	lenc->Reset();
+	renc->Reset();
+	time->Reset();
+}
+
+

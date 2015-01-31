@@ -55,6 +55,7 @@ public:
 class Robot: public IterativeRobot
 {
 private:
+	std::vector<DistanceProfile*> nextProfs;
 	LiveWindow *lw;
 	Victor *right1;
 	Victor *right2;
@@ -77,16 +78,19 @@ private:
 	DistanceProfile *prof1;
 	DistanceProfileManager *manager;
 	DistanceProfileManager *manager1;
+	Timer* time1;
 	AnglePIDIN *pin;
 	std::vector<DistanceProfile*> profs;
-	std::vector<DistanceProfile*> profs1;
 	Joystick* ljoy;
 	Joystick* rjoy;
 	bool nextProf = false;
+	bool turnIsDone = false;
 	bool notEnded = true;
 	int count = 0;
 	bool last;
+	bool firstTurn = false;
 	int in = 0;
+	int reset = 0;
 
 	void RobotInit()
 	{
@@ -113,14 +117,18 @@ private:
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
 		profs.push_back(prof);
+		//nextProfs.push_back(prof1);
 		//profs1.push_back(prof1);
 		//profs.push_back(prof1);
 
-		manager = new DistanceProfileManager(profs, lenc, renc, time);
 		time = new Timer();
+		manager = new DistanceProfileManager(profs, lenc, renc, time);
+		//manager1 = new DistanceProfileManager(nextProfs, lenc, renc, time);
+		//time = new Timer();
 		controller = new Xbox(2);
-		angleControl->Enable();
-		driveControl->Enable();
+//		angleControl->Enable();
+//		driveControl->Enable();
+		//turns->Enable();
 		comp = new Compressor(0);
 		comp->SetClosedLoopControl(true);
 		std::cout<<"Fs" << std::endl;
@@ -142,27 +150,47 @@ private:
 		time->Start();
 		angleControl->Enable();
 		driveControl->Enable();
+		turns->Enable();
 	}
 
 	void TeleopPeriodic()
 	{
+		//std::cout<< "PI" << std::endl;
 		if(last != rjoy->GetRawButton(4))
 					count++;
 		last = rjoy->GetRawButton(4);
 		if(count % 4 == 0) {
-			if(!manager->isDone) {
+			if(!manager->isDone && (reset == 0 || reset == 1)) {
+				//std::cout<< " PP 0" << std::endl;
 				driveControl->SetSetpoint((float)manager->getSetPoint());
 				angleControl->SetSetpoint(0);
 				setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
 				in++;
 			}
-			else {
-				turns->SetSetpoint(100);
-
+			else if(!turnIsDone) {
+				if(!firstTurn) {
+					renc->Reset();
+					lenc->Reset();
+				}
+				turns->SetSetpoint(370);
+				setPower(turnsOut->getA(), -turnsOut->getA());
+				//std::cout<< turns->GetError();
+				if(turns->GetError() < 30) {
+					turnIsDone = true;
+				}
+				firstTurn = true;
 			}
-		}
-		else if(count % 2 ==0) {
-			setPower(ljoy->GetY(), rjoy->GetY());
+			else {
+				//lenc->Reset();
+				//renc->Reset();
+				turns->Disable();
+				manager->reset();
+				//time->Reset();
+				reset++;
+			}
+			if(reset == 2) {
+				setPower(0,0);
+			}
 		}
 		if(in % 60 == 0) {
 			std::cout << " P:"  << angleControl->GetP() <<  std::endl;
@@ -186,16 +214,20 @@ private:
 			turns->SetPID(turns->GetP() - .001, 0, 0);
 		}
 		else if(controller->getX()) {
-			turns->SetSetpoint(500);
+			turns->SetSetpoint(310);
 		}
-		else turns->SetSetpoint(0);
+		//else turns->SetSetpoint(0);
 		if(in % 60 == 0) {
-			std::cout<<turns->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
+			std::cout << turns->GetSetpoint() << std::endl;
+			//std::cout<<turns->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
 		}
-
+		double motorpower = 0;
 		//angleControl->SetSetpoint(0);
-
-		setPower(/*driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA()*/turnsOut->getA(), -turnsOut->getA());
+		if(turnsOut->getA() > .5) {
+			motorpower = .5;
+		}
+		else motorpower = turnsOut->getA();
+ 		setPower(/*driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA()*/motorpower, -motorpower);
 		//std::cout << "GIT" << std::endl;
 		lw->Run();
 		in++;
