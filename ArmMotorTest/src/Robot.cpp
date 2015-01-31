@@ -12,8 +12,8 @@ private:
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-		rVictor = new Victor(0);
-		lVictor = new Victor(1);
+		rVictor = new Victor(1);
+		lVictor = new Victor(0);
 		controller = new Xbox(0);
 	}
 
@@ -34,7 +34,7 @@ private:
 
 	void TeleopPeriodic()
 	{
-		rVictor->Set(controller->getRX());
+		rVictor->Set(-controller->getRX());
 		lVictor->Set(controller->getLX());
 	}
 
