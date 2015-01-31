@@ -77,10 +77,10 @@ void ArmCode::setR(double R) {
 
 void ArmCode::calibrate() {
 	if(!rightButton.Get()) {
-		setRVictor(-.3);
+		setRVictor(-.1);
 	}
 	if(!leftButton.Get()) {
-		setLVictor(-.3);
+		setLVictor(-.1);
 	}
 	while(!rightButton.Get() || !leftButton.Get()) {
 		if (rightButton.Get()) {
@@ -124,17 +124,27 @@ bool ArmCode::getLButton() {
 }
 
 void ArmCode::setLVictor(float power) {
-	if(leftButton.Get() && power < 0)
+	if(leftButton.Get() && power < 0) {
 			leftVic.Set(0);
-		else
-			leftVic.Set(power);
+	} else if(power >= maxPower) {
+		leftVic.Set(maxPower);
+	} else if(power <= -maxPower) {
+		leftVic.Set(-maxPower);
+	} else {
+		leftVic.Set(power);
+	}
 }
 
 void ArmCode::setRVictor(float power) {
-	if(rightButton.Get() && power < 0)
+	if(leftButton.Get() && power < 0) {
 		rightVic.Set(0);
-	else
+	} else if(power >= maxPower) {
+		rightVic.Set(maxPower);
+	} else if(power <= -maxPower) {
+		rightVic.Set(-maxPower);
+	} else {
 		rightVic.Set(power);
+	}
 }
 
 ArmCode::~ArmCode() {}

@@ -9,7 +9,7 @@ import javax.swing.*;
 
 public class LoggingMain extends JPanel{
 	
-	public static String path = "csv.txt";
+	public static final String path = "csv.txt";
 	public Data data;
 	
 	public LoggingMain() throws FileNotFoundException {
@@ -17,7 +17,7 @@ public class LoggingMain extends JPanel{
 		data = new Data(path);
         final JTable table = new JTable(data.getData(), data.getColumnNames());
         table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        table.setFillsViewportHeight(true);
+        table.setFillsViewportHeight(true); 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
 	}
@@ -27,7 +27,7 @@ public class LoggingMain extends JPanel{
             public void run() {
             	JFrame frame = new JFrame("SimpleTableDemo");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                LoggingMain newContentPane;
+                LoggingMain newContentPane; 
 				try {
 					newContentPane = new LoggingMain();
 					newContentPane.setOpaque(true);

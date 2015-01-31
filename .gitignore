@@ -4,3 +4,7 @@ Debug/
 Release/
 language.settings.xml
 RemoteSystemTempFiles/
+*.class
+simpleBotRemastered/.settings/language.settings.xml
+simpleBotRemastered/.settings/language.settings.xml
+*.sdf

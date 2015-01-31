@@ -17,7 +17,7 @@ Timer* hudtime;
     	      std::cout << "test \n";
     	      while ( true )
     	        {
-
+    	    	  //open the socket to incoming connections
     	          ServerSocket new_sock;
     	          printf("declared serversocket");
     	          server.accept ( new_sock );
@@ -28,6 +28,7 @@ Timer* hudtime;
     	        	  int clawpos = 0;
     	              while ( true )
     	                {
+    	            	  //Get amps from all the PDP ports... should clean this up
     	            	  float port0=pdp->GetCurrent(0);
 						  float port1=pdp->GetCurrent(1);
 						  float port2=pdp->GetCurrent(2);
@@ -46,24 +47,32 @@ Timer* hudtime;
 						  float port15=pdp->GetCurrent(15);
 
 						  float bath;
-						  float voltage = pdp->GetVoltage()*-12.721875;
+						  //declare the battery height
+						  float voltage = pdp->GetVoltage();
+						  //this gets the battery voltage
 						  if(voltage >= 12.5)
 						  {
 							  bath = -160;
+							  //if the voltage is higher than 12.5, just say it's 100%
 						  }
 						  else{
 							  bath = pdp->GetVoltage()*-12.721875;
+							  //otherwise, use some fancy ratios to set the battery height
 						  }
 
                           int matchtime = hudtime->Get() + 15;
+                          //Getting the time (this starts in teleop, due to HUD being unplugged during auton)
 						  clawpos = clawpos+1;
+						  //dummy clawpos for now
 						  if(clawpos > 6){
 						  	  clawpos = 1;
 						  }
+
 						  //std::string message = std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
 						  new_sock << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
 						  //std::cout << "Hud Message: " << std::to_string(clawpos) << " " << std::to_string(bath) << " " << std::to_string(matchtime) << " " << std::to_string(port0) << " " << std::to_string(port1) << " " << std::to_string(port2) << " " << std::to_string(port3) << " " << std::to_string(port4) << " " << std::to_string(port5) << " " << std::to_string(port6) << " " << std::to_string(port7) << " " << std::to_string(port8) << " " << std::to_string(port9) << " " << std::to_string(port10) << " " << std::to_string(port11) << " " << std::to_string(port12) << " " << std::to_string(port13) << " " << std::to_string(port14) << " " << std::to_string(port15) << "\n";
 						  sleep(1);
+						  //please don't spam the socket.. this isn't a good thing to do
     	                }
     	            }
     	          catch ( SocketException& ) {}
@@ -73,6 +82,7 @@ Timer* hudtime;
     	  catch ( SocketException& e )
     	    {
     	      //std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+    		  //eh, we don't need error handling
     	    }
     	  return NULL;
     }
@@ -112,17 +122,15 @@ private:
 		tim = new Timer();
 		pdp = new PowerDistributionPanel();
 		hudtime = new Timer();
-
+		//timer to be called in teleop
 		pthread_t t;
 		std::cout << "declared thread \n";
 		pthread_create(&t, NULL, HUD, NULL);
 
-		        //Join the thread with the main thread
+		//Join the thread with the main thread (bad idea, prevents robot code from being initialized)
 		//pthread_join(t, NULL);
 
 
-
-				    //Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
 
 	}
 
@@ -134,11 +142,12 @@ private:
 	int count = 0;
 	bool lastTime;
 	void AutonomousInit	(){
-		//hudtime.Start();
+		//hudtime.Start(); //unneeded because HUD is unplugged during auton
 
 	}
 	void TeleopInit (){
 		hudtime->Start();
+		//start counting the match time (minus auton)
 	}
 	void TeleopPeriodic()
 	{
@@ -174,7 +183,9 @@ private:
 		if(angle < .04 && angle > -.04) {
 			angle = 0;
 		}
-		drive(power, angle);
+		if(i % 60 == 0)
+			std::cout<<  3*leftJoy->GetZ() << std::endl;
+		drive(power, angle, 1.842);
 //		left1->Set(power);
 //		left2->Set(power);
 //		right1->Set(-power);
@@ -210,16 +221,21 @@ private:
 		hudtime->Reset();
 		//std::cout << "PI" << std::endl;
 	}
-	void drive(double throttle, double angle) {
+	void drive(double throttle, double angle, double power) {
 
 		double leftMotorOutput =  0;
 		double rightMotorOutput = 0;
 
-		//std::cout << angle <<std::endl;
+		std::cout << angle <<std::endl;
 		if(angle < 0.0)
-			angle = -(angle * angle);
+			angle = -sqrt(-angle);//-(angle * angle);
 		else
-			angle = angle * angle;
+			angle = sqrt(angle);//angle * angle;
+		if(angle ==0) angle = 0;
+		else if(angle < 0.0) {
+			angle  = - pow(-angle, power);
+		}
+		else angle = pow(angle, power);
 
 		if(throttle > 0.0)
 			throttle = throttle * throttle;

@@ -56,6 +56,7 @@ private:
 	double containerWidth;
 	double totalLength; //TODO: Find the length of the bar in encoder ticks
 	double safeDistance; //TODO: Find the proper distance to set as the safe distance
+	double maxPower = .1;
 
 };
 
