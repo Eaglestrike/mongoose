@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 #include <String.h>
+#include "PIDOUT.h"
+#include "AutonomousHelper.h"
 
 class AnglePIDIN : public PIDSource {
 private:
@@ -35,21 +37,6 @@ public:
 		return (enc1->Get() + enc2->Get())/2;
 	}
 
-};
-
-class PIDOUT : public PIDOutput {
-private:
-	double a = 0;
-public:
-	PIDOUT() {}
-
-	void PIDWrite(float output) {
-		a = output;
-	}
-
-	double getA() {
-		return a;
-	}
 };
 
 class Robot: public IterativeRobot
@@ -83,6 +70,7 @@ private:
 	std::vector<DistanceProfile*> profs;
 	Joystick* ljoy;
 	Joystick* rjoy;
+	AutonomousHelper* commandLine;
 	bool nextProf = false;
 	bool turnIsDone = false;
 	bool notEnded = true;
@@ -112,8 +100,8 @@ private:
 		angleControl = new PIDController(.020, 0, 0, angSource, angleOut);
 		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
 		turns = new PIDController(.003, 0 , 0, pin , turnsOut);
-		prof = new DistanceProfile(500, 0, 5);
-		prof1 = new DistanceProfile(500, 0, 5);
+		prof = new DistanceProfile(500, 0, 10);
+		prof1 = new DistanceProfile(500, 0, 10);
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
 		profs.push_back(prof);
@@ -134,11 +122,14 @@ private:
 		std::cout<<"Fs" << std::endl;
 		ljoy = new Joystick(0);
 		rjoy = new Joystick(1);
+		commandLine = new AutonomousHelper(driveControl, angleControl, turns, driveOut, angleOut, turnsOut, right1, right2, left1, left2, lenc, renc);
 	}
 
 	void AutonomousInit()
 	{
-
+		commandLine->straight(prof1);
+		prof1->isDone = false;
+		commandLine->back(prof1);
 	}
 
 	void AutonomousPeriodic()
