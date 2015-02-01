@@ -48,6 +48,8 @@ void ADXRS453Z::init(SPI::Port port){
 	uint8_t* recv = 0;
 	spi->Transaction(send, recv, 4);
 
+	accumulator->StartPeriodic(0.05);
+
 }
 
 uint32_t ADXRS453Z::query(){
@@ -82,7 +84,9 @@ void ADXRS453Z::callAccumulate(void* adx){
 void ADXRS453Z::accumulate(){
 	sem_wait(&m_semaphore);
 
-
+	double time = timer->Get();
+	angle += (time - lastTime) * getAnglePerSecond();
+	lastTime = time;
 
 	sem_post(&m_semaphore);
 }

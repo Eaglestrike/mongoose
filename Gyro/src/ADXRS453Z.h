@@ -21,14 +21,17 @@ private:
 	Notifier* accumulator;
 	SPI* spi;
 	Timer* timer;
-	unsigned long lastTime;
 	sem_t m_semaphore;
+
+	double lastTime;
 	double angle;
+	double adjustment = -0.406;
 
 	static SPI::Port intToPort(int);
 	static void callAccumulate(void*);
 	void init(SPI::Port);
 	uint32_t uint8_tTouint32_t(uint8_t*);
+
 };
 
 
