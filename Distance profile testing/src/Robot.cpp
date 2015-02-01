@@ -99,7 +99,7 @@ private:
 		turnsOut = new PIDOUT();
 		angleControl = new PIDController(.020, 0, 0, angSource, angleOut);
 		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
-		turns = new PIDController(.0560, 0 , 0, pin , turnsOut);
+		turns = new PIDController(.0028, 0 , 0, pin , turnsOut);
 		prof = new DistanceProfile(0, 500, 10);
 		prof1 = new DistanceProfile(0, 500, 10);
 		DistanceProfile profs1(3000,0,5);
@@ -201,14 +201,15 @@ private:
 	{
 		turns->Enable();
 		if(controller->getY()) {
-			turns->SetPID(turns->GetP() + .001, 0, 0);
+			turns->SetPID(turns->GetP() + .001/7, 0, 0);
 		}
 		else if(controller->getA()) {
-			turns->SetPID(turns->GetP() - .001, 0, 0);
+			turns->SetPID(turns->GetP() - .001/7, 0, 0);
 		}
 		else if(controller->getX()) {
 			turns->SetSetpoint(310);
 		}
+		else turns->SetSetpoint(0);
 		//else turns->SetSetpoint(0);
 		if(in % 60 == 0) {
 			std::cout << "p" << turns->GetP() << " error " << turns->GetError() << std::endl;

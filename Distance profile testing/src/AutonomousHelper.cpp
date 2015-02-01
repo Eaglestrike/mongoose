@@ -30,10 +30,11 @@ void AutonomousHelper::right(DistanceProfile* prof) {
 	lenc->Reset();
 	turnController->Enable();
 	turnController->SetSetpoint(370/2);
-	while(turnController->GetError() >30) {
+	while(abs(turnController->GetError()) >30) {
 		setPower(turnOut->getA(), -turnOut->getA());
 	}
 	turnController->Disable();
+	setPower(0,0);
 	renc->Reset();
 	lenc->Reset();
 	driveController->Enable();
@@ -49,10 +50,11 @@ void AutonomousHelper::left(DistanceProfile* prof) {
 	lenc->Reset();
 	turnController->Enable();
 	turnController->SetSetpoint(-370/2);
-	while(turnController->GetError() > 30) {
+	while(abs(turnController->GetError()) > 30) {
 		setPower(turnOut->getA(), -turnOut->getA());
 	}
 	turnController->Disable();
+	setPower(0,0);
 	renc->Reset();
 	lenc->Reset();
 	driveController->Enable();
@@ -69,15 +71,16 @@ void AutonomousHelper::back(DistanceProfile* prof) {
 	turnController->Enable();
 	turnController->SetSetpoint(310);
 	std::cout << turnController->GetError() << std::endl;
-	while(turnController->GetError() > 30) {
+	while(abs(turnController->GetError()) > 30) {
 		setPower(turnOut->getA(), -turnOut->getA());
 	}
 	turnController->Disable();
+	setPower(0,0);
 	renc->Reset();
 	lenc->Reset();
 	driveController->Enable();
 	angleController->Enable();
-	Wait(.5);
+	Wait(3);
 	runDistanceProfile(prof);
 	driveController->Disable();
 	angleController->Disable();
