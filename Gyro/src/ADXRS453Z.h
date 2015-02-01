@@ -27,6 +27,7 @@ private:
 	static SPI::Port intToPort(int);
 	static void callAccumulate(void*);
 	void init(SPI::Port);
+	uint32_t uint8_tTouint32_t(uint8_t*);
 };
 
 

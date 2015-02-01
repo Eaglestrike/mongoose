@@ -72,7 +72,11 @@ void ADXRS453Z::callAccumulate(void* adx){
 }
 
 void ADXRS453Z::accumulate(){
+	sem_wait(&m_semaphore);
 
+
+
+	sem_post(&m_semaphore);
 }
 
 SPI::Port ADXRS453Z::intToPort(int port){
@@ -85,3 +89,14 @@ SPI::Port ADXRS453Z::intToPort(int port){
 	}
 }
 
+uint32_t ADXRS453Z::uint8_tTouint32_t(uint8_t* bytes){
+	uint32_t ret = bytes[0];
+	ret = ret << 8;
+	ret += bytes[1];
+	ret = ret << 8;
+	ret += bytes[2];
+	ret = ret << 8;
+	ret += bytes[3];
+
+	return ret;
+}
