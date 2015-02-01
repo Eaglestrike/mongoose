@@ -4,6 +4,15 @@
 
 #include "WPILib.h"
 #include <semaphore.h>
+#include <stdio.h>
+
+#define GYRO_DEBUG 0
+
+#if GYRO_DEBUG
+#define dp(ss) printf("%s\n",ss);
+#else
+#define dp(ss) //
+#endif
 
 class ADXRS453Z: public SensorBase, public PIDSource{
 public:
@@ -13,6 +22,7 @@ public:
 	~ADXRS453Z();
 	double getAngle();
 	double getAnglePerSecond();
+	double PIDGet();
 	void accumulate();
 	void reset();
 	uint32_t query();
@@ -26,6 +36,8 @@ private:
 	double lastTime;
 	double angle;
 	double adjustment = -0.406;
+
+	int ignoreCounter = 0;
 
 	static SPI::Port intToPort(int);
 	static void callAccumulate(void*);
