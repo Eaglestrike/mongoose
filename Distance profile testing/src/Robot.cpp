@@ -99,9 +99,9 @@ private:
 		turnsOut = new PIDOUT();
 		angleControl = new PIDController(.020, 0, 0, angSource, angleOut);
 		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
-		turns = new PIDController(.003, 0 , 0, pin , turnsOut);
-		prof = new DistanceProfile(500, 0, 10);
-		prof1 = new DistanceProfile(500, 0, 10);
+		turns = new PIDController(.0560, 0 , 0, pin , turnsOut);
+		prof = new DistanceProfile(0, 500, 10);
+		prof1 = new DistanceProfile(0, 500, 10);
 		DistanceProfile profs1(3000,0,5);
 		DistanceProfile profs2(0, 1500, 2);
 		profs.push_back(prof);
@@ -127,8 +127,9 @@ private:
 
 	void AutonomousInit()
 	{
-		commandLine->straight(prof1);
+		commandLine->straight(prof);
 		prof1->isDone = false;
+		std::cout<<"help" << std::endl;
 		commandLine->back(prof1);
 	}
 
@@ -198,6 +199,7 @@ private:
 	}
 	void TestPeriodic()
 	{
+		turns->Enable();
 		if(controller->getY()) {
 			turns->SetPID(turns->GetP() + .001, 0, 0);
 		}
@@ -209,7 +211,7 @@ private:
 		}
 		//else turns->SetSetpoint(0);
 		if(in % 60 == 0) {
-			std::cout << turns->GetSetpoint() << std::endl;
+			std::cout << "p" << turns->GetP() << " error " << turns->GetError() << std::endl;
 			//std::cout<<turns->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
 		}
 		double motorpower = 0;

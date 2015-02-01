@@ -6,6 +6,7 @@
  */
 
 #include <AutonomousHelper.h>
+#include <iostream>
 
 AutonomousHelper::AutonomousHelper(PIDController* driveControl, PIDController* angleControl, PIDController* turnControl, PIDOUT* drive, PIDOUT* angle, PIDOUT* turn, Victor* r1, Victor* r2, Victor* l1, Victor* l2, Encoder* le, Encoder* re) {
 	driveController = driveControl;
@@ -28,9 +29,9 @@ void AutonomousHelper::right(DistanceProfile* prof) {
 	renc->Reset();
 	lenc->Reset();
 	turnController->Enable();
-	while(turnController->GetError() < 5) {
-		turnController->SetSetpoint(370/2);
-		setPower(driveOut->getA(), -driveOut->getA());
+	turnController->SetSetpoint(370/2);
+	while(turnController->GetError() >30) {
+		setPower(turnOut->getA(), -turnOut->getA());
 	}
 	turnController->Disable();
 	renc->Reset();
@@ -47,9 +48,9 @@ void AutonomousHelper::left(DistanceProfile* prof) {
 	renc->Reset();
 	lenc->Reset();
 	turnController->Enable();
-	while(turnController->GetError() < 5) {
-		turnController->SetSetpoint(-370/2);
-		setPower(driveOut->getA(), -driveOut->getA());
+	turnController->SetSetpoint(-370/2);
+	while(turnController->GetError() > 30) {
+		setPower(turnOut->getA(), -turnOut->getA());
 	}
 	turnController->Disable();
 	renc->Reset();
@@ -66,9 +67,10 @@ void AutonomousHelper::back(DistanceProfile* prof) {
 	renc->Reset();
 	lenc->Reset();
 	turnController->Enable();
-	while(turnController->GetError() < 5) {
-		turnController->SetSetpoint(370);
-		setPower(driveOut->getA(), -driveOut->getA());
+	turnController->SetSetpoint(310);
+	std::cout << turnController->GetError() << std::endl;
+	while(turnController->GetError() > 30) {
+		setPower(turnOut->getA(), -turnOut->getA());
 	}
 	turnController->Disable();
 	renc->Reset();
@@ -82,16 +84,22 @@ void AutonomousHelper::back(DistanceProfile* prof) {
 }
 
 void AutonomousHelper::straight(DistanceProfile* prof) {
+	renc->Reset();
+	lenc->Reset();
+	driveController->Enable();
+	angleController->Enable();
 	runDistanceProfile(prof);
-
+	std::cout<< "PI" << std::endl;
 }
 
 void AutonomousHelper::runDistanceProfile(DistanceProfile* prof) {
 	time->Start();
+	std::cout<< "PI" << std::endl;
 	while(!prof->isDone) {
 		driveController->SetSetpoint(prof->getSetPoint(time->Get()));
 		setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
 	}
+	std::cout<< "PI" << std::endl;
 	time->Reset();
 	time->Stop();
 	setPower(0,0);
