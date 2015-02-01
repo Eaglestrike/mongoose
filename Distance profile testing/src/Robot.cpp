@@ -4,7 +4,6 @@
 #include "Xbox.h"
 #include <iostream>
 #include <vector>
-#include <String.h>
 #include "PIDOUT.h"
 #include "AutonomousHelper.h"
 
@@ -99,7 +98,7 @@ private:
 		turnsOut = new PIDOUT();
 		angleControl = new PIDController(.020, 0, 0, angSource, angleOut);
 		driveControl = new PIDController(.00114, 0, 0, driSource, driveOut);
-		turns = new PIDController(.0028, 0 , 0, pin , turnsOut);
+		turns = new PIDController(.0100, 0 , 0, pin , turnsOut);
 		prof = new DistanceProfile(0, 500, 10);
 		prof1 = new DistanceProfile(0, 500, 10);
 		DistanceProfile profs1(3000,0,5);

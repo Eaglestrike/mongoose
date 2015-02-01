@@ -80,7 +80,7 @@ void AutonomousHelper::back(DistanceProfile* prof) {
 	lenc->Reset();
 	driveController->Enable();
 	angleController->Enable();
-	Wait(3);
+	Wait(300);
 	runDistanceProfile(prof);
 	driveController->Disable();
 	angleController->Disable();
