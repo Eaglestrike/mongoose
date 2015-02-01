@@ -13,6 +13,7 @@ public:
 	double getAngle();
 	double getAnglePerSecond();
 	uint32_t getRawSPIData();
+	void accumulate();
 	void reset();
 private:
 	Notifier* accumulator;
@@ -20,9 +21,8 @@ private:
 	Timer* timer;
 	unsigned long lastTime;
 
-	static void callAccumulate(void*);
-	void accumulate();
 
+	static void callAccumulate(void*);
 	void init();
 };
 

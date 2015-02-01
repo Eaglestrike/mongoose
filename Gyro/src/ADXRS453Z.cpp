@@ -27,4 +27,13 @@ void ADXRS453Z::init(){
 	spi->Transaction(send, recv, 4);
 }
 
+void ADXRS453Z::callAccumulate(void* adx){
+	ADXRS453Z *a = (ADXRS453Z*)adx;
+	a->accumulate();
+}
+
+void ADXRS453Z::accumulate(){
+	CRITICAL_REGION()
+}
+
 
