@@ -44,20 +44,28 @@ void ADXRS453Z::init(SPI::Port port){
 
 	Wait(0.1);
 
-	uint32_t spiResult;
 	uint8_t send[] = {0x20, 0x00, 0x00, 0x03};
-	uint8_t* recv;
-
+	uint8_t* recv = 0;
 	spi->Transaction(send, recv, 4);
 
 }
 
-double ADXRS453Z::getAngle(){
+uint32_t ADXRS453Z::query(){
+	spi->SetChipSelectActiveLow();
 
+	uint8_t send[] = {0x20, 0x00, 0x00, 0x00};
+	uint8_t* recv = 0;
+	spi->Transaction(send, recv, 4);
+
+	return uint8_tTouint32_t(recv);
+}
+
+double ADXRS453Z::getAngle(){
+	return angle;
 }
 
 double ADXRS453Z::getAnglePerSecond(){
-
+	return ((signed short)((query() >> 10) & 0xFFFF))/80.0;
 }
 
 void ADXRS453Z::reset(){

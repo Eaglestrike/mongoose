@@ -15,6 +15,7 @@ public:
 	double getAnglePerSecond();
 	void accumulate();
 	void reset();
+	uint32_t query();
 
 private:
 	Notifier* accumulator;
