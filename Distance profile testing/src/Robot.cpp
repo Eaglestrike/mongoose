@@ -127,9 +127,11 @@ private:
 	void AutonomousInit()
 	{
 		commandLine->straight(prof);
-		prof1->isDone = false;
+		commandLine->right(180);
+		commandLine->straight(prof1);
+		//prof1->isDone = false;
 		std::cout<<"help" << std::endl;
-		commandLine->back(prof1);
+		//commandLine->back(prof1);
 	}
 
 	void AutonomousPeriodic()

@@ -15,13 +15,17 @@ class AutonomousHelper {
 public:
 	AutonomousHelper(PIDController* driveControl, PIDController* angleControl, PIDController* turnControl, PIDOUT* drive, PIDOUT* angle, PIDOUT* turn, Victor* r1, Victor* r2, Victor* l1, Victor* l2, Encoder* le, Encoder* re);
 	virtual ~AutonomousHelper();
-	void right(DistanceProfile* prof);
+	void right(double angle);
 	void left(DistanceProfile* prof);
 	void straight(DistanceProfile* prof);
-	void back(DistanceProfile* prof);
+	//void back(DistanceProfile* prof);
     void setPower(double left, double right);
     void runDistanceProfile(DistanceProfile* prof);
 
+    // straight(500, 5)
+    // msleep(10)
+    // right(180)
+    // straight(500, 5)
 
 
 private:
