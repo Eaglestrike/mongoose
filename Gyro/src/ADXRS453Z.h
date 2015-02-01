@@ -3,6 +3,7 @@
 #define __ADXRS453Z
 
 #include "WPILib.h"
+#include <semaphore.h>
 
 class ADXRS453Z: public SensorBase, public PIDSource{
 public:
@@ -12,18 +13,20 @@ public:
 	~ADXRS453Z();
 	double getAngle();
 	double getAnglePerSecond();
-	uint32_t getRawSPIData();
 	void accumulate();
 	void reset();
+
 private:
 	Notifier* accumulator;
 	SPI* spi;
 	Timer* timer;
 	unsigned long lastTime;
+	sem_t m_semaphore;
+	double angle;
 
-
+	static SPI::Port intToPort(int);
 	static void callAccumulate(void*);
-	void init();
+	void init(SPI::Port);
 };
 
 
