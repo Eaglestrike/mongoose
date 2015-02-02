@@ -26,7 +26,7 @@ public class LoggingFrame extends JFrame {
 		
 		JPanel controlPanel = new JPanel(new GridLayout(1,0));
 		this.add(controlPanel, BorderLayout.NORTH);		
-		controlPanel.setLayout(new GridLayout(0,1));
+		controlPanel.setLayout(new GridLayout(1,0));
 		
 		graphButton = new JButton(GRAPH);
 		controlPanel.add(graphButton);
@@ -34,16 +34,17 @@ public class LoggingFrame extends JFrame {
 		graphButton.setSize(200, 100);
 		graphButton.addActionListener(listener);
 		
-		checkBoxes = new JCheckBox[loggingPanel.data.getLegend().length];
-		for (int i = 1; i < loggingPanel.data.getLegend().length; i++) {
-			checkBoxes[i] = new JCheckBox("Enable dataset " + loggingPanel.data.getLegend()[i]);
-			checkBoxes[i].setActionCommand("" + i);
+		checkBoxes = new JCheckBox[loggingPanel.data.getLegend().length - 1];
+		for (int i = 0; i < loggingPanel.data.getLegend().length - 1; i++) {
+			checkBoxes[i] = new JCheckBox("Enable dataset " + loggingPanel.data.getLegend()[i + 1]);
+			checkBoxes[i].setActionCommand("" + (i + 1));
 			checkBoxes[i].setSize(200, 100);
 			checkBoxes[i].setSelected(true);;
 			checkBoxes[i].addActionListener(listener);
 			checkBoxes[i].setEnabled(true);
 			controlPanel.add(checkBoxes[i]);
 		}
+		System.out.println(checkBoxes.length);
 		
 		this.setVisible(true);
 		
@@ -61,6 +62,7 @@ public class LoggingFrame extends JFrame {
 				include.add(i);
 				includeSize++;
 			}
+			System.out.println(include.size());
 		}
 
 		@Override
@@ -69,15 +71,13 @@ public class LoggingFrame extends JFrame {
 				loggingPanel.graphData(include);
 			}
 			else {
-				for (int i = 1; i < includeSize; i++) {
+				for (int i = 1, j = 0; j < includeSize; i++, j++) {
 					if (ev.getActionCommand().contains("" + i)) {
 						if (((JCheckBox) ev.getSource()).isSelected() == false) {
 							include.remove((Integer) i);
-							System.out.println("Removed");
 						}
 						else {
 							include.add((Integer) i);
-							System.out.println("Added");
 						}
 						break;
 					}					
