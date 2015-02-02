@@ -6,6 +6,7 @@
 #include <vector>
 #include "PIDOUT.h"
 #include "AutonomousHelper.h"
+//#include "ADXRS453Z.h"
 
 class AnglePIDIN : public PIDSource {
 private:
@@ -70,6 +71,7 @@ private:
 	Joystick* ljoy;
 	Joystick* rjoy;
 	AutonomousHelper* commandLine;
+	//ADXRS453Z* gyro;
 	bool nextProf = false;
 	bool turnIsDone = false;
 	bool notEnded = true;
@@ -107,7 +109,7 @@ private:
 		//nextProfs.push_back(prof1);
 		//profs1.push_back(prof1);
 		//profs.push_back(prof1);
-
+		//gyro = new ADXRS453Z(0);
 		time = new Timer();
 		manager = new DistanceProfileManager(profs, lenc, renc, time);
 		//manager1 = new DistanceProfileManager(nextProfs, lenc, renc, time);
