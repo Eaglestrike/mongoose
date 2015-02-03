@@ -6,13 +6,6 @@
 #include <semaphore.h>
 #include <stdio.h>
 
-#define GYRO_DEBUG 0
-
-#if GYRO_DEBUG
-#define dp(ss) printf("%s\n",ss);
-#else
-#define dp(ss) //
-#endif
 
 class ADXRS453Z: public SensorBase, public PIDSource{
 public:

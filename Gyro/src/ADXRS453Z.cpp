@@ -28,22 +28,15 @@ ADXRS453Z::~ADXRS453Z(){
 
 void ADXRS453Z::init(SPI::Port port){
 
-	dp("init()");
-	dp("initializing variales");
-
 	spi = new SPI(port);
 	accumulator = new Notifier(ADXRS453Z::callAccumulate, this);
 	timer = new Timer();
 	lastTime = 0;
 	angle = 0;
 
-	dp("semaphore init");
-
 	sem_init(&m_semaphore, 0, 1);
 
 	timer->Start();
-
-	dp("spi init");
 
 	spi->SetChipSelectActiveHigh();
 	spi->SetClockRate(5);
@@ -51,28 +44,21 @@ void ADXRS453Z::init(SPI::Port port){
 
 	Wait(0.1);
 
-	dp("sending");
-
 	uint8_t send[] = {0x20, 0x00, 0x00, 0x03};
 	uint8_t* recv = 0;
 	spi->Transaction(send, recv, 4);
 
 	accumulator->StartPeriodic(0.005);
 
-	dp("end init()");
-
 }
 
 uint32_t ADXRS453Z::query(){
-
-	dp("query()");
 
 	spi->SetChipSelectActiveLow();
 	uint8_t send[] = {0x20, 0x00, 0x00, 0x00};
 	uint8_t recv[4];
 	spi->Transaction(send, recv, 4);
 
-	dp("end query()");
 
 	return uint8_tTouint32_t(recv);
 }
@@ -86,7 +72,6 @@ double ADXRS453Z::PIDGet(){
 }
 
 double ADXRS453Z::getAnglePerSecond(){
-	dp("end getAnglePerSecond()");
 	return ((signed short)((query() >> 10) & 0xFFFF))/80.0 + adjustment;
 }
 
@@ -105,19 +90,14 @@ void ADXRS453Z::callAccumulate(void* adx){
 
 void ADXRS453Z::accumulate(){
 
-	dp("accumulate()");
-
 	sem_wait(&m_semaphore);
 
-	dp("integrate");
 	double time = timer->Get();
 	angle += (time - lastTime) * getAnglePerSecond();
 	lastTime = time;
 
-	dp("sem_post()");
 	sem_post(&m_semaphore);
 
-	dp("end accumulate()");
 }
 
 SPI::Port ADXRS453Z::intToPort(int port){
@@ -132,18 +112,13 @@ SPI::Port ADXRS453Z::intToPort(int port){
 
 uint32_t ADXRS453Z::uint8_tTouint32_t(uint8_t bytes[]){
 
-	dp("uint8...()");
-
 	uint32_t ret = bytes[0];
-	dp("PAST THE THING");
 	ret = ret << 8;
 	ret += bytes[1];
 	ret = ret << 8;
 	ret += bytes[2];
 	ret = ret << 8;
 	ret += bytes[3];
-
-	dp("end uint8...()");
 
 	return ret;
 }
