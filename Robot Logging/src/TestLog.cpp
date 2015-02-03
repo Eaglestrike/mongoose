@@ -24,11 +24,15 @@ int main() {
 	testFile.open("test.csv");
 	testFile.close();
 	string headers[5] = {"time", "motor", "encoder", "button", "qqqq"};
-	double data[3] = {time, motor, encoder};
-	cout << sizeof(headers) << endl;
+	double data[4] = {time, motor, encoder, button};
 	log.writeHeader(headers, 5);
-	log.writeData(data, 5);
-	log.writeData(data, 3);
+	for (int i = 0; i < 10; i += .1) {
+		data[0] = i;
+		data[1] = i*i;
+		data[2] = i/4;
+		data[3] = 1/i;
+		log.writeData(data, 4);
+	}
 	return 0;
 }
 
