@@ -16,10 +16,10 @@ public class LoggingFrame extends JFrame {
 	final String GRAPH = "graph";
 	JCheckBox[] checkBoxes;
 	
-	public LoggingFrame() throws FileNotFoundException {
+	public LoggingFrame(String path) throws FileNotFoundException {
 		this.setLayout(new BorderLayout());
 		
-		loggingPanel = new LoggingMain();
+		loggingPanel = new LoggingMain(path);
 		this.add(loggingPanel, BorderLayout.CENTER);
 		
 		listener = new Listener();
@@ -44,7 +44,6 @@ public class LoggingFrame extends JFrame {
 			checkBoxes[i].setEnabled(true);
 			controlPanel.add(checkBoxes[i]);
 		}
-		System.out.println(checkBoxes.length);
 		
 		this.setVisible(true);
 		
@@ -62,7 +61,6 @@ public class LoggingFrame extends JFrame {
 				include.add(i);
 				includeSize++;
 			}
-			System.out.println(include.size());
 		}
 
 		@Override
@@ -91,11 +89,10 @@ public class LoggingFrame extends JFrame {
 
 	private class LoggingMain extends JPanel{
 		
-		public static final String path = "csv.txt";
 		public Data data;
 		LineChart chart;
 		
-		public LoggingMain() throws FileNotFoundException {
+		public LoggingMain(String path) throws FileNotFoundException {
 			super(new BorderLayout());
 			data = new Data(path);
 	        final JTable table = new JTable(data.getData(), data.getColumnNames());
