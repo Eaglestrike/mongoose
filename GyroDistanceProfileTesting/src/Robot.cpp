@@ -150,7 +150,9 @@ private:
 	void AutonomousInit()
 	{
 		commandLine->straightWithGyro(prof);
+		//Wait(10);
 		commandLine->rightWithGyro(180);
+		//Wait(10);
 		commandLine->straightWithGyro(prof1);
 		//prof1->isDone = false;
 		std::cout<<"help" << std::endl;
@@ -218,6 +220,9 @@ private:
 		time->Stop();
 		renc->Reset();
 		lenc->Reset();
+		gyro->reset();
+		prof->isDone = false;
+		prof1->isDone = false;
 
 		//mot->Set(0);
 	}

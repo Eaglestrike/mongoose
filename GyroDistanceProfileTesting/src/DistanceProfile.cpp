@@ -34,10 +34,7 @@ LogisticFunction DistanceProfile::getFunction() {
 	if(start < end) {
 		double K = end -start;
 		double h = 0;
-		if(end > 10) {
-			h = start + 10;
-		}
-		else h = start;
+		h = start;
 		double exp1 = log((K - .5)/.5);
 		double exp2 = log(K/(K-.5) - 1);
 		double j = totalTime * exp1/(exp1 - exp2);
@@ -49,9 +46,7 @@ LogisticFunction DistanceProfile::getFunction() {
 	else {
 		double K = -start + end;
 		double h = 0;
-		if(start > 10)
-			h = -end - 10;
-		else h = -end;
+		h = -end;
 		double exp1 = log((K + .5)/-.5);
 		double exp2 = log(K/(K+.5) - 1);
 		double k = (exp1 - exp2)/totalTime;

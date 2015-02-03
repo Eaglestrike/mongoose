@@ -173,6 +173,9 @@ void AutonomousHelper::runDistanceProfile(DistanceProfile* prof) {
 	time->Reset();
 	time->Stop();
 	setPower(0,0);
+	if(in % 10 == 0)
+		std::cout<< "renc: " << renc->Get() << " ;lenc:" << lenc->Get() << " ;gyro:" << gyro->getAngle() << " ;Setpoint: " << driveController->GetSetpoint() << std::endl;
+	in++;
 }
 
 void AutonomousHelper::setPower(double left, double right) {

@@ -48,6 +48,7 @@ private:
 	Timer* time = new Timer();
 	ADXRS453Z* gyro;
 
+	int in = 0;
 };
 
 #endif /* SRC_AUTONOMOUSHELPER_H_ */
