@@ -60,31 +60,26 @@ private:
 
 		std::cout << rightJoy->GetZ() << std::endl;
 
-		drive(leftJoy->GetY(), -rightJoy->GetX(), 1.872);
+		drive(leftJoy->GetY(), -rightJoy->GetX(), 2, 1);
 
 		Wait(0.05);
 
 	}
 
-	void drive(double throttle, double angle, double power) {
+	void drive(double throttle, double angle, double throttlePower, double anglePower) {
 
 		double leftMotorOutput =  0;
 		double rightMotorOutput = 0;
 
-		//if(angle < 0.0)
-			//angle = -sqrt(-angle);//-(angle * angle);
-		//else
-			//angle = sqrt(angle);//angle * angle;
-		if(angle ==0) angle = 0;
-		else if(angle < 0.0) {
-			angle  = - pow(-angle, power);
-		}
-		else angle = pow(angle, power);
+		if(angle > 0.0)
+			angle  = pow(angle, anglePower);
+		else
+			angle = -pow(-angle, anglePower);
 
 		if(throttle > 0.0)
-			throttle = throttle * throttle;
+			throttle = pow(throttle, throttlePower);
 		else
-			throttle = - throttle * throttle;
+			throttle = -pow(-throttle, throttlePower);
 
 		if(throttle > 0.0) {
 			angle = -angle;

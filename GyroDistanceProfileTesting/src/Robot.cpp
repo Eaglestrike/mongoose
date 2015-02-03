@@ -91,6 +91,7 @@ private:
 	ADXRS453Z* gyro;
 	bool nextProf = false;
 	bool turnIsDone = false;
+	bool hasTurned =false;
 	bool notEnded = true;
 	int count = 0;
 	bool last;
@@ -132,8 +133,8 @@ private:
 		//manager1 = new DistanceProfileManager(nextProfs, lenc, renc, time);
 		//time = new Timer();
 		controller = new Xbox(2);
-//		angleControl->Enable();
-//		driveControl->Enable();
+		//		angleControl->Enable();
+		//		driveControl->Enable();
 		//turns->Enable();
 		comp = new Compressor(0);
 		comp->SetClosedLoopControl(true);
@@ -141,27 +142,37 @@ private:
 		ljoy = new Joystick(0);
 		rjoy = new Joystick(1);
 		gyroIn = new GyroPIDIN(gyro);
-		angleControl = new PIDController(.02, 0, 0, gyroIn, angleOut);
-		turns = new PIDController(.01, 0, 0, gyroIn, turnsOut);
+		angleControl = new PIDController(.027, 0, .02920, gyroIn, angleOut);
+		turns = new PIDController(.027, .0292, 0, gyroIn, turnsOut);
 		commandLine = new AutonomousHelper(driveControl, angleControl, turns, driveOut, angleOut, turnsOut, right1, right2, left1, left2, lenc, renc, gyro);
 
 	}
 
 	void AutonomousInit()
 	{
-		commandLine->straightWithGyro(prof);
-		//Wait(10);
-		commandLine->rightWithGyro(180);
-		//Wait(10);
-		commandLine->straightWithGyro(prof1);
-		//prof1->isDone = false;
-		std::cout<<"help" << std::endl;
-		//commandLine->back(prof1);
+//		commandLine->straightWithGyro(prof);
+//		//Wait(10);
+//		commandLine->rightWithGyro(180);
+//		//Wait(10);
+//		commandLine->straightWithGyro(prof1);
+//		//prof1->isDone = false;
+//		std::cout<<"help" << std::endl;
+//		//commandLine->back(prof1);
 	}
 
 	void AutonomousPeriodic()
 	{
-
+		commandLine->straightWithGyro(prof);
+		//Wait(10);
+		if(!hasTurned)
+			commandLine->rightWithGyro(180);
+		//Wait(10);
+		commandLine->straightWithGyro(prof1);
+		hasTurned = true;
+		//prof1->isDone = false;
+		//std::cout<<"help" << std::endl;
+		//commandLine->back(prof1);
+		//prof->isDone = false;
 	}
 	void TeleopInit()
 	{
@@ -175,7 +186,7 @@ private:
 	{
 		//std::cout<< "PI" << std::endl;
 		if(last != rjoy->GetRawButton(4))
-					count++;
+			count++;
 		last = rjoy->GetRawButton(4);
 		if(count % 4 == 0) {
 			if(!manager->isDone && (reset == 0 || reset == 1)) {
@@ -221,27 +232,35 @@ private:
 		renc->Reset();
 		lenc->Reset();
 		gyro->reset();
+		std::cout<< "pi " << std::endl;
 		prof->isDone = false;
 		prof1->isDone = false;
-
+		hasTurned = true;
 		//mot->Set(0);
 	}
 	void TestPeriodic()
 	{
-		turns->Enable();
+		angleControl->Enable();
+		driveControl->Enable();
 		if(controller->getY()) {
-			turns->SetPID(turns->GetP() + .001/7, 0, 0);
+			angleControl->SetPID(angleControl->GetP() + .001/7, 0, angleControl->GetD());
 		}
 		else if(controller->getA()) {
-			turns->SetPID(turns->GetP() - .001/7, 0, 0);
+			angleControl->SetPID(angleControl->GetP() - .001/7, 0, angleControl->GetD());
 		}
 		else if(controller->getX()) {
-			turns->SetSetpoint(310);
+			driveControl->SetSetpoint(180);
+		}
+		else if(rjoy->GetRawButton(9)) {
+			angleControl->SetPID(angleControl->GetP(), 0, angleControl->GetD() + .001/5);
+		}
+		else if(rjoy->GetRawButton(8)) {
+			angleControl->SetPID(angleControl->GetP(), 0, angleControl->GetD() - .001/5);
 		}
 		else turns->SetSetpoint(0);
 		//else turns->SetSetpoint(0);
 		if(in % 60 == 0) {
-			std::cout << "p" << turns->GetP() << " error " << turns->GetError() << std::endl;
+			std::cout << "p " << angleControl->GetP() << " d:" << angleControl->GetD() <<" error " << angleControl->GetError() << " angle: "<< gyro->getAngle() <<  std::endl;
 			//std::cout<<turns->GetP()<< "  Enc: " << renc->Get() << " , " << lenc->Get()<< std::endl;
 		}
 		double motorpower = 0;
@@ -249,8 +268,11 @@ private:
 		if(turnsOut->getA() > .5) {
 			motorpower = .5;
 		}
+		else if(turnsOut->getA() < -.5) {
+			motorpower = -.5;
+		}
 		else motorpower = turnsOut->getA();
- 		setPower(/*driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA()*/motorpower, -motorpower);
+		setPower(/*driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA()*/motorpower, -motorpower);
 		//std::cout << "GIT" << std::endl;
 		lw->Run();
 		in++;

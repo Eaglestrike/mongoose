@@ -76,6 +76,7 @@ void AutonomousHelper::straightWithGyro(DistanceProfile* prof) {
 	angleController->Enable();
 	angleController->SetSetpoint(0);
 	runDistanceProfile(prof);
+	angleController->Disable();
 	gyro->reset();
 	lenc->Reset();
 	renc->Reset();
@@ -83,19 +84,25 @@ void AutonomousHelper::straightWithGyro(DistanceProfile* prof) {
 
 void AutonomousHelper::rightWithGyro(double angle) {
 	gyro->reset();
-	turnController->Enable();
-	turnController->SetSetpoint(angle);
+	angleController->Enable();
+	angleController->SetSetpoint(angle);
+	if(angle == 0) return;
+	angleController->SetOutputRange(-.5, .5);
 	Timer* time = new Timer();
 	while(time->Get() < .2) {
-		setPower(turnOut->getA(), -turnOut->getA());
-		if(turnController->GetError() < 70) {
+		setPower(angleOut->getA(), -angleOut->getA());
+		if(in % 100000  == 0)
+			std::cout<< "gyro angle: "<< gyro->getAngle() << std::endl;
+		if(abs(angleController->GetError()) < angleController->GetSetpoint()*5/360 ) {
 			time->Start();
 		}
 		else {
 			time->Reset();
 		}
+
 	}
-	turnController->Disable();
+	angleController->Disable();
+	angleController->SetOutputRange(-1, 1);
 	gyro->reset();
 	setPower(0,0);
 }
@@ -168,6 +175,9 @@ void AutonomousHelper::runDistanceProfile(DistanceProfile* prof) {
 	while(!prof->isDone) {
 		driveController->SetSetpoint(prof->getSetPoint(time->Get()));
 		setPower(driveOut->getA() + angleOut->getA(), driveOut->getA() - angleOut->getA());
+		if(in % 100000 == 0)
+				std::cout<< "renc: " << renc->Get() << " ;lenc:" << lenc->Get() << " ;gyro:" << gyro->getAngle() << " ;Setpoint: " << driveController->GetSetpoint() << std::endl;
+		in++;
 	}
 	std::cout<< "PI" << std::endl;
 	time->Reset();
