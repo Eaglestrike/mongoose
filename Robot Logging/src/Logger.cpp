@@ -28,19 +28,16 @@ Logger::Logger(char* file_name) {
 
 void Logger::writeHeader(string headers[], int length) {
 	try{
-	cout << length << endl;
-	if (length == 0) { throw length_error("zero"); }
-	if (!headed) {
-		cout << "writing" << endl;
-		writeFile.open(filename, std::ios_base::app);
-		cout << "opened" << endl;
-		for(int i = 0; i < length-1; i++)  {
-			writeFile << headers[i] << ", ";
+		if (length == 0) { throw length_error("zero"); }
+		if (!headed) {
+			writeFile.open(filename, std::ios_base::app);
+			cout << headers[0] << endl;
+			for(int i = 0; i < length-1; ++i)  {
+				writeFile << headers[i] << ", ";
+			}
+			writeFile << headers[length - 1] << "\n";
+			writeFile.close();
 		}
-		cout << "loop finished";
-		writeFile << headers[length - 1] << "\n";
-		writeFile.close();
-	}
 	headed = true;
 	catagories = length;
 	} catch (const length_error e) {
@@ -48,6 +45,8 @@ void Logger::writeHeader(string headers[], int length) {
 			cerr << "There is no data passed in";
 		}
 		return;
+	} catch (...){
+		cerr << "UNSPECIFIED ERROR!!!" << endl;
 	}
 }
 
@@ -55,6 +54,7 @@ void Logger::writeData(double data[], int length) {
 	try {
 		if (length == 0) { throw length_error("zero"); }
 		if (length != catagories) { throw length_error("matching"); }
+		cout << "checked for errors" << endl;
 		writeFile.open(filename, std::ios_base::app);
 		cout << length << endl;
 		for(int i = 0; i < length-1; i++)  {

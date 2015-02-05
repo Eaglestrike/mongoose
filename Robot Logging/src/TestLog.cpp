@@ -23,15 +23,21 @@ int main() {
 	Logger log("test.csv");
 	testFile.open("test.csv");
 	testFile.close();
-	string headers[5] = {"time", "motor", "encoder", "button", "qqqq"};
-	double data[4] = {time, motor, encoder, button};
+	string headers[] = {"time", "motor", "encoder", "button", "test"};
+	cout << "writing header" << endl;
 	log.writeHeader(headers, 5);
-	for (int i = 0; i < 10; i += .1) {
-		data[0] = i;
-		data[1] = i*i;
-		data[2] = i/4;
-		data[3] = 1/i;
-		log.writeData(data, 4);
+	cout << "writing data" << endl;
+	for (double i = 0; i < 10; i += .1) {
+		time = i;
+		cout << i << endl;
+		motor = i*i;
+		cout << "1" << endl;
+		encoder = i/4;
+		cout << "2" << endl;
+		button = 1/(i+1);
+		cout << "3" << endl;
+		double data[] = {time, motor, encoder, button, 5.0};
+		log.writeData(data, 5);
 	}
 	return 0;
 }
