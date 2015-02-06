@@ -1,5 +1,6 @@
 #include "WPILib.h"
 
+
 class Robot: public IterativeRobot
 {
 private:
@@ -16,7 +17,7 @@ private:
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-
+		std::cout << "GGG" << std::endl;
 		left1 = new Victor(0);
 		left2 = new Victor(1);
 		right1 = new Victor(3);
@@ -128,6 +129,9 @@ private:
 
 	void TestPeriodic()
 	{
+		//std::cout << ": p[P  " << std::endl;
+//		right1->Set(leftJoy->GetY());
+//		right1->Set(rightJoy->GetY());
 		lw->Run();
 	}
 
