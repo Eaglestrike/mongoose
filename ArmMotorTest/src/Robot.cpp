@@ -3,6 +3,12 @@
 #include <iostream>
 using namespace std;
 
+
+#define TOBY_MODE 1
+#define MAX_SAFE_RIGHT 0.7
+#define MAX_SAFE_LEFT 0.35
+
+
 class ArmEncoder: public PIDSource {
 private:
 	double addedDistancetoEncoder;
@@ -62,6 +68,12 @@ public:
 			return;
 		}
 
+#if TOBY_MODE
+		if(output < 0)
+			output = -pow(-output, 1.0/5.0);
+		else
+			output = pow(output, 1.0/5.0);
+#endif
 		if ((button->Get() && output < 0)) {
 			victor->Set(0);
 		} else {
@@ -73,6 +85,16 @@ public:
 	bool getButton() {
 		return button->Get();
 	}
+
+	double Get(){
+		return victor->Get();
+	}
+
+
+	void Disable(){
+		victor->Disable();
+	}
+
 };
 
 class Robot: public IterativeRobot
@@ -90,6 +112,8 @@ private:
 	PIDController* rightArm;
 	PIDController* leftArm;
 	int in = 0;
+	int counter = 0;
+	bool pressedB = false;
 
 	void RobotInit()
 	{
@@ -101,31 +125,28 @@ private:
 		lSafeMotor = new SafeMotor(0,4,midButton);
 		rSafeMotor = new SafeMotor(1,5,midButton);
 		talon = new TalonSRX(2);
-		rightArm = new PIDController(0, 0, 0, rEncoder, rSafeMotor);
-		rightArm->Enable();
+		rightArm = new PIDController(.018/*.1*//*.41*/, 0, .012, rEncoder, rSafeMotor);
+		rightArm->SetOutputRange(-MAX_SAFE_RIGHT, MAX_SAFE_RIGHT);
+		//rightArm->Enable();
 		lEncoder->SetDistancePerPulse(.001);
 		rEncoder->SetDistancePerPulse(.001);
 		lEncoder->SetReverseDirection(true);
-
 	}
 
+	void DisabledInit() {
+		rightArm->Disable();
+	}
 	void AutonomousInit()
 	{
-
+		rightArm->Disable();
+		rSafeMotor->Disable();
+		lSafeMotor->Disable();
 	}
 
 	void AutonomousPeriodic()
-	{
-		cout << "auto Period()" << endl;
-		for(double d = -1; d < 1; d += 0.01){
-			talon->Set(d);
-			Wait(0.05);
-		}
-
-		for(double d = 1; d > -1; d -= 0.01){
-			talon->Set(d);
-			Wait(0.05);
-		}
+	{   if(in % 60 == 0)
+		std::cout << "left: " <<lEncoder->PIDGet() << " right: " <<  rEncoder->PIDGet() << " leftButton: " << lSafeMotor->getButton() << " rightButton: " << rSafeMotor->getButton() << " midButton: " << midButton->Get() <<std::endl;;
+	in++;
 	}
 
 	void TeleopInit()
@@ -136,8 +157,8 @@ private:
 	void TeleopPeriodic()
 	{
 		if (midButton->Get()) {
-			rSafeMotor->PIDWrite(-controller->getRX());
-			lSafeMotor->PIDWrite(controller->getLX());
+			rSafeMotor->PIDWrite(controller->getRX()*MAX_SAFE_RIGHT);
+			lSafeMotor->PIDWrite(-controller->getLX()*MAX_SAFE_LEFT);
 			if (controller->getStart()) {
 				calibrate();
 			}
@@ -147,29 +168,46 @@ private:
 		}
 
 		if(in % 60 == 0)
-			std::cout<< " Right: "<< rEncoder->PIDGet() << " Left: " << lEncoder->PIDGet() << endl;
+			std::cout<< " Right Pos: "<< rEncoder->PIDGet() << " Left Pos: " << lEncoder->PIDGet() << " Left Pow: " << lSafeMotor->Get() << " Right Pow: " << rSafeMotor->Get() << " on target: " << rightArm->OnTarget() <<endl;
 		in++;
 	}
 
 	void TestInit() {
 		rightArm->Enable();
+		rightArm->SetPercentTolerance(.10);
 		calibrate();
 	}
 
 	void TestPeriodic()
 	{
+		if(controller->getB() != pressedB) {
+			counter++;
+		}
+		pressedB = controller->getB();
+
 		if(controller->getY()) {
-			rightArm->SetPID(rightArm->GetP() + .002, 0, 0);
+			if(counter % 6 == 0)
+				rightArm->SetPID(rightArm->GetP() + .002, rightArm->GetI(), rightArm->GetD());
+			else if(counter % 4 == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI() + .0001, rightArm->GetD());
+			else if(counter % 2  == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() + .002);
+
 		}
 		else if(controller->getA()) {
-			rightArm->SetPID(rightArm->GetP() - .002, 0, 0);
+			if(counter % 6 == 0)
+				rightArm->SetPID(rightArm->GetP() - .002, rightArm->GetI(), rightArm->GetD());
+			else if(counter % 4 == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI() - .0001, rightArm->GetD());
+			else if(counter % 2  == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() - .002);
 		}
 		if(controller->getX()) {
 			rightArm->SetSetpoint(4);
 		}
 		else rightArm->SetSetpoint(8);
-		if(in % 60 == 0)
-			std::cout << " p: "  << rightArm->GetP() << " error: "  << rightArm->GetError() << " Position: " << rEncoder->PIDGet()<< std::endl;
+		if(in % 12 == 0)
+			std::cout << " p: "  << rightArm->GetP() << " i: " << rightArm->GetI() << " d: " << rightArm->GetD() << " error: "  << rightArm->GetError() << " Position: " << rEncoder->PIDGet() << " Setpoint: " << rightArm->GetSetpoint() << " Right power: "  << rSafeMotor->Get() << std::endl;
 		in++;
 		lw->Run();
 	}
@@ -187,7 +225,7 @@ private:
 				lSafeMotor->PIDWrite(0);
 				lEncoder->Reset();
 			} else {
-				lSafeMotor->PIDWrite(.5);
+				lSafeMotor->PIDWrite(.3);
 			}
 		}
 
