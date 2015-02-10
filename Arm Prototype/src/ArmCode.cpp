@@ -2,7 +2,7 @@
  * ArmCode.cpp
  *
  *  Created on: Jan 7, 2015
- *      Author: Ankith Uppunda
+ *      Author: Ankith Uppunda and Nathan Larson
  */
 
 #include "ArmCode.h"
