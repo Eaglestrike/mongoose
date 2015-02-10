@@ -3,7 +3,7 @@
 #include <iostream>
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
-
+#include "MJPEGServer.h"
 
 using namespace cv;
 using namespace std;
@@ -13,10 +13,16 @@ int main(){
 	VideoCapture vc(0);
 	Mat image;
 
-	vc >> image;
 
-	imshow("test", image);
+	gpu::GpuMat gpuImage;
+	gpu::GpuMat grey;
 
-	waitKey(0);
+	namedWindow("test");
+
+	MJPEGServer server(1000);
+
+
+
+	return 0;
 
 }
