@@ -30,6 +30,7 @@ private:
 
 
 	/*    */
+	float maxAcceleration = 6;
 	double maxVelocity;
 	int pressed = 1;
 	float targetVelocity;
@@ -75,14 +76,15 @@ private:
 //		}
 //		maxAcceleration = sqrt(rom->getX()*rom->getX() + rom->getY()*rom->getY() + rom->getZ()*rom->getZ());
 
-		setTargetVelocity();
+		std::thread calibrating;
+
 		if(ljoy->GetRawButton(10)){
 			pressed++;
 		}
 		if(pressed % 4 == 0) {
-			calibrate(targetVelocity);
+			calibrate();
 		}
-
+		setTargetVelocity();
 
 	}
 
@@ -118,7 +120,7 @@ private:
 		targetVelocity = getTargetVelocity(ljoy->GetY());
 	}
 
-
+	
 };
 
 START_ROBOT_CLASS(Robot);
