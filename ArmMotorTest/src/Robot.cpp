@@ -5,9 +5,9 @@
 using namespace std;
 
 
-#define TOBY_MODE 1
+#define TOBY_MODE 0
 #define MAX_SAFE_RIGHT 0.7
-#define MAX_SAFE_LEFT 0.35
+#define MAX_SAFE_LEFT 0.70
 
 
 class ArmEncoder: public PIDSource {
@@ -117,6 +117,21 @@ public:
 	}
 };
 
+class ArmOut : public PIDOutput {
+private:
+	double power;
+
+public:
+	ArmOut() {}
+	void PIDWrite(float output) {
+		power = output;
+	}
+
+	double getPower() {
+		return power;
+	}
+};
+
 
 class Robot: public IterativeRobot
 {
@@ -133,6 +148,9 @@ private:
 	PIDController* rightArm;
 	PIDController* leftArm;
 	ArmDifference* armDiff;
+	ArmOut* outPut;
+	ArmOut* rightOut;
+	ArmOut* leftOut;
 	PIDController* diffController;
 	int in = 0;
 	int counter = 0;
@@ -149,9 +167,13 @@ private:
 		rSafeMotor = new SafeMotor(1,5,midButton, true);
 		talon = new TalonSRX(2);
 		armDiff = new ArmDifference(rEncoder, lEncoder);
-		diffController = new PIDController(0.022,0,0,armDiff, rSafeMotor);
-		rightArm = new PIDController(.029/*.018*/, 0 , .026 /* .012*/, rEncoder, rSafeMotor);
-		leftArm = new PIDController(.03257, 0, 0, lEncoder, lSafeMotor);
+		outPut = new ArmOut();
+		rightOut = new ArmOut();
+		leftOut = new ArmOut();
+		diffController = new PIDController(0, 0, 0, armDiff, outPut);
+		//diffController = new PIDController(0.022,0,0,armDiff, rSafeMotor);
+		rightArm = new PIDController(.029/*.018*/, 0 , .026 /* .012*/, rEncoder, rightOut);
+		leftArm = new PIDController(0.1 /*.03257*/, 0, 0, lEncoder, leftOut);
 		leftArm->SetOutputRange(-MAX_SAFE_LEFT, MAX_SAFE_LEFT);
 		rightArm->SetOutputRange(-MAX_SAFE_RIGHT, MAX_SAFE_RIGHT);
 		//rightArm->Enable();
@@ -211,32 +233,44 @@ private:
 	void TestInit() {
 		//rightArm->SetPercentTolerance(.10);
 		calibrate();
+		//rightArm->Enable();
 		leftArm->Enable();
-		diffController->Enable();
-		leftArm->SetSetpoint(1);
+		//diffController->Enable();
+		//leftArm->SetSetpoint(1);
 	}
 
 	double deltaX = 5;
 
-	void TestPeriodic()
-	{
+	void TestPeriodic1(){
+		if(controller->getB() != pressedB) {
+			counter++;
+		}
+		pressedB = controller->getB();
 
 		if(controller->getX()){
-			if(leftArm->GetSetpoint() + 8 > 14)
-				leftArm->SetSetpoint(14 - 8);
-			diffController->SetSetpoint(8);
+			deltaX = 10;
 		}else{
-			if(leftArm->GetSetpoint() + 5 > 14)
-				leftArm->SetSetpoint(14 - 5);
-			diffController->SetSetpoint(5);
+			deltaX = 5.25;
 		}
 
 
-		if(controller->getY())
-			diffController->SetPID(diffController->GetP() + 0.0001, diffController->GetI(), diffController->GetD());
-		else if(controller->getA() && diffController->GetP() > 0.0001)
-			diffController->SetPID(diffController->GetP() - 0.0001, diffController->GetI(), diffController->GetD());
 
+		if(controller->getY()) {
+			if(counter % 6 == 0)
+				diffController->SetPID(diffController->GetP() + 0.0001, diffController->GetI(), diffController->GetD());
+			else if(counter % 4 == 2)
+				diffController->SetPID(diffController->GetP(), diffController->GetI() + 0.0000001, diffController->GetD());
+			else if(counter % 2 == 0)
+				diffController->SetPID(diffController->GetP(), diffController->GetI(), diffController->GetD() + .0001);
+		}
+		else if(controller->getA() && diffController->GetP() > 0.0001) {
+			if(counter % 6 == 0)
+				diffController->SetPID(diffController->GetP() - 0.0001, diffController->GetI(), diffController->GetD());
+			else if(counter % 4 == 2)
+				diffController->SetPID(diffController->GetP(), diffController->GetI() - 0.0000001, diffController->GetD());
+			else if(counter % 2 == 0)
+				diffController->SetPID(diffController->GetP(), diffController->GetI(), diffController->GetD() - .0001);
+		}
 		double setpoint = leftArm->GetSetpoint()+controller->getLX()/5.0;
 
 		if(setpoint + deltaX > 14)
@@ -245,49 +279,121 @@ private:
 			setpoint = 0;
 
 		leftArm->SetSetpoint(setpoint);
-
-
-//		if(controller->getB() != pressedB) {
-//			counter++;
-//		}
-//		pressedB = controller->getB();
-//		if(controller->getY()) {
-//			if(counter % 6 == 0)
-//				leftArm->SetPID(leftArm->GetP() + .002/7, leftArm->GetI(), leftArm->GetD());
-//			else if(counter % 4 == 0)
-//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI() + .0001, leftArm->GetD());
-//			else if(counter % 2  == 0)
-//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() + .002);
-//
-//		}
-//		else if(controller->getA()) {
-//			if(counter % 6 == 0)
-//				leftArm->SetPID(leftArm->GetP() - .002/7, leftArm->GetI(), leftArm->GetD());
-//			else if(counter % 4 == 0)
-//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI() - .0001, leftArm->GetD());
-//			else if(counter % 2  == 0)
-//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() - .002);
-//		}
-//		if(controller->getX()) {
-//			leftArm->SetSetpoint(8);
-//		}
-//		else leftArm->SetSetpoint(4);
-//
-		if(abs(leftArm->GetError()) < 0.05) {
+		rightArm->SetSetpoint(setpoint+deltaX);
+		diffController->SetSetpoint(deltaX);
+		if(abs(leftArm->GetError()) < 0.025) {
 			lSafeMotor->setWithinErrorRange(true);
+		}else{
+			lSafeMotor->setWithinErrorRange(false);
 		}
-		else lSafeMotor->setWithinErrorRange(false);
 
-		if(abs(diffController->GetError()) < 0.05){
+		if(abs(diffController->GetError()) < 0.025){
 			rSafeMotor->setWithinErrorRange(true);
 		}else{
 			rSafeMotor->setWithinErrorRange(false);
 		}
-
+		rSafeMotor->PIDWrite(rightOut->getPower() - outPut->getPower());
+		lSafeMotor->PIDWrite(leftOut->getPower() + outPut->getPower());
 		if(in % 12 == 0)
-			cout << "p: " << diffController->GetP() << " deltaX: " << deltaX <<  " error: " << diffController->GetError() << " leftPos: "  << lEncoder->PIDGet() << " rightPos: " << rEncoder->PIDGet() << " diffPos: " << diffController->Get() << " lsp: " << leftArm->GetSetpoint() << " rsp: " << rightArm->GetSetpoint() << " dsp: " << diffController->GetSetpoint() <<endl;
-//			std::cout << " p: "  << leftArm->GetP() << " i: " << leftArm->GetI() << " d: " << leftArm->GetD() << " error: "  << leftArm->GetError() << " Position: " << lEncoder->PIDGet() << " Setpoint: " << leftArm->GetSetpoint() << " Left power: "  << lSafeMotor->Get() << " Right power: " << rSafeMotor->Get() << " leftButton"<<  lSafeMotor->getButton()<< std::endl;
+			cout << "p: " << diffController->GetP() << " i: " <<  diffController->GetI() << " d:" << diffController->GetD() << " deltaX: " << deltaX <<  " error: " << diffController->GetError() << " leftPos: "  << lEncoder->PIDGet() << " rightPos: " << rEncoder->PIDGet() << " diffPos: " << diffController->Get() << " lsp: " << leftArm->GetSetpoint() << " rsp: " << rightArm->GetSetpoint() << " dsp: " << diffController->GetSetpoint() <<endl;
+		//			std::cout << " p: "  << leftArm->GetP() << " i: " << leftArm->GetI() << " d: " << leftArm->GetD() << " error: "  << leftArm->GetError() << " Position: " << lEncoder->PIDGet() << " Setpoint: " << leftArm->GetSetpoint() << " Left power: "  << lSafeMotor->Get() << " Right power: " << rSafeMotor->Get() << " leftButton"<<  lSafeMotor->getButton()<< std::endl;
 		in++;
+
+	}
+
+	void TestPeriodic2() {
+		if(controller->getB() != pressedB) {
+			counter++;
+		}
+		pressedB = controller->getB();
+		if(controller->getY())
+			leftArm->SetPID(leftArm->GetP() + .002, leftArm->GetI(), leftArm->GetD());
+		else if(controller->getB())
+			leftArm->SetPID(leftArm->GetP(), leftArm->GetI() + .0001, leftArm->GetD());
+		else if(controller->getStart())
+			leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() + .002);
+		else if(controller->getA())
+			leftArm->SetPID(leftArm->GetP() - .002, leftArm->GetI(), leftArm->GetD());
+		else if(controller->getLB())
+			leftArm->SetPID(leftArm->GetP(), leftArm->GetI() - .0001, leftArm->GetD());
+		else if(controller->getBack())
+			leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() - .002);
+
+		if(controller->getX()) {
+			leftArm->SetSetpoint(8);
+		}
+		else leftArm->SetSetpoint(4);
+
+		lSafeMotor->PIDWrite(leftOut->getPower());
+		if(in % 12 == 0)
+			std::cout << " p: "  << leftArm->GetP() << " i: " << leftArm->GetI() << " d: " << leftArm->GetD() << " error: "  << leftArm->GetError() << " Position: " << lEncoder->PIDGet() << " Setpoint: " << leftArm->GetSetpoint() << " Left power: "  << lSafeMotor->Get() << " Right power: " << rSafeMotor->Get() << " leftButton"<<  lSafeMotor->getButton()<< std::endl;
+		in++;
+	}
+
+	void TestPeriodic3() {
+		if(controller->getB() != pressedB) {
+			counter++;
+		}
+		pressedB = controller->getB();
+		if(controller->getY()) {
+			if(counter % 6 == 0)
+				rightArm->SetPID(rightArm->GetP() + .002/7, rightArm->GetI(), rightArm->GetD());
+			else if(counter % 4 == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI() + .0001, rightArm->GetD());
+			else if(counter % 2  == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() + .002);
+
+		}
+		else if(controller->getA()) {
+			if(counter % 6 == 0)
+				rightArm->SetPID(rightArm->GetP() - .002/7, rightArm->GetI(), rightArm->GetD());
+			else if(counter % 4 == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI() - .0001, rightArm->GetD());
+			else if(counter % 2  == 0)
+				rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() - .002);
+		}
+		if(controller->getX()) {
+			rightArm->SetSetpoint(8);
+		}
+		else rightArm->SetSetpoint(4);
+
+		if(in % 12 == 0) {
+			std::cout << " p: "  << rightArm->GetP() << " i: " << rightArm->GetI() << " d: " << rightArm->GetD() << " error: "  << rightArm->GetError() << " Position: " << rEncoder->PIDGet() << " Setpoint: " << rightArm->GetSetpoint() << " Left power: "  << lSafeMotor->Get() << " Right power: " << rSafeMotor->Get() << " rightButton"<<  rSafeMotor->getButton()<< std::endl;
+		}
+	}
+
+	void TestPeriodic()
+	{
+
+		//		if(controller->getB() != pressedB) {
+		//			counter++;
+		//		}
+		//		pressedB = controller->getB();
+		//		if(controller->getY()) {
+		//			if(counter % 6 == 0)
+		//				leftArm->SetPID(leftArm->GetP() + .002/7, leftArm->GetI(), leftArm->GetD());
+		//			else if(counter % 4 == 0)
+		//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI() + .0001, leftArm->GetD());
+		//			else if(counter % 2  == 0)
+		//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() + .002);
+		//
+		//		}
+		//		else if(controller->getA()) {
+		//			if(counter % 6 == 0)
+		//				leftArm->SetPID(leftArm->GetP() - .002/7, leftArm->GetI(), leftArm->GetD());
+		//			else if(counter % 4 == 0)
+		//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI() - .0001, leftArm->GetD());
+		//			else if(counter % 2  == 0)
+		//				leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() - .002);
+		//		}
+		//		if(controller->getX()) {
+		//			leftArm->SetSetpoint(8);
+		//		}
+		//		else leftArm->SetSetpoint(4);
+		//
+
+		TestPeriodic2();
+
 		lw->Run();
 		Wait(0.05);
 	}
@@ -299,13 +405,13 @@ private:
 				rSafeMotor->PIDWrite(0);
 				rEncoder->Reset();
 			} else {
-				rSafeMotor->PIDWrite(.5);
+				rSafeMotor->PIDWrite(MAX_SAFE_RIGHT);
 			}
 			if (lSafeMotor->getButton()) {
 				lSafeMotor->PIDWrite(0);
 				lEncoder->Reset();
 			} else {
-				lSafeMotor->PIDWrite(-.3);
+				lSafeMotor->PIDWrite(-MAX_SAFE_LEFT);
 			}
 		}
 
