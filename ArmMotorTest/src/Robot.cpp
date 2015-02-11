@@ -100,7 +100,6 @@ public:
 	void Disable(){
 		victor->Disable();
 	}
-
 };
 
 class ArmDifference: public PIDSource {
@@ -144,13 +143,13 @@ private:
 		lw = LiveWindow::GetInstance();
 		controller = new Xbox(0);
 		lEncoder = new ModifiedEncoder(0,1,0);
-		rEncoder = new ModifiedEncoder(2,3, 13 /*change Later*/);
+		rEncoder = new ModifiedEncoder(2,3, 14 /*no*/);
 		midButton = new DigitalInput(6);
 		lSafeMotor = new SafeMotor(0,4,midButton, false);
 		rSafeMotor = new SafeMotor(1,5,midButton, true);
 		talon = new TalonSRX(2);
 		armDiff = new ArmDifference(rEncoder, lEncoder);
-		diffController = new PIDController(0,0,0,armDiff, rSafeMotor);
+		diffController = new PIDController(0.022,0,0,armDiff, rSafeMotor);
 		rightArm = new PIDController(.029/*.018*/, 0 , .026 /* .012*/, rEncoder, rSafeMotor);
 		leftArm = new PIDController(.03257, 0, 0, lEncoder, lSafeMotor);
 		leftArm->SetOutputRange(-MAX_SAFE_LEFT, MAX_SAFE_LEFT);
@@ -164,6 +163,12 @@ private:
 	void DisabledInit() {
 		rightArm->Disable();
 		leftArm->Disable();
+		diffController->Disable();
+		diffController->Reset();
+		leftArm->Reset();
+		rightArm->Reset();
+		rSafeMotor->setWithinErrorRange(false);
+		lSafeMotor->setWithinErrorRange(false);
 	}
 	void AutonomousInit()
 	{
@@ -186,7 +191,7 @@ private:
 	void TeleopPeriodic()
 	{
 		if (!midButton->Get()) {
-			rSafeMotor->PIDWrite(-controller->getRX()*MAX_SAFE_RIGHT);
+			rSafeMotor->PIDWrite(controller->getRX()*MAX_SAFE_RIGHT);
 			lSafeMotor->PIDWrite(controller->getLX()*MAX_SAFE_LEFT);
 			if (controller->getA()) {
 				cout << "pressed Start" << endl;
@@ -199,7 +204,7 @@ private:
 		}
 
 		if(in % 60 == 0)
-			std::cout<< " Right Pos: "<< rEncoder->PIDGet() << " Left Pos: " << lEncoder->PIDGet() << " Left Pow: " << lSafeMotor->Get() << " Right Pow: " << rSafeMotor->Get() << " on target: " << rightArm->OnTarget() <<endl;
+			std::cout<< " Right Pos: "<< rEncoder->PIDGet() << " Left Pos: " << lEncoder->PIDGet() << " Left Pow: " << lSafeMotor->Get() << " Right Pow: " << rSafeMotor->Get() << " on target: " << rightArm->OnTarget() << " lsp: " << leftArm->GetSetpoint() << endl;
 		in++;
 	}
 
@@ -207,6 +212,8 @@ private:
 		//rightArm->SetPercentTolerance(.10);
 		calibrate();
 		leftArm->Enable();
+		diffController->Enable();
+		leftArm->SetSetpoint(1);
 	}
 
 	double deltaX = 5;
@@ -214,18 +221,30 @@ private:
 	void TestPeriodic()
 	{
 
-		if(controller->getX())
-			deltaX = 8;
-		else
-			deltaX = 5;
+		if(controller->getX()){
+			if(leftArm->GetSetpoint() + 8 > 14)
+				leftArm->SetSetpoint(14 - 8);
+			diffController->SetSetpoint(8);
+		}else{
+			if(leftArm->GetSetpoint() + 5 > 14)
+				leftArm->SetSetpoint(14 - 5);
+			diffController->SetSetpoint(5);
+		}
 
-		leftArm->SetSetpoint(1);
-		diffController->SetSetpoint(leftArm->GetSetpoint() + deltaX);
 
 		if(controller->getY())
 			diffController->SetPID(diffController->GetP() + 0.0001, diffController->GetI(), diffController->GetD());
 		else if(controller->getA() && diffController->GetP() > 0.0001)
 			diffController->SetPID(diffController->GetP() - 0.0001, diffController->GetI(), diffController->GetD());
+
+		double setpoint = leftArm->GetSetpoint()+controller->getLX()/5.0;
+
+		if(setpoint + deltaX > 14)
+			setpoint = 14 - deltaX;
+		else if(setpoint < 0)
+			setpoint = 0;
+
+		leftArm->SetSetpoint(setpoint);
 
 
 //		if(controller->getB() != pressedB) {
@@ -254,13 +273,19 @@ private:
 //		}
 //		else leftArm->SetSetpoint(4);
 //
-		if(abs(leftArm->GetError()) < .1) {
+		if(abs(leftArm->GetError()) < 0.05) {
 			lSafeMotor->setWithinErrorRange(true);
 		}
 		else lSafeMotor->setWithinErrorRange(false);
 
+		if(abs(diffController->GetError()) < 0.05){
+			rSafeMotor->setWithinErrorRange(true);
+		}else{
+			rSafeMotor->setWithinErrorRange(false);
+		}
+
 		if(in % 12 == 0)
-			cout << "p: " << diffController->GetP() << " deltaX: " << deltaX <<  " error: " << diffController->GetError() << " leftPos: "  << lEncoder->PIDGet() << " rightPos: " << diffController->Get() << endl;
+			cout << "p: " << diffController->GetP() << " deltaX: " << deltaX <<  " error: " << diffController->GetError() << " leftPos: "  << lEncoder->PIDGet() << " rightPos: " << rEncoder->PIDGet() << " diffPos: " << diffController->Get() << " lsp: " << leftArm->GetSetpoint() << " rsp: " << rightArm->GetSetpoint() << " dsp: " << diffController->GetSetpoint() <<endl;
 //			std::cout << " p: "  << leftArm->GetP() << " i: " << leftArm->GetI() << " d: " << leftArm->GetD() << " error: "  << leftArm->GetError() << " Position: " << lEncoder->PIDGet() << " Setpoint: " << leftArm->GetSetpoint() << " Left power: "  << lSafeMotor->Get() << " Right power: " << rSafeMotor->Get() << " leftButton"<<  lSafeMotor->getButton()<< std::endl;
 		in++;
 		lw->Run();
