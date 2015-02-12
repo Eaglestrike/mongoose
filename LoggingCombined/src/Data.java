@@ -3,6 +3,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class Data {
 		
 	private ArrayList<ArrayList<Object>> dataLines = new ArrayList<ArrayList<Object>>();
@@ -28,7 +30,7 @@ public class Data {
 			System.out.println(dataLines.toString());
 	}
 	
-	public Object[][] getData() {
+	public Object[][] getData() throws Exception {
 		Double[][] data = new Double[numLines-1][numColumns];
 		for (int i = 1; i < numLines; i++) {
 			for (int j = 0; j < numColumns; j++) {
@@ -39,7 +41,7 @@ public class Data {
 		return data;
 	}
 	
-	public String[] getLegend() {
+	public String[] getLegend() throws Exception{
 		String[] legend = new String[dataLines.get(0).size()];
 		for (int i = 0; i < legend.length; i++) {
 			legend[i] = (String) dataLines.get(0).get(i);
@@ -47,7 +49,7 @@ public class Data {
 		return legend;
 	}
 	
-	public Double[][] getYValues() {
+	public Double[][] getYValues() throws Exception{
 		Double[][] yValues = new Double[numColumns][numLines - 1];
 		for (int i = 0; i < yValues.length; i++) {
 			for (int j = 0; j < yValues[i].length; j++) {
@@ -57,7 +59,7 @@ public class Data {
 		return yValues;
 	}
 	
-	public Double[][] getXValues() {
+	public Double[][] getXValues() throws Exception {
 		Double[][] xValues = new Double[numColumns - 1][numLines - 1];
 		for (int i = 0; i < xValues.length; i++) {
 			for (int j = 0; j < xValues[i].length; j++) {
