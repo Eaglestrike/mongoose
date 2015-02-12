@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -18,40 +17,35 @@ public class LoggingFrame extends JFrame {
 	JCheckBox[] checkBoxes;
 	
 	public LoggingFrame(String path) throws FileNotFoundException {
-				
-		try {
-			this.setLayout(new BorderLayout());
-			
-			loggingPanel = new LoggingMain(path);
-			this.add(loggingPanel, BorderLayout.CENTER);
-			
-			JPanel controlPanel = new JPanel(new GridLayout(1,0));
-			this.add(controlPanel, BorderLayout.NORTH);		
-			controlPanel.setLayout(new GridLayout(1,0));
-			listener = new Listener();
-			checkBoxes = new JCheckBox[loggingPanel.data.getLegend().length - 1];
-			for (int i = 0; i < loggingPanel.data.getLegend().length - 1; i++) {
-				checkBoxes[i] = new JCheckBox("Enable dataset " + loggingPanel.data.getLegend()[i + 1]);
-				checkBoxes[i].setActionCommand("" + (i + 1));
-				checkBoxes[i].setSize(200, 100);
-				checkBoxes[i].setSelected(true);;
-				checkBoxes[i].addActionListener(listener);
-				checkBoxes[i].setEnabled(true);
-				controlPanel.add(checkBoxes[i]);
-			}
-				
-			graphButton = new JButton(GRAPH);
-			controlPanel.add(graphButton);
-			graphButton.doClick();
-			graphButton.setSize(200, 100);
-			graphButton.addActionListener(listener);
-			
-			this.setVisible(true);
-		} catch (Exception e) {
-			this.setVisible(false);
-			this.dispose();
-			JOptionPane.showMessageDialog(null, "Error occured during parsing");			
+		this.setLayout(new BorderLayout());
+		
+		loggingPanel = new LoggingMain(path);
+		this.add(loggingPanel, BorderLayout.CENTER);
+		
+		listener = new Listener();
+		
+		JPanel controlPanel = new JPanel(new GridLayout(1,0));
+		this.add(controlPanel, BorderLayout.NORTH);		
+		controlPanel.setLayout(new GridLayout(1,0));
+		
+		graphButton = new JButton(GRAPH);
+		controlPanel.add(graphButton);
+		graphButton.doClick();
+		graphButton.setSize(200, 100);
+		graphButton.addActionListener(listener);
+		
+		checkBoxes = new JCheckBox[loggingPanel.data.getLegend().length - 1];
+		for (int i = 0; i < loggingPanel.data.getLegend().length - 1; i++) {
+			checkBoxes[i] = new JCheckBox("Enable dataset " + loggingPanel.data.getLegend()[i + 1]);
+			checkBoxes[i].setActionCommand("" + (i + 1));
+			checkBoxes[i].setSize(200, 100);
+			checkBoxes[i].setSelected(true);;
+			checkBoxes[i].addActionListener(listener);
+			checkBoxes[i].setEnabled(true);
+			controlPanel.add(checkBoxes[i]);
 		}
+		
+		this.setVisible(true);
 		
 	}
 	
@@ -60,7 +54,7 @@ public class LoggingFrame extends JFrame {
 		ArrayList<Integer> include;
 		int includeSize;
 		
-		public Listener() throws Exception {
+		public Listener() {
 			super();
 			include = new ArrayList<Integer>();
 			for (int i = 1; i < loggingPanel.data.getLegend().length; i++) {
@@ -101,55 +95,44 @@ public class LoggingFrame extends JFrame {
 		public LoggingMain(String path) throws FileNotFoundException {
 			super(new BorderLayout());
 			data = new Data(path);
-	        try {
-	        	final JTable table = new JTable(data.getData(), data.getColumnNames());
-		        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		        table.setFillsViewportHeight(true); 
-		        JScrollPane scrollPane = new JScrollPane(table);
-		        add(scrollPane, BorderLayout.NORTH);
-	        	chart = new LineChart("Sample text", "Sample text", "xAxis", "yAxis", data.getLegend(), data.getYValues(), data.getXValues());	        
-	        	add(chart, BorderLayout.CENTER);
-	        } catch (Exception e) {
-	        	JOptionPane.showMessageDialog(null, "Error occured during parsing");
-	        }
-	        
+	        final JTable table = new JTable(data.getData(), data.getColumnNames());
+	        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+	        table.setFillsViewportHeight(true); 
+	        JScrollPane scrollPane = new JScrollPane(table);
+	        add(scrollPane, BorderLayout.NORTH);
+	        chart = new LineChart("Sample text", "Sample text", "xAxis", "yAxis", data.getLegend(), data.getXValues(), data.getYValues());	        
+	               
+	        add(chart, BorderLayout.CENTER);
 		}
 		
 		public void graphData(ArrayList<Integer> include) {
-			try {
-				String[] legend = data.getLegend();
-				String[] filteredLegend = new String[include.size() + 1];
-				filteredLegend[0] = legend[0];
-				for (int i = 1, j = 1; i < legend.length; i++) {				
-					if (include.contains(i)) {
-						filteredLegend[j] = legend[i];
-						j++;
-					}
+			String[] legend = data.getLegend();
+			String[] filteredLegend = new String[include.size() + 1];
+			filteredLegend[0] = legend[0];
+			for (int i = 1, j = 1; i < legend.length; i++) {				
+				if (include.contains(i)) {
+					filteredLegend[j] = legend[i];
+					j++;
 				}
-				
-				Double[][] xValues = data.getXValues();
-				Double[][] filteredXValues = new Double[include.size()][];
-				for (int dataset = 1, g = 0, j = 0; g < xValues.length; dataset++, g++) {
-					if (include.contains(dataset)) {
-						filteredXValues[j] = xValues[g];
-						j++;
-					}
-				}
-				
-				Double[][] yValues = data.getYValues();
-				Double[][] filteredYValues = new Double[include.size()][];
-				for (int i = 0; i < include.size(); i++) {
-					filteredYValues[i] = yValues[i]; //All y values are the same for any x data set
-				}
-				
-				chart.changeDataset(filteredLegend, filteredYValues, filteredXValues);
-				
-			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "Error occured during parsing");
 			}
 			
+			Double[][] xValues = data.getXValues();
+			Double[][] filteredXValues = new Double[include.size()][];
+			for (int dataset = 1, g = 0, j = 0; g < xValues.length; dataset++, g++) {
+				if (include.contains(dataset)) {
+					filteredXValues[j] = xValues[g];
+					j++;
+				}
+			}
 			
-						
+			Double[][] yValues = data.getYValues();
+			Double[][] filteredYValues = new Double[include.size()][];
+			for (int i = 0; i < include.size(); i++) {
+				filteredYValues[i] = yValues[i]; //All y values are the same for any x data set
+			}	
+			
+			
+			chart.changeDataset(filteredLegend, filteredXValues, filteredYValues);			
 		}
 		
 	}
