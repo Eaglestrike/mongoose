@@ -166,12 +166,13 @@
 			<resource resourceType="PROJECT" workspacePath="/JetsonTK1"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.759152485;com.nvidia.cuda.ide.configuration.release.759152485.;nvcc.compiler.base.426633373;nvcc.compiler.input.cpp.1744670016">
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.759152485;com.nvidia.cuda.ide.configuration.release.759152485.;nvcc.compiler.base.426633373;nvcc.compiler.input.cu.1369376749">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.759152485;com.nvidia.cuda.ide.configuration.release.759152485.;nvcc.compiler.base.426633373;nvcc.compiler.input.cu.1369376749">
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.759152485;com.nvidia.cuda.ide.configuration.release.759152485.;nvcc.compiler.base.426633373;nvcc.compiler.input.cpp.1744670016">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.759152485;com.nvidia.cuda.ide.configuration.release.759152485.;nvcc.compiler.base.426633373;nvcc.compiler.input.c.345073268">
@@ -187,5 +188,4 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>

@@ -5,3 +5,9 @@ environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.debug.3943
 environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.debug.394357915/CPLUS_INCLUDE_PATH/operation=remove
 environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.debug.394357915/append=true
 environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.debug.394357915/appendContributed=true
+environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.release.759152485/CPATH/delimiter=\:
+environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.release.759152485/CPATH/operation=remove
+environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.release.759152485/CPLUS_INCLUDE_PATH/delimiter=\:
+environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.release.759152485/CPLUS_INCLUDE_PATH/operation=remove
+environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.release.759152485/append=true
+environment/buildEnvironmentInclude/com.nvidia.cuda.ide.configuration.release.759152485/appendContributed=true
