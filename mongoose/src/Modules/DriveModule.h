@@ -1,4 +1,7 @@
 
+#ifndef __DRIVE_MODULE_H
+#define __DRIVE_MODULE_H
+
 #include <WPILib.h>
 #include "RobotModule.h"
 #include "../Peripherals/ADXRS453Z.h"
@@ -25,9 +28,9 @@ public:
 	void resetEncoders();
 	void setPower(double left, double right);
 	void drive(double throttle, double angle);
-	void Enable();
-	void Disable();
-	void Reset();
+	void enable();
+	void disable();
+	void reset();
 	//void setJoystickDrive();
 	void setTargetVelocity(float vel);
 	double getPower();
@@ -36,13 +39,12 @@ public:
 
 private:
 	/*   Hardware Stuff    */
-	Victor lVictor1;
-	Victor lVictor2;
-	Victor rVictor1;
-	Victor rVictor2;
-	Encoder lEncoder; 
-	Encoder rEncoder;
-	ADXRS453Z rob_Gyro;
+	Victor* m_Left_Victor_1;
+	Victor* m_Left_Victor_2;
+	Victor* m_Right_Victor_1;
+	Victor* m_Right_Victor_2;
+	Encoder* m_Left_Encoder;
+	ADXRS453Z* m_Gyro;
 
 	/* Pid Controller */
 	// PIDController controller;
@@ -56,3 +58,5 @@ private:
 
 
 };
+
+#endif
