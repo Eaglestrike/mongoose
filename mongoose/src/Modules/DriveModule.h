@@ -15,7 +15,7 @@ public:
 
 class DriveModule : public RobotModule{
 
-	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int r_EA, int r_EB) ;
+	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB) ;
 	~DriveModule();
 public:
 	// void Enable();
@@ -40,7 +40,7 @@ private:
 	Victor rVictor2;
 	Encoder lEncoder; 
 	Encoder rEncoder;
-	Gyro rob_Gyro;
+	ADXRS453Z rob_Gyro;
 
 	/* Pid Controller */
 	// PIDController controller;

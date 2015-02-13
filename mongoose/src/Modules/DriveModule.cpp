@@ -3,21 +3,20 @@
 #include <algorithm>
 
 
-DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int r_EA, int r_EB) : 
+DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB) :
 RobotModule(std::string("DriveModule")),
 lVictor1(lv1), lVictor2(lv2), rVictor1(rv1), rVictor2(rv2),
-lEncoder(l_EA, l_EB), rEncoder(r_EA, r_EB), rob_Gyro(1) // whatever ports
+lEncoder(l_EA, l_EB), rob_Gyro(1) // whatever ports
 {
 
-	Enable();
+	lEncoder.SetReverseDirection(true);
 
 	/* PID */
 
 }
 
 void DriveModule::Enable(){
-	lEncoder.SetReverseDirection(true);
-	rEncoder.SetReverseDirection(false);
+
 }
 
 void DriveModule::Disable() {

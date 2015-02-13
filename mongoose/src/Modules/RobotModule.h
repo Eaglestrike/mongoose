@@ -7,11 +7,11 @@ public:
 	RobotModule(std::string);
 	~RobotModule();
 
-	void Enable();
-	void Disable();
-	void Reset();
-	void GetLoggingData();
-
-
+	void enable();
+	void disable();
+	void reset();
+	double* getLoggingData();
+protected:
+	bool m_Enabled;
 
 };

@@ -4,19 +4,19 @@ RobotModule::RobotModule(std::string){
 	
 }
 
-void RobotModule::Enable(){
+void RobotModule::enable(){
+	m_Enabled = true;
+}
+
+void RobotModule::disable(){
+	m_Enabled = false;
+}
+
+void RobotModule::reset(){
 
 }
 
-void RobotModule::Disable(){
-
-}
-
-void RobotModule::Reset(){
-
-}
-
-void RobotModule::GetLoggingData(){
+void RobotModule::getLoggingData(){
 
 }
 
