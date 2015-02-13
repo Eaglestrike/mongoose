@@ -1,4 +1,4 @@
-#include "WPILib.h"
+#include <WPILib.h>
 #include "RobotModule.h"
 
 class ScorpionModule : public RobotModule {

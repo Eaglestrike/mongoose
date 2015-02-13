@@ -1,5 +1,7 @@
-#include "WPILib.h"
+
+#include <WPILib.h>
 #include "RobotModule.h"
+#include "../Peripherals/ADXRS453Z.h"
 
 /*   Linear Functions   */
 class DriveFunction {  // methods in this are defaults

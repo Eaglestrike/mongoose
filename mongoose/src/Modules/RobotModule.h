@@ -1,6 +1,7 @@
-#include <iostream>
-#include <string>
+#ifndef __ROBOT_MODULE_H__
+#define __ROBOT_MODULE_H__
 
+#include <string>
 
 class RobotModule {
 public:
@@ -15,3 +16,5 @@ protected:
 	bool m_Enabled;
 
 };
+
+#endif

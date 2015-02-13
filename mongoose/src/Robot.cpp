@@ -15,12 +15,7 @@ private:
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-<<<<<<< HEAD
 		elevator = new ElevatorModule(ELEVATOR_1, ELEVATOR_2, 1);
-=======
-		module = new ElevatorModule()
-
->>>>>>> 5f8019bc399807f6d6944f40e3aa916c02f2b84f
 	}
 
 	void AutonomousInit()

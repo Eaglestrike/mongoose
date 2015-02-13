@@ -1,7 +1,8 @@
 #include <assert.h>
 #include <math.h>
+#include "ScorpionModule.h"
 
-ScorpionModule::ScorpionModule(int solenoid, int motorA) :
+ScorpionModule::ScorpionModule(int solenoid) :
 RobotModule("Scorpion"),
 m_solenoid(solenoid)
 {

@@ -9,6 +9,8 @@
 #define ELEVATORMODULE_H_
 
 #include <WPILib.h>
+#include "../Peripherals/SafeTalonSRX.h"
+#include "RobotModule.h"
 
 class DualMotor: public PIDOutput{
 public:
@@ -29,7 +31,7 @@ private:
 	SafeTalonSRX* m_Motor_2;
 };
 
-class ElevatorModule: public RobotModule{
+class ElevatorModule: public RobotModule {
 public:
 	ElevatorModule(int motorPort1, int motorPort2, int safetyButtonPort);
 	~ElevatorModule();

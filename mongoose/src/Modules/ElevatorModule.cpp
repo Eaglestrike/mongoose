@@ -19,11 +19,11 @@ ElevatorModule::~ElevatorModule(){
 }
 
 
-void ElevatorModule::Enable(){
+void ElevatorModule::enable(){
 	RobotModule::enable();
 }
 
-void ElevatorModule::Disable(){
+void ElevatorModule::disable(){
 	RobotModule::disable();
 
 	m_Motor_1->Disable();

@@ -8,7 +8,7 @@
 
 #include "SafeVictor.h"
 
-SafeVictor::SafeVictor(int victorPort, DigitalInput* button, bool reverse = false): Victor(victorPort), m_Reverse(reverse){
+SafeVictor::SafeVictor(int victorPort, DigitalInput* button, bool reverse): Victor(victorPort), m_Reverse(reverse){
 	m_Safety_Button = button;
 }
 
