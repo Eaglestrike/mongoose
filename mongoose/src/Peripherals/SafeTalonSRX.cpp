@@ -8,7 +8,7 @@
 SafeTalonSRX::SafeTalonSRX(int talonSRXPort, DigitalInput* button, bool reverse = false): TalonSRX(talonSRXPort), m_Reverse(reverse){
 	m_Safety_Button = button;
 }
-
+//cole was here
 SafeTalonSRX::~SafeTalonSRX(){
 
 }

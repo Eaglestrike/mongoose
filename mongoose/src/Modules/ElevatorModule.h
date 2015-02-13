@@ -21,6 +21,7 @@ public:
 	void PIDWrite(float output){
 		m_Motor_1->PIDWrite(output);
 		m_Motor_2->PIDWrite(output);
+		//Cole wuz here
 	}
 
 private:

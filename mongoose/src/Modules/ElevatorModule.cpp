@@ -10,6 +10,7 @@ ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonP
 	m_Motor_1 = new SafeTalonSRX(motorPort1, m_SafteyButton);
 	m_Motor_2 = new SafeTalonSRX(motorPort2, m_SafteyButton);
 }
+//Cole Was here
 
 ElevatorModule::~ElevatorModule(){
 
