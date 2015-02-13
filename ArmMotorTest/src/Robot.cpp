@@ -236,9 +236,9 @@ private:
 	void TestInit() {
 		//rightArm->SetPercentTolerance(.10);
 		calibrate();
-		//rightArm->Enable();
+		rightArm->Enable();
 		leftArm->Enable();
-		//diffController->Enable();
+		diffController->Enable();
 		//leftArm->SetSetpoint(1);
 	}
 
@@ -420,7 +420,7 @@ private:
 		//		else leftArm->SetSetpoint(4);
 		//
 
-		TestPeriodic3();
+		TestPeriodic1();
 
 		lw->Run();
 		Wait(0.05);
