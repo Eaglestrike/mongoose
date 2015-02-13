@@ -174,8 +174,8 @@ private:
 		leftOut = new ArmOut();
 		diffController = new PIDController(0, 0, 0, armDiff, outPut);
 		//diffController = new PIDController(0.022,0,0,armDiff, rSafeMotor);
-		rightArm = new PIDController( 0.376/2 , 0 , 0,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
-		leftArm = new PIDController(0, 0, 0, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
+		rightArm = new PIDController( 0.376/2 , 0.0009 , 0,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
+		leftArm = new PIDController(.45/2, 0.001, 0.08875, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
 		leftArm->SetOutputRange(-MAX_SAFE_LEFT, MAX_SAFE_LEFT);
 		rightArm->SetOutputRange(-MAX_SAFE_RIGHT, MAX_SAFE_RIGHT);
 		timeOfController = new Timer();
@@ -237,7 +237,7 @@ private:
 		//rightArm->SetPercentTolerance(.10);
 		calibrate();
 		//rightArm->Enable();
-		rightArm->Enable();
+		leftArm->Enable();
 		//diffController->Enable();
 		//leftArm->SetSetpoint(1);
 	}
@@ -322,15 +322,15 @@ private:
 		else if(controller->getBack())
 			leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() - .002);
 
-		if(leftArm->GetError() >= prevError - .05 && leftArm->GetError() <= prevError + .05 ) {
-			timeOfController->Start();
-		}
-		else {
-			timeOfController->Stop();
-			timeOfController->Reset();
-		}
-
-		if(timeOfController->Get() > .5) leftArm->Disable();
+//		if(leftArm->GetError() >= prevError - .05 && leftArm->GetError() <= prevError + .05 ) {
+//			timeOfController->Start();
+//		}
+//		else {
+//			timeOfController->Stop();
+//			timeOfController->Reset();
+//		}
+//
+//		if(timeOfController->Get() > .5) leftArm->Disable();
 
 		if(controller->getX()) {
 			leftArm->SetSetpoint(6);
