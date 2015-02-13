@@ -174,8 +174,8 @@ private:
 		leftOut = new ArmOut();
 		diffController = new PIDController(0, 0, 0, armDiff, outPut);
 		//diffController = new PIDController(0.022,0,0,armDiff, rSafeMotor);
-		rightArm = new PIDController(.298/2/*.029*//*.018*/, 0.0023 , .072/*.026*/ /* .012*/, rEncoder, rightOut);
-		leftArm = new PIDController(0.554/2 /*.03257*/, .0016, .218, lEncoder, leftOut);
+		rightArm = new PIDController( 0.376/2 , 0 , 0,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
+		leftArm = new PIDController(0, 0, 0, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
 		leftArm->SetOutputRange(-MAX_SAFE_LEFT, MAX_SAFE_LEFT);
 		rightArm->SetOutputRange(-MAX_SAFE_RIGHT, MAX_SAFE_RIGHT);
 		timeOfController = new Timer();
@@ -420,7 +420,7 @@ private:
 		//		else leftArm->SetSetpoint(4);
 		//
 
-		TestPeriodic1();
+		TestPeriodic3();
 
 		lw->Run();
 		Wait(0.05);

@@ -10,6 +10,7 @@ private:
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
+		module = new ElevatorModule()
 
 	}
 
