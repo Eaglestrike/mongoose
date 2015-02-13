@@ -8,6 +8,8 @@
 #ifndef SAFEVICTOR_H_
 #define SAFEVICTOR_H_
 
+#include "WPILib.h"
+
 class SafeVictor: public Victor{
 
 public:

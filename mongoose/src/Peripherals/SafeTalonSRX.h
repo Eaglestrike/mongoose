@@ -8,6 +8,8 @@
 #ifndef SAFETALON_H_
 #define SAFETALON_H_
 
+#include "WPIlib.h"
+
 class SafeTalonSRX: public TalonSRX{
 
 public:

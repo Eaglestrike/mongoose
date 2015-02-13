@@ -1,9 +1,8 @@
-#include "ArmModule.h"
 #include <assert.h>
 #include <math.h>
 
 ScorpionModule::ScorpionModule(int solenoid, int motorA) :
-RobotModule("ScorpionModule"),
+RobotModule("Scorpion"),
 m_solenoid(solenoid)
 {
 	/* Constructor */
