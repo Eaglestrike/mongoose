@@ -8,6 +8,9 @@
 #include "ArmModule.h"
 #include "Settings.h"
 
+#define MAX_LEFT .5
+#define MAX_RIGHT .5
+
 ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
 : RobotModule("ArmModule"),
   m_Right_Talon(rightTalonPort) , m_Left_Talon(leftTalonPort),
@@ -66,6 +69,26 @@ void ArmModule::disable() {
 	disableDeltaX();
 	m_Right_Arm_Controller->Disable();
 	m_Left_Arm_Controller->Disable();
+}
+void ArmModule::calibrate() {
+
+	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
+		if(m_Right_Talon->getButton()) {
+			m_Right_Talon->Set(0);
+		}
+		else {
+			m_Right_Talon->Set(MAX_RIGHT);
+		}
+		if(m_Left_Talon->getButton()) {
+			m_Left_Talon->Set(0);
+		}
+		else {
+			m_Left_Talon(-MAX_LEFT);
+		}
+	}
+
+	m_Right_Encoder->Reset();
+	m_Left_Encoder->Reset();
 }
 
 ArmModule::~ArmModule() {}
