@@ -3,7 +3,7 @@
 #include <algorithm>
 
 
-DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB) :
+DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) :
 	RobotModule(std::string("DriveModule"))
 {
 
@@ -12,7 +12,7 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB)
 	m_Right_Victor_1 = new Victor(rv1);
 	m_Right_Victor_2 = new Victor(rv2);
 
-	m_Gyro = new ADXRS453Z(1);
+	m_Gyro = new ADXRS453Z(gyroPort);
 
 	m_Left_Encoder->SetReverseDirection(true);
 
@@ -50,22 +50,6 @@ void DriveModule::drive(double throttle, double angle) {
 
 	double leftMotorOutput =  0;
 	double rightMotorOutput = 0;
-
-			//std::cout << angle <<std::endl;
-	//		if(angle < 0.0)
-	//			angle = -(angle * angle);
-	//		else
-	//			angle = angle * angle;
-	if(angle ==0) angle = 0;
-	else if(angle < 0.0) {
-		angle  = - pow(-angle, 1.842);
-	}
-	else angle = pow(angle, 1.842);
-
-	if(throttle > 0.0)
-		throttle = throttle * throttle;
-	else
-		throttle = - throttle * throttle;
 
 	if(throttle > 0.0) {
 		angle = -angle;
