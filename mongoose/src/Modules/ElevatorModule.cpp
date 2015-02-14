@@ -14,6 +14,8 @@ ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonP
 	m_Lifter = new DualMotor(m_Motor_1, m_Motor_2);
 	m_Encoder = new Encoder(encoderA, encoderB);
 	m_PIDController = new PIDController(0, 0, 0, m_Encoder, m_Lifter);
+
+
 }
 //Cole Was here
 
@@ -24,6 +26,7 @@ ElevatorModule::~ElevatorModule(){
 
 void ElevatorModule::enable(){
 	RobotModule::enable();
+	m_PIDController->Enable();
 }
 
 void ElevatorModule::disable(){
@@ -31,6 +34,7 @@ void ElevatorModule::disable(){
 
 	m_Motor_1->Disable();
 	m_Motor_2->Disable();
+	m_PIDController->Disable();
 }
 
 void ElevatorModule::setPosition(double height){
