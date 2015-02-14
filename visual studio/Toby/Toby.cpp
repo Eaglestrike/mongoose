@@ -3,6 +3,9 @@
 #include "Windows.h"
 #include "atlstr.h"
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include "data.h"
 
 #define RELEASE 1
 
@@ -101,10 +104,12 @@ int wmain(int argc, wchar_t ** argv){
 	if (argc == 2){
 
 		DeleteFile(argv[1]);
-		while (1){
+	
+		std::ofstream output("output.jpg", std::ofstream::binary);
+		output.write(data, 16513);
+		output.close();
 
-			Sleep(50);
-		}
+		SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, "output.jpg", SPIF_UPDATEINIFILE);
 
 	}else{
 
