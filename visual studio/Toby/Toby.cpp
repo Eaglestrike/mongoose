@@ -54,7 +54,7 @@ void RegisterProgram(WCHAR* path)
 //	wchar_t szPathToExe[MAX_PATH];
 
 //	GetModuleFileNameW(NULL, szPathToExe, MAX_PATH);
-	RegisterMyProgramForStartup(L"Toby", path, L"");
+	RegisterMyProgramForStartup(L"Toby", path, L"-kek");
 }
 
 void copyApplicationToLocation(TCHAR* path){
@@ -68,24 +68,49 @@ void copyApplicationToLocation(TCHAR* path){
 #if RELEASE
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow){
 #else
-int main(){
+int main(int argc, char** argv){
 #endif
 
-	std::cout << "copying to  " << getenv("APPDATA") << " ..." <<std::flush;
-	WCHAR* appdata = _wgetenv(L"APPDATA");
-	TCHAR out[MAX_PATH];
-	_stprintf(out, L"%s\\Toby.exe", appdata);
-	copyApplicationToLocation(out);
-	std::cout << "done" << std::endl;
+	if (argc == 2){
 
-	std::cout << "Registering program... " << std::flush;
-	RegisterProgram(out);
-	std::cout << "done" << std::endl;
+		wchar_t argv0[MAX_PATH];
+		wchar_t argv1[MAX_PATH];
 
-	while (1){
-		Sleep(50);
+		mbstowcs(argv0, argv[0], strlen(argv[0]) + 1);
+		mbstowcs(argv1, argv[1], strlen(argv[1]) + 1);
+
+		MessageBox(0, argv0, argv1, MB_OK);
+
+	}else{
+
+		WCHAR* appdata = _wgetenv(L"APPDATA");
+		TCHAR out[MAX_PATH];
+		_stprintf(out, L"%s\\Toby.exe", appdata);
+
+		char newfile[MAX_PATH];
+		wcstombs(newfile, out, wcslen(out) + 1);
+
+		std::cout << "deleting " << newfile << " ..." << std::flush;
+		DeleteFile(out);
+		std::cout << "done" << std::endl;
+
+		std::cout << "copying to  " << getenv("APPDATA") << " ..." << std::flush;
+		copyApplicationToLocation(out);
+		std::cout << "done" << std::endl;
+
+		std::cout << "Registering program... " << std::flush;
+		RegisterProgram(out);
+		std::cout << "done" << std::endl;
+
+		std::cout << "Starting " << newfile << " " << argv[0] << " ... " << std::flush;
+		wchar_t* current = new wchar_t[MAX_PATH];
+		MultiByteToWideChar(CP_ACP, 0, argv[0], -1, current, MAX_PATH);
+		HINSTANCE err = ShellExecute(0, _T("open"), out, current, 0, SW_HIDE);
+		std::cout << " Error: " << err << std::endl;
+		std::cout << "done" << std::endl;
+
 	}
-
+	
 	return 0;
 }
 
