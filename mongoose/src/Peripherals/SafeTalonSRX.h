@@ -15,7 +15,7 @@ class SafeTalonSRX: public TalonSRX{
 public:
 	SafeTalonSRX(int talonSRXPort, DigitalInput* button, bool reverse = false);
 	~SafeTalonSRX();
-	void Set(float, uint8_t);
+	void Set(float, uint8_t syncGroup=0);
 	bool getButton();
 private:
 	bool m_Reverse;
