@@ -6,8 +6,8 @@ using namespace std;
 
 
 #define TOBY_MODE 0
-#define MAX_SAFE_RIGHT 1
-#define MAX_SAFE_LEFT 1
+#define MAX_SAFE_RIGHT .5
+#define MAX_SAFE_LEFT .5
 
 
 class ArmEncoder: public PIDSource {
@@ -138,6 +138,7 @@ class Robot: public IterativeRobot
 private:
 	LiveWindow *lw;
 	Xbox* controller;
+	Xbox* controller2;
 	ModifiedEncoder* lEncoder;
 	ModifiedEncoder* rEncoder;
 	SafeMotor* lSafeMotor;
@@ -162,6 +163,7 @@ private:
 	{
 		lw = LiveWindow::GetInstance();
 		controller = new Xbox(0);
+		controller2 = new Xbox(1);
 		lEncoder = new ModifiedEncoder(0,1,0);
 		rEncoder = new ModifiedEncoder(2,3, 14 /*no*/);
 		midButton = new DigitalInput(6);
@@ -172,8 +174,8 @@ private:
 		outPut = new ArmOut();
 		rightOut = new ArmOut();
 		leftOut = new ArmOut();
-		diffController = new PIDController(0, 0, 0, armDiff, outPut);
-		//diffController = new PIDController(0.022,0,0,armDiff, rSafeMotor);
+		diffController = new PIDController(.274, 0, 0, armDiff, outPut);
+		//diffController = new PIDController(0.02,0,0,armDiff, rSafeMotor);
 		rightArm = new PIDController( 0.376/2 , 0.0009 , 0,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
 		leftArm = new PIDController(.45/2, 0.001, 0.08875, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
 		leftArm->SetOutputRange(-MAX_SAFE_LEFT, MAX_SAFE_LEFT);
@@ -236,13 +238,13 @@ private:
 	void TestInit() {
 		//rightArm->SetPercentTolerance(.10);
 		calibrate();
-		rightArm->Enable();
+		//rightArm->Enable();
 		leftArm->Enable();
-		diffController->Enable();
+		//diffController->Enable();
 		//leftArm->SetSetpoint(1);
 	}
 
-	double deltaX = 5;
+	double deltaX = 7;
 
 	void TestPeriodic1(){
 		if(controller->getB() != pressedB) {
@@ -258,23 +260,34 @@ private:
 
 
 
-		if(controller->getY()) {
-			if(counter % 6 == 0)
-				diffController->SetPID(diffController->GetP() + 0.0001, diffController->GetI(), diffController->GetD());
-			else if(counter % 4 == 2)
-				diffController->SetPID(diffController->GetP(), diffController->GetI() + 0.0000001, diffController->GetD());
-			else if(counter % 2 == 0)
-				diffController->SetPID(diffController->GetP(), diffController->GetI(), diffController->GetD() + .0001);
-		}
-		else if(controller->getA() && diffController->GetP() > 0.0001) {
-			if(counter % 6 == 0)
-				diffController->SetPID(diffController->GetP() - 0.0001, diffController->GetI(), diffController->GetD());
-			else if(counter % 4 == 2)
-				diffController->SetPID(diffController->GetP(), diffController->GetI() - 0.0000001, diffController->GetD());
-			else if(counter % 2 == 0)
-				diffController->SetPID(diffController->GetP(), diffController->GetI(), diffController->GetD() - .0001);
-		}
+		if(controller->getY())
+			diffController->SetPID(diffController->GetP() + .001, diffController->GetI(), diffController->GetD());
+		else if(controller->getB())
+			diffController->SetPID(diffController->GetP(), diffController->GetI() + .0001, diffController->GetD());
+		else if(controller->getStart())
+			diffController->SetPID(diffController->GetP(), diffController->GetI(), diffController->GetD() + .002);
+		else if(controller->getA())
+			diffController->SetPID(diffController->GetP() - .001, diffController->GetI(), diffController->GetD());
+		else if(controller->getLB())
+			diffController->SetPID(diffController->GetP(), diffController->GetI() - .0001, diffController->GetD());
+		else if(controller->getBack())
+			diffController->SetPID(diffController->GetP(), diffController->GetI(), diffController->GetD() - .002);
+
 		double setpoint = leftArm->GetSetpoint()+controller->getLX()/5.0;
+		if(controller->getL3()) {
+			setpoint = 3;
+		}
+		else if(controller->getR3()) {
+			setpoint = 7;
+		}
+
+		if(controller2->getX()) {
+			diffController->Disable();
+		}
+		else if(controller2->GetY()) {
+			diffController->Enable();
+		}
+		else setpoint = leftArm->GetSetpoint()+controller->getLX()/5.0;
 
 		if(setpoint + deltaX > 14)
 			setpoint = 14 - deltaX;
@@ -284,18 +297,18 @@ private:
 		leftArm->SetSetpoint(setpoint);
 		rightArm->SetSetpoint(setpoint+deltaX);
 		diffController->SetSetpoint(deltaX);
-		if(abs(leftArm->GetError()) < 0.025) {
+		if(abs(leftArm->GetError()) < 0.1) {
 			lSafeMotor->setWithinErrorRange(true);
 		}else{
 			lSafeMotor->setWithinErrorRange(false);
 		}
 
-		if(abs(diffController->GetError()) < 0.025){
+		if(abs(diffController->GetError()) < 0.1){
 			rSafeMotor->setWithinErrorRange(true);
 		}else{
 			rSafeMotor->setWithinErrorRange(false);
 		}
-		rSafeMotor->PIDWrite(rightOut->getPower() - outPut->getPower());
+		rSafeMotor->PIDWrite(rightOut->getPower() + outPut->getPower());
 		lSafeMotor->PIDWrite(leftOut->getPower() + outPut->getPower());
 		if(in % 12 == 0)
 			cout << "p: " << diffController->GetP() << " i: " <<  diffController->GetI() << " d:" << diffController->GetD() << " deltaX: " << deltaX <<  " error: " << diffController->GetError() << " leftPos: "  << lEncoder->PIDGet() << " rightPos: " << rEncoder->PIDGet() << " diffPos: " << diffController->Get() << " lsp: " << leftArm->GetSetpoint() << " rsp: " << rightArm->GetSetpoint() << " dsp: " << diffController->GetSetpoint() <<endl;
@@ -322,15 +335,15 @@ private:
 		else if(controller->getBack())
 			leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() - .002);
 
-//		if(leftArm->GetError() >= prevError - .05 && leftArm->GetError() <= prevError + .05 ) {
-//			timeOfController->Start();
-//		}
-//		else {
-//			timeOfController->Stop();
-//			timeOfController->Reset();
-//		}
-//
-//		if(timeOfController->Get() > .5) leftArm->Disable();
+		//		if(leftArm->GetError() >= prevError - .05 && leftArm->GetError() <= prevError + .05 ) {
+		//			timeOfController->Start();
+		//		}
+		//		else {
+		//			timeOfController->Stop();
+		//			timeOfController->Reset();
+		//		}
+		//
+		//		if(timeOfController->Get() > .5) leftArm->Disable();
 
 		if(controller->getX()) {
 			leftArm->SetSetpoint(6);
@@ -420,7 +433,7 @@ private:
 		//		else leftArm->SetSetpoint(4);
 		//
 
-		TestPeriodic1();
+		TestPeriodic2();
 
 		lw->Run();
 		Wait(0.05);
