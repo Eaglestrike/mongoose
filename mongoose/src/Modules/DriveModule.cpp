@@ -37,32 +37,13 @@ void DriveModule::setPower(double left, double right) {
 
 }
 
-void DriveModule::setTargetVelocity(float vel)  {
-	targetVelocity = vel;
-}
 
 void DriveModule::drive(double throttle, double angle) {
-	driveFunc.transformThrottle(throttle);
-	driveFunc.transformAngle(angle);
+	throttle = driveFunc.transformThrottle(throttle);
+	angle = driveFunc.transformAngle(angle);
 
 	double leftMotorOutput =  0;
 	double rightMotorOutput = 0;
-
-			//std::cout << angle <<std::endl;
-	//		if(angle < 0.0)
-	//			angle = -(angle * angle);
-	//		else
-	//			angle = angle * angle;
-	if(angle ==0) angle = 0;
-	else if(angle < 0.0) {
-		angle  = - pow(-angle, 1.842);
-	}
-	else angle = pow(angle, 1.842);
-
-	if(throttle > 0.0)
-		throttle = throttle * throttle;
-	else
-		throttle = - throttle * throttle;
 
 	if(throttle > 0.0) {
 		angle = -angle;
