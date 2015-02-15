@@ -174,10 +174,10 @@ private:
 		outPut = new ArmOut();
 		rightOut = new ArmOut();
 		leftOut = new ArmOut();
-		diffController = new PIDController(.274, 0, 0, armDiff, outPut);
+		diffController = new PIDController(0, 0, 0, armDiff, outPut);
 		//diffController = new PIDController(0.02,0,0,armDiff, rSafeMotor);
-		rightArm = new PIDController( 0.376/2 , 0.0009 , 0,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
-		leftArm = new PIDController(.45/2, 0.001, 0.08875, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
+		rightArm = new PIDController( 0.174 , 0.0012 , 0.0262,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
+		leftArm = new PIDController(.377299, 0.0012, 0.23875, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
 		leftArm->SetOutputRange(-MAX_SAFE_LEFT, MAX_SAFE_LEFT);
 		rightArm->SetOutputRange(-MAX_SAFE_RIGHT, MAX_SAFE_RIGHT);
 		timeOfController = new Timer();
@@ -238,9 +238,9 @@ private:
 	void TestInit() {
 		//rightArm->SetPercentTolerance(.10);
 		calibrate();
-		//rightArm->Enable();
+		rightArm->Enable();
 		leftArm->Enable();
-		//diffController->Enable();
+		diffController->Enable();
 		//leftArm->SetSetpoint(1);
 	}
 
@@ -323,13 +323,13 @@ private:
 		}
 		pressedB = controller->getB();
 		if(controller->getY())
-			leftArm->SetPID(leftArm->GetP() + .002, leftArm->GetI(), leftArm->GetD());
+			leftArm->SetPID(leftArm->GetP() + .001/10, leftArm->GetI(), leftArm->GetD());
 		else if(controller->getB())
 			leftArm->SetPID(leftArm->GetP(), leftArm->GetI() + .0001, leftArm->GetD());
 		else if(controller->getStart())
 			leftArm->SetPID(leftArm->GetP(), leftArm->GetI(), leftArm->GetD() + .002);
 		else if(controller->getA())
-			leftArm->SetPID(leftArm->GetP() - .002, leftArm->GetI(), leftArm->GetD());
+			leftArm->SetPID(leftArm->GetP() - .001/10, leftArm->GetI(), leftArm->GetD());
 		else if(controller->getLB())
 			leftArm->SetPID(leftArm->GetP(), leftArm->GetI() - .0001, leftArm->GetD());
 		else if(controller->getBack())
@@ -371,17 +371,17 @@ private:
 		}
 		pressedB = controller->getB();
 		if(controller->getY())
-			rightArm->SetPID(rightArm->GetP() + .002, rightArm->GetI(), rightArm->GetD());
+			rightArm->SetPID(rightArm->GetP() + .001/10, rightArm->GetI(), rightArm->GetD());
 		else if(controller->getB())
-			rightArm->SetPID(rightArm->GetP(), rightArm->GetI() + .0001, rightArm->GetD());
+			rightArm->SetPID(rightArm->GetP(), rightArm->GetI() + .0001/10, rightArm->GetD());
 		else if(controller->getStart())
-			rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() + .002);
+			rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() + .002/10);
 		else if(controller->getA())
-			rightArm->SetPID(rightArm->GetP() - .002, rightArm->GetI(), rightArm->GetD());
+			rightArm->SetPID(rightArm->GetP() - .001/10, rightArm->GetI(), rightArm->GetD());
 		else if(controller->getLB())
-			rightArm->SetPID(rightArm->GetP(), rightArm->GetI() - .0001, rightArm->GetD());
+			rightArm->SetPID(rightArm->GetP(), rightArm->GetI() - .0001/10, rightArm->GetD());
 		else if(controller->getBack())
-			rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() - .002);
+			rightArm->SetPID(rightArm->GetP(), rightArm->GetI(), rightArm->GetD() - .002/10);
 
 		if(controller->getX()) {
 			rightArm->SetSetpoint(10);
@@ -433,8 +433,7 @@ private:
 		//		else leftArm->SetSetpoint(4);
 		//
 
-		TestPeriodic2();
-
+		TestPeriodic1();
 		lw->Run();
 		Wait(0.05);
 	}

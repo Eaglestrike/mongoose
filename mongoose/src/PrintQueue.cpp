@@ -28,6 +28,8 @@ void PrintQueue::print() {
 }
 
 void PrintQueue::add(std::string log) {
-	queue.push_back(log);
+	if(count % mod == 0)
+		queue.push_back(log);
+	count++;
 }
 

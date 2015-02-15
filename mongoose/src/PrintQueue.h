@@ -21,6 +21,7 @@ public:
 private:
 	std::vector<std::string> queue;
 	int mod;
+	int count = 0;
 };
 
 #endif /* PRINTQUEUE_H_ */
