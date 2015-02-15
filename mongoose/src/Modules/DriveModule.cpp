@@ -40,9 +40,6 @@ void DriveModule::setPower(double left, double right) {
 
 }
 
-void DriveModule::setTargetVelocity(float vel)  {
-	targetVelocity = vel;
-}
 
 void DriveModule::drive(double throttle, double angle) {
 	driveFunc.transformThrottle(throttle);
@@ -75,6 +72,14 @@ void DriveModule::drive(double throttle, double angle) {
 
 	}
 	setPower(leftMotorOutput, rightMotorOutput);
+}
+
+double DriveModule::getLeftPower(){
+	return m_Left_Victor_1->Get();
+}
+
+double DriveModule::getRightPower(){
+	return m_Right_Victor_1->Get();
 }
 
 DriveModule::~DriveModule() {

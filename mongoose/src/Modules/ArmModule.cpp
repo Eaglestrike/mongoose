@@ -11,11 +11,13 @@
 #define MAX_LEFT 0.5
 #define MAX_RIGHT 0.5
 
-ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int leftButtonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
+ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int midButtonPort, int leftButtonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
 : RobotModule("Arm")
 {
 	DigitalInput* rightButton = new DigitalInput(rightButtonPort);
 	DigitalInput* leftButton = new DigitalInput(leftButtonPort);
+	m_Saftey_Button = new DigitalInput(midButtonPort);
+
 	m_Left_Talon = new SafeTalonSRX(leftTalonPort, leftButton, false);
 	m_Right_Talon = new SafeTalonSRX(rightTalonPort, rightButton, true);
 	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
@@ -100,3 +102,31 @@ void ArmModule::calibrate() {
 }
 
 ArmModule::~ArmModule() {}
+
+bool ArmModule::getLeftButton(){
+	return m_Left_Talon->getButton();
+}
+
+bool ArmModule::getMidButton(){
+	return m_Saftey_Button->Get();
+}
+
+bool ArmModule::getRightButton(){
+	return m_Right_Talon->getButton();
+}
+
+double ArmModule::getLeftPosition(){
+	return m_Left_Encoder->PIDGet();
+}
+
+double ArmModule::getRightPosition(){
+	return m_Right_Encoder->PIDGet();
+}
+
+double ArmModule::getLeftPower(){
+	return m_Left_Talon->Get();
+}
+
+double ArmModule::getRightPower(){
+	return m_Right_Talon->Get();
+}

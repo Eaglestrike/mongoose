@@ -84,15 +84,14 @@ public:
 	~DriveModule();
 
 	void resetEncoders();
-	void setPower(double left, double right);
 	void drive(double throttle, double angle);
 	void enable();
 	void disable();
 	void reset();
 	void setTargetVelocity(float vel);
-	double getPower();
 
-
+	double getLeftPower();
+	double getRightPower();
 
 private:
 	/*   Hardware Stuff    */
@@ -110,8 +109,7 @@ private:
 	/*drive Functions */
 	DriveFunction driveFunc;
 
-	/*    */
-	float targetVelocity;
+	void setPower(double left, double right);
 
 
 };

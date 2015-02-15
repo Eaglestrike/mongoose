@@ -48,3 +48,7 @@ void ElevatorModule::setPower(double power){
 void ElevatorModule::setPID(double p, double i, double d){
 	m_PIDController->SetPID(p, i, d);
 }
+
+bool ElevatorModule::getButton(){
+	return m_SafteyButton->Get();
+}

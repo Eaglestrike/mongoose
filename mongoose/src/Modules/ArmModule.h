@@ -64,7 +64,7 @@ public:
 
 class ArmModule : public RobotModule{
 public:
-	ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int leftButtonPort, int rEncoderA,
+	ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int midButtonPort, int leftButtonPort, int rEncoderA,
 			int rEncoderB, int lEncoderA, int lEncoderB);
 	virtual ~ArmModule();
 	void setDeltaX(double deltaX);
@@ -76,11 +76,21 @@ public:
 	void reset();
 	void calibrate();
 
+	bool getLeftButton();
+	bool getMidButton();
+	bool getRightButton();
+
+	double getLeftPosition();
+	double getRightPosition();
+	double getLeftPower();
+	double getRightPower();
+
 private:
 	void setSetPoint(float setPoint);
 
 	SafeTalonSRX* m_Left_Talon;
 	SafeTalonSRX* m_Right_Talon;
+	DigitalInput* m_Saftey_Button;
 	ModifiedEncoder* m_Left_Encoder;
 	ModifiedEncoder* m_Right_Encoder;
 	PIDController* m_Left_Arm_Controller;
