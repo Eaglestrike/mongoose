@@ -4,7 +4,6 @@
 #include "WPIlib.h"
 #include "Modules/Modules.h"
 #include "Settings.h"
-#include "PrintQueue.h"
 
 class Robot: public IterativeRobot
 {

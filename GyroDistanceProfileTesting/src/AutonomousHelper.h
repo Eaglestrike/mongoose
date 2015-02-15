@@ -6,7 +6,6 @@
  */
 #include "WPILib.h"
 #include "DistanceProfile.h"
-#include "PIDOUT.h"
 #include "ADXRS453Z.h"
 
 #ifndef SRC_AUTONOMOUSHELPER_H_

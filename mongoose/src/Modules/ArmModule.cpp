@@ -8,17 +8,22 @@
 #include "ArmModule.h"
 #include "../Settings.h"
 
-#define MAX_LEFT .5
-#define MAX_RIGHT .5
+#define MAX_LEFT 0.5
+#define MAX_RIGHT 0.5
 
-ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
-: RobotModule("ArmModule"),
-  m_Right_Talon(rightTalonPort) , m_Left_Talon(leftTalonPort),
-  m_Right_Encoder(rEncoderA, rEncoderB), m_Left_Encoder(lEncoderA, lEncoderB),
-  m_Right_Output(), m_Left_Output(), m_Arm_Difference_Input(m_Right_Encoder, m_Left_Encoder), m_Diff_Output()
+ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int leftButtonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
+: RobotModule("Arm")
 {
-
-
+	DigitalInput* rightButton = new DigitalInput(rightButtonPort);
+	DigitalInput* leftButton = new DigitalInput(leftButtonPort);
+	m_Right_Talon = new SafeTalonSRX(rightTalonPort, rightButton, true);
+	m_Left_Talon = new SafeTalonSRX(leftTalonPort, leftButton, false);
+	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
+	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
+	m_Right_Output = new ArmOut();
+	m_Left_Output = new ArmOut();
+	m_Arm_Difference_Input = new ArmDifference(m_Right_Encoder, m_Left_Encoder);
+	m_Diff_Output = new ArmOut();
 
 	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
@@ -86,7 +91,7 @@ void ArmModule::calibrate() {
 			m_Left_Talon->Set(0);
 		}
 		else {
-			m_Left_Talon(-MAX_LEFT);
+			m_Left_Talon->Set(-MAX_LEFT);
 		}
 	}
 

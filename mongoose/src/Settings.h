@@ -37,6 +37,8 @@
 #define DIFF_ARM_1_KD 0.0
 #define DIFF_ARM_1_KI 0.0
 
+#define MAX_DELTA_X 14
+
 /*Drive*/
 #define DRIVE_LEFT_1 0
 #define DRIVE_LEFT_2 1

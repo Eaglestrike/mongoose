@@ -10,6 +10,7 @@
 
 #include "WPILib.h"
 #include "RobotBase.h"
+#include "RobotModule.h"
 #include "../Peripherals/SafeTalonSRX.h"
 
 class ModifiedEncoder: public Encoder {
@@ -36,6 +37,9 @@ public:
 		right = rE;
 		left = le;
 	}
+
+	virtual ~ArmDifference(){}
+
 	double PIDGet() {
 		return right->PIDGet() - left->PIDGet();
 	}
@@ -46,8 +50,9 @@ private:
 	double power;
 
 public:
-	ArmOut() {
-	}
+	ArmOut(): power(0) {}
+	virtual ~ArmOut(){}
+
 	void PIDWrite(float output) {
 		power = output;
 	}
@@ -59,7 +64,7 @@ public:
 
 class ArmModule : public RobotModule{
 public:
-	ArmModule(int rightTalonPort, int leftTalonPort, int rEncoderA,
+	ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int leftButtonPort, int rEncoderA,
 			int rEncoderB, int lEncoderA, int lEncoderB);
 	virtual ~ArmModule();
 	void setDeltaX(double deltaX);
