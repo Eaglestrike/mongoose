@@ -10,15 +10,14 @@ class Robot: public IterativeRobot
 {
 private:
 	LiveWindow *lw;
-	ElevatorModule* module;
-	ElevatorModule* elevator;
-	PrintQueue* qu;
+	ElevatorModule* elevatorModule;
+	DriveModule* driveModule;
 
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-		elevator = new ElevatorModule(ELEVATOR_1, ELEVATOR_2, ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
-		qu = new PrintQueue(10);
+		elevatorModule = new ElevatorModule(ELEVATOR_1, ELEVATOR_2, ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
+		driveModule = new DriveModule(DRIVE_LEFT_1, DRIVE_LEFT_2, DRIVE_RIGHT_1, DRIVE_RIGHT_2, DRIVE_ENCODER_A, DRIVE_ENCODER_B, DRIVE_GYRO);
 	}
 
 	void AutonomousInit()
@@ -38,7 +37,7 @@ private:
 
 	void TeleopPeriodic()
 	{
-		qu->add("piss");
+
 	}
 
 	void TestPeriodic()

