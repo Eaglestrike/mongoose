@@ -78,7 +78,7 @@ public:
 
 class DriveModule : public RobotModule{
 
-	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB) ;
+	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) ;
 	~DriveModule();
 public:
 
