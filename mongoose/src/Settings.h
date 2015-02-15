@@ -17,25 +17,47 @@
 
 
 /*Arm*/
-#define RIGHT_ARM_1_KP 0.0;
-#define LEFT_ARM_1_KP 0.0;
-#define RIGHT_ARM_1_KI 0.0;
-#define LEFT_ARM_1_KI 0.0;
-#define RIGHT_ARM_1_KD 0.0;
-#define LEFT_ARM_1_KD 0.0;
-#define DIFF_ARM_1_KP 0.0;
-#define DIFF_ARM_1_KD 0.0;
-#define DIFF_ARM_1_KI 0.0;
 
-#define RIGHT_ARM_2_KP 0.0;
-#define LEFT_ARM_2_KP 0.0;
-#define RIGHT_ARM_2_KI 0.0;
-#define LEFT_ARM_2_KI 0.0;
-#define RIGHT_ARM_2_KD 0.0;
-#define LEFT_ARM_2_KD 0.0;
-#define DIFF_ARM_1_KP 0.0;
-#define DIFF_ARM_1_KD 0.0;
-#define DIFF_ARM_1_KI 0.0;
+#define LEFT_ARM_MOTOR 6
+#define RIGHT_ARM_MOTOR 7
+#define LEFT_ARM_BUTTON 27
+#define MID_ARM_BUTTON 27
+#define RIGHT_ARM_BUTTON 27
+#define LEFT_ARM_ENCODER_A 27
+#define LEFT_ARM_ENCODER_B 27
+#define RIGHT_ARM_ENCODER_A 27
+#define RIGHT_ARM_ENCODER_B 27
+
+#define RIGHT_ARM_1_KP 0.0
+#define LEFT_ARM_1_KP 0.0
+#define RIGHT_ARM_1_KI 0.0
+#define LEFT_ARM_1_KI 0.0
+#define RIGHT_ARM_1_KD 0.0
+#define LEFT_ARM_1_KD 0.0
+#define DIFF_ARM_1_KP 0.0
+#define DIFF_ARM_1_KD 0.0
+#define DIFF_ARM_1_KI 0.0
+
+#define RIGHT_ARM_2_KP 0.0
+#define LEFT_ARM_2_KP 0.0
+#define RIGHT_ARM_2_KI 0.0
+#define LEFT_ARM_2_KI 0.0
+#define RIGHT_ARM_2_KD 0.0
+#define LEFT_ARM_2_KD 0.0
+#define DIFF_ARM_2_KP 0.0
+#define DIFF_ARM_2_KD 0.0
+#define DIFF_ARM_2_KI 0.0
+
+#define MAX_DELTA_X 14
+
+/*Drive*/
+#define DRIVE_LEFT_1 0
+#define DRIVE_LEFT_2 1
+#define DRIVE_RIGHT_1 2
+#define DRIVE_RIGHT_2 3
+#define DRIVE_ENCODER_A 9
+#define DRIVE_ENCODER_B 10
+#define DRIVE_GYRO 0
 
 
 #endif /* SETTINGS_H_ */

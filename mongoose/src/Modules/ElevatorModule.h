@@ -53,6 +53,8 @@ public:
 	void setPower(double power);
 	void setPID(double p, double i, double d);
 
+	bool getButton();
+
 private:
 	SafeTalonSRX* m_Motor_1;
 	SafeTalonSRX* m_Motor_2;

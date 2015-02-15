@@ -7,6 +7,12 @@
 
 #ifndef ARMMODULE_H_
 #define ARMMODULE_H_
+
+#include "WPILib.h"
+#include "RobotBase.h"
+#include "RobotModule.h"
+#include "../Peripherals/SafeTalonSRX.h"
+
 class ModifiedEncoder: public Encoder {
 private:
 	double addedDistance;
@@ -31,6 +37,9 @@ public:
 		right = rE;
 		left = le;
 	}
+
+	virtual ~ArmDifference(){}
+
 	double PIDGet() {
 		return right->PIDGet() - left->PIDGet();
 	}
@@ -41,8 +50,9 @@ private:
 	double power;
 
 public:
-	ArmOut() {
-	}
+	ArmOut(): power(0) {}
+	virtual ~ArmOut(){}
+
 	void PIDWrite(float output) {
 		power = output;
 	}
@@ -54,7 +64,7 @@ public:
 
 class ArmModule : public RobotModule{
 public:
-	ArmModule(int rightTalonPort, int leftTalonPort, int rEncoderA,
+	ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int midButtonPort, int leftButtonPort, int rEncoderA,
 			int rEncoderB, int lEncoderA, int lEncoderB);
 	virtual ~ArmModule();
 	void setDeltaX(double deltaX);
@@ -63,21 +73,33 @@ public:
 	void disable();
 	void setLeftArm(float setpoint);
 	void setRightArm(float setpoint);
+	void setLeftPower(float power);
+	void setRightPower(float power);
 	void reset();
 	void calibrate();
+
+	bool getLeftButton();
+	bool getMidButton();
+	bool getRightButton();
+
+	double getLeftPosition();
+	double getRightPosition();
+	double getLeftPower();
+	double getRightPower();
 
 private:
 	void setSetPoint(float setPoint);
 
-	SafeTalonSRX* m_Right_Talon;
 	SafeTalonSRX* m_Left_Talon;
-	ModifiedEncoder* m_Right_Encoder;
+	SafeTalonSRX* m_Right_Talon;
+	DigitalInput* m_Saftey_Button;
 	ModifiedEncoder* m_Left_Encoder;
-	PIDController* m_Right_Arm_Controller;
+	ModifiedEncoder* m_Right_Encoder;
 	PIDController* m_Left_Arm_Controller;
+	PIDController* m_Right_Arm_Controller;
 	PIDController* m_Difference_Controller;
-	ArmOut* m_Right_Output;
 	ArmOut* m_Left_Output;
+	ArmOut* m_Right_Output;
 	ArmOut* m_Diff_Output;
 	ArmDifference* m_Arm_Difference_Input;
 	double m_DeltaX;

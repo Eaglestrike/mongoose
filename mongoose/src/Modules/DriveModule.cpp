@@ -21,7 +21,7 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 }
 
 void DriveModule::enable(){
-
+	RobotModule::enable();
 }
 
 void DriveModule::disable() {
@@ -72,6 +72,14 @@ void DriveModule::drive(double throttle, double angle) {
 
 	}
 	setPower(leftMotorOutput, rightMotorOutput);
+}
+
+double DriveModule::getLeftPower(){
+	return m_Left_Victor_1->Get();
+}
+
+double DriveModule::getRightPower(){
+	return m_Right_Victor_1->Get();
 }
 
 DriveModule::~DriveModule() {

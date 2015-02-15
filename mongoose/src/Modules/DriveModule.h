@@ -2,7 +2,7 @@
 #ifndef __DRIVE_MODULE_H
 #define __DRIVE_MODULE_H
 
-#include <WPILib.h>
+#include "WPILib.h"
 #include "RobotModule.h"
 #include "../Peripherals/ADXRS453Z.h"
 
@@ -78,11 +78,15 @@ public:
 
 class DriveModule : public RobotModule{
 
-	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB) ;
-	~DriveModule();
 public:
 
+<<<<<<< HEAD
 	void resetEncoders();
+=======
+	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) ;
+	~DriveModule();
+
+>>>>>>> c4438f7ec0ab5f36d38f8bdb3568931aeae00631
 	void drive(double throttle, double angle);
 <<<<<<< HEAD
 	void Enable();
@@ -92,11 +96,18 @@ public:
 	void enable();
 	void disable();
 	void reset();
+<<<<<<< HEAD
 >>>>>>> 564e8ec2062613f9fc14e8cb1892535c9e134b6b
 	void setTargetVelocity(float vel);
 	double getPower();
 
 
+=======
+
+	double getLeftPower();
+	double getRightPower();
+
+>>>>>>> c4438f7ec0ab5f36d38f8bdb3568931aeae00631
 private:
 	/*   Hardware Stuff    */
 	Victor* m_Left_Victor_1;
@@ -114,6 +125,10 @@ private:
 	DriveFunction driveFunc;
 
 	void setPower(double left, double right);
+<<<<<<< HEAD
+=======
+
+>>>>>>> c4438f7ec0ab5f36d38f8bdb3568931aeae00631
 
 };
 
