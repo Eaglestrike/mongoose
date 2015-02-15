@@ -73,6 +73,8 @@ public:
 	void disable();
 	void setLeftArm(float setpoint);
 	void setRightArm(float setpoint);
+	void setLeftPower(float power);
+	void setRightPower(float power);
 	void reset();
 	void calibrate();
 

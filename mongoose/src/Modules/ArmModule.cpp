@@ -64,6 +64,20 @@ void ArmModule::setRightArm(float setpoint) {
 	}
 }
 
+void ArmModule::setLeftPower(float power){
+	if(m_Saftey_Button->Get() && power > 0)
+		m_Left_Talon->Set(0);
+	else
+		m_Left_Talon->Set(power);
+}
+
+void ArmModule::setRightPower(float power){
+	if(m_Saftey_Button->Get() && power < 0)
+		m_Right_Talon->Set(0);
+	else
+		m_Right_Talon->Set(power);
+}
+
 void ArmModule::setDeltaX(double deltaX) {
 	m_Difference_Controller->Enable();
 	m_Difference_Controller->SetSetpoint(deltaX);

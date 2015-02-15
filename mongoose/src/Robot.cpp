@@ -73,11 +73,43 @@ private:
 		armModule->disable();
 	}
 
+#define MAX_DOWN -0.05
+#define MAX_UP 0.2
+#define MAX_ARM 0.5
+
 	void TeleopPeriodic()
 	{
 
 
 		driveModule->drive(leftJoy->GetY(), rightJoy->GetX());
+
+		double leftArmPower = xbox->getLX() * MAX_ARM;
+		double rightArmPower = xbox->getRX() * MAX_ARM;
+
+		if(armModule->getLeftButton() && leftArmPower < 0)
+			leftArmPower = 0;
+
+		if(armModule->getRightButton() && rightArmPower > 0)
+			rightArmPower = 0;
+
+		if(armModule->getMidButton()){
+			if(leftArmPower > 0)
+				leftArmPower = 0;
+			if(rightArmPower < 0)
+				rightArmPower = 0;
+		}
+
+		armModule->setLeftPower(leftArmPower);
+		armModule->setRightPower(rightArmPower);
+
+		double elevatorPower = xbox->getLY() * MAX_UP;
+		if(elevatorPower < MAX_DOWN)
+			elevatorPower = MAX_DOWN;
+
+		if(elevatorModule->getButton())
+			elevatorPower = 0;
+
+		elevatorModule->setPower(elevatorPower);
 
 		if(printCounter % 50 == 0){
 			cout << "LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << endl;
