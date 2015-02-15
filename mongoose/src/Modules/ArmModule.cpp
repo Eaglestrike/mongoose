@@ -6,7 +6,7 @@
  */
 
 #include "ArmModule.h"
-#include "Settings.h"
+#include "../Settings.h"
 
 #define MAX_LEFT .5
 #define MAX_RIGHT .5
@@ -17,6 +17,9 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rEncoderA, int r
   m_Right_Encoder(rEncoderA, rEncoderB), m_Left_Encoder(lEncoderA, lEncoderB),
   m_Right_Output(), m_Left_Output(), m_Arm_Difference_Input(m_Right_Encoder, m_Left_Encoder), m_Diff_Output()
 {
+
+
+
 	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
 	m_Difference_Controller = new PIDController(0, 0, 0, m_Arm_Difference_Input, m_Diff_Output);

@@ -17,25 +17,25 @@
 
 
 /*Arm*/
-#define RIGHT_ARM_1_KP 0.0;
-#define LEFT_ARM_1_KP 0.0;
-#define RIGHT_ARM_1_KI 0.0;
-#define LEFT_ARM_1_KI 0.0;
-#define RIGHT_ARM_1_KD 0.0;
-#define LEFT_ARM_1_KD 0.0;
-#define DIFF_ARM_1_KP 0.0;
-#define DIFF_ARM_1_KD 0.0;
-#define DIFF_ARM_1_KI 0.0;
+#define RIGHT_ARM_1_KP 0.0
+#define LEFT_ARM_1_KP 0.0
+#define RIGHT_ARM_1_KI 0.0
+#define LEFT_ARM_1_KI 0.0
+#define RIGHT_ARM_1_KD 0.0
+#define LEFT_ARM_1_KD 0.0
+#define DIFF_ARM_1_KP 0.0
+#define DIFF_ARM_1_KD 0.0
+#define DIFF_ARM_1_KI 0.0
 
-#define RIGHT_ARM_2_KP 0.0;
-#define LEFT_ARM_2_KP 0.0;
-#define RIGHT_ARM_2_KI 0.0;
-#define LEFT_ARM_2_KI 0.0;
-#define RIGHT_ARM_2_KD 0.0;
-#define LEFT_ARM_2_KD 0.0;
-#define DIFF_ARM_1_KP 0.0;
-#define DIFF_ARM_1_KD 0.0;
-#define DIFF_ARM_1_KI 0.0;
+#define RIGHT_ARM_2_KP 0.0
+#define LEFT_ARM_2_KP 0.0
+#define RIGHT_ARM_2_KI 0.0
+#define LEFT_ARM_2_KI 0.0
+#define RIGHT_ARM_2_KD 0.0
+#define LEFT_ARM_2_KD 0.0
+#define DIFF_ARM_1_KP 0.0
+#define DIFF_ARM_1_KD 0.0
+#define DIFF_ARM_1_KI 0.0
 
 /*Drive*/
 #define DRIVE_LEFT_1 0

@@ -7,6 +7,11 @@
 
 #ifndef ARMMODULE_H_
 #define ARMMODULE_H_
+
+#include "WPILib.h"
+#include "RobotBase.h"
+#include "../Peripherals/SafeTalonSRX.h"
+
 class ModifiedEncoder: public Encoder {
 private:
 	double addedDistance;

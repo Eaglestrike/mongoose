@@ -78,9 +78,10 @@ public:
 
 class DriveModule : public RobotModule{
 
+public:
+
 	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) ;
 	~DriveModule();
-public:
 
 	void resetEncoders();
 	void setPower(double left, double right);
