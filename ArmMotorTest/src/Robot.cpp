@@ -174,7 +174,7 @@ private:
 		outPut = new ArmOut();
 		rightOut = new ArmOut();
 		leftOut = new ArmOut();
-		diffController = new PIDController(0, 0, 0, armDiff, outPut);
+		diffController = new PIDController(0.217, 0, 0, armDiff, outPut);
 		//diffController = new PIDController(0.02,0,0,armDiff, rSafeMotor);
 		rightArm = new PIDController( 0.174 , 0.0012 , 0.0262,/* Arm 1 -> .298/2, 0.0023 , .072,*/ rEncoder, rightOut);
 		leftArm = new PIDController(.377299, 0.0012, 0.23875, /*Arm 1 -> 0.554/2 , .0016, .218, */lEncoder, leftOut);
