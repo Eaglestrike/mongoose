@@ -16,28 +16,28 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 {
 	DigitalInput* rightButton = new DigitalInput(rightButtonPort);
 	DigitalInput* leftButton = new DigitalInput(leftButtonPort);
-	m_Right_Talon = new SafeTalonSRX(rightTalonPort, rightButton, true);
 	m_Left_Talon = new SafeTalonSRX(leftTalonPort, leftButton, false);
-	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
+	m_Right_Talon = new SafeTalonSRX(rightTalonPort, rightButton, true);
 	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
-	m_Right_Output = new ArmOut();
+	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
 	m_Left_Output = new ArmOut();
+	m_Right_Output = new ArmOut();
 	m_Arm_Difference_Input = new ArmDifference(m_Right_Encoder, m_Left_Encoder);
 	m_Diff_Output = new ArmOut();
 
-	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
+	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Difference_Controller = new PIDController(0, 0, 0, m_Arm_Difference_Input, m_Diff_Output);
 }
 
 void ArmModule::enable() {
-	m_Right_Arm_Controller->Enable();
 	m_Left_Arm_Controller->Enable();
+	m_Right_Arm_Controller->Enable();
 }
 
 void ArmModule::setSetPoint(float setPoint) {
-	m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
 	m_Left_Arm_Controller->SetSetpoint(setPoint);
+	m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
 	m_Right_Talon->Set(m_Right_Output->getPower() + m_Diff_Output->getPower());
 	m_Left_Talon->Set(m_Left_Output->getPower() + m_Diff_Output->getPower());
 }

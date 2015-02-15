@@ -79,15 +79,15 @@ public:
 private:
 	void setSetPoint(float setPoint);
 
-	SafeTalonSRX* m_Right_Talon;
 	SafeTalonSRX* m_Left_Talon;
-	ModifiedEncoder* m_Right_Encoder;
+	SafeTalonSRX* m_Right_Talon;
 	ModifiedEncoder* m_Left_Encoder;
-	PIDController* m_Right_Arm_Controller;
+	ModifiedEncoder* m_Right_Encoder;
 	PIDController* m_Left_Arm_Controller;
+	PIDController* m_Right_Arm_Controller;
 	PIDController* m_Difference_Controller;
-	ArmOut* m_Right_Output;
 	ArmOut* m_Left_Output;
+	ArmOut* m_Right_Output;
 	ArmOut* m_Diff_Output;
 	ArmDifference* m_Arm_Difference_Input;
 	double m_DeltaX;
