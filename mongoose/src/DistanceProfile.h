@@ -18,6 +18,8 @@ public:
 	double getSetPoint(double time);
 	LogisticFunction getFunction();
 
+	bool isDone;
+
 private:
 	float start;
 	float end;

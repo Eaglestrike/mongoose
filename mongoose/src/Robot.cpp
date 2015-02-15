@@ -1,21 +1,21 @@
-#include "WPILib.h"
-#include "DistanceProfile.h"
+
 #include <iostream>
+
+#include "WPIlib.h"
+#include "Modules/Modules.h"
+#include "Settings.h"
 
 class Robot: public IterativeRobot
 {
 private:
 	LiveWindow *lw;
-	DistanceProfile *prof;
-	DistanceProfile *prof2;
-	Timer *times;
+	ElevatorModule* module;
+	ElevatorModule* elevator;
 
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-		prof = new DistanceProfile(5, 20, 10);
-		times = new Timer();
-		prof2 = new DistanceProfile(13.7, .01, 13);
+		elevator = new ElevatorModule(ELEVATOR_1, ELEVATOR_2, ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
 	}
 
 	void AutonomousInit()
@@ -30,13 +30,7 @@ private:
 
 	void TeleopInit()
 	{
-		times->Start();
-		while(times->Get() < 20) {
-			//std::cout<<prof->getSetPoint(times->Get()) << " time : " << times->Get()<<std::endl;
-			std::cout<<"second "<<prof2->getSetPoint(times->Get())<<" time : " << times->Get()<<std::endl;
-			Wait(1);
-		}
-		times->Stop();
+
 	}
 
 	void TeleopPeriodic()

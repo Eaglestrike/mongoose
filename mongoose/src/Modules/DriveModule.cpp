@@ -3,37 +3,40 @@
 #include <algorithm>
 
 
-DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int r_EA, int r_EB) : 
-RobotModule(std::string("DriveModule")),
-lVictor1(lv1), lVictor2(lv2), rVictor1(rv1), rVictor2(rv2),
-lEncoder(l_EA, l_EB), rEncoder(r_EA, r_EB), rob_Gyro(1) // whatever ports
+DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) :
+	RobotModule(std::string("DriveModule"))
 {
 
-	Enable();
+	m_Left_Victor_1 = new Victor(lv1);
+	m_Left_Victor_2 = new Victor(lv2);
+	m_Right_Victor_1 = new Victor(rv1);
+	m_Right_Victor_2 = new Victor(rv2);
+
+	m_Gyro = new ADXRS453Z(gyroPort);
+
+	m_Left_Encoder->SetReverseDirection(true);
 
 	/* PID */
 
 }
 
-void DriveModule::Enable(){
-	lEncoder.SetReverseDirection(true);
-	rEncoder.SetReverseDirection(false);
+void DriveModule::enable(){
+
 }
 
-void DriveModule::Disable() {
-	Reset();
+void DriveModule::disable() {
+	reset();
 }
 
-void DriveModule::Reset() {
-	lEncoder.Reset();
-	rEncoder.Reset();
+void DriveModule::reset() {
+	m_Left_Encoder->Reset();
 }
 
 void DriveModule::setPower(double left, double right) {
-	lVictor1.Set(left);
-	lVictor2.Set(left);
-	rVictor1.Set(-right);
-	rVictor2.Set(-right);
+	m_Left_Victor_1->Set(left);
+	m_Left_Victor_2->Set(left);
+	m_Right_Victor_1->Set(-right);
+	m_Right_Victor_2->Set(-right);
 
 }
 

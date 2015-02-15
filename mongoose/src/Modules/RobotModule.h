@@ -1,17 +1,20 @@
-#include <iostream>
-#include <string>
+#ifndef __ROBOT_MODULE_H__
+#define __ROBOT_MODULE_H__
 
+#include <string>
 
 class RobotModule {
 public:
 	RobotModule(std::string);
 	~RobotModule();
 
-	void Enable();
-	void Disable();
-	void Reset();
-	void GetLoggingData();
-
-
+	void enable();
+	void disable();
+	void reset();
+	double* getLoggingData();
+protected:
+	bool m_Enabled;
 
 };
+
+#endif
