@@ -41,6 +41,11 @@ private:
 		elevatorModule->disable();
 		driveModule->disable();
 		armModule->disable();
+
+		elevatorModule->reset();
+		driveModule->reset();
+		armModule->reset();
+
 		printCounter = 0;
 	}
 
@@ -65,7 +70,7 @@ private:
 	{
 		elevatorModule->enable();
 		driveModule->enable();
-		armModule->enable();
+		armModule->disable();
 	}
 
 	void TeleopPeriodic()

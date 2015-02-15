@@ -83,12 +83,10 @@ public:
 	DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) ;
 	~DriveModule();
 
-	void resetEncoders();
 	void drive(double throttle, double angle);
 	void enable();
 	void disable();
 	void reset();
-	void setTargetVelocity(float vel);
 
 	double getLeftPower();
 	double getRightPower();
