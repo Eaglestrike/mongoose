@@ -17,6 +17,16 @@
 
 
 /*Arm*/
+
+#define LEFT_ARM_MOTOR 6
+#define RIGHT_ARM_MOTOR 7
+#define LEFT_ARM_BUTTON 27
+#define RIGHT_ARM_BUTTON 27
+#define LEFT_ARM_ENCODER_A 27
+#define LEFT_ARM_ENCODER_B 27
+#define RIGHT_ARM_ENCODER_A 27
+#define RIGHT_ARM_ENCODER_B 27
+
 #define RIGHT_ARM_1_KP 0.0
 #define LEFT_ARM_1_KP 0.0
 #define RIGHT_ARM_1_KI 0.0
@@ -33,9 +43,9 @@
 #define LEFT_ARM_2_KI 0.0
 #define RIGHT_ARM_2_KD 0.0
 #define LEFT_ARM_2_KD 0.0
-#define DIFF_ARM_1_KP 0.0
-#define DIFF_ARM_1_KD 0.0
-#define DIFF_ARM_1_KI 0.0
+#define DIFF_ARM_2_KP 0.0
+#define DIFF_ARM_2_KD 0.0
+#define DIFF_ARM_2_KI 0.0
 
 #define MAX_DELTA_X 14
 
