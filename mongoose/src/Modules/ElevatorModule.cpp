@@ -15,6 +15,7 @@ ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonP
 	m_Encoder = new Encoder(encoderA, encoderB);
 	m_PIDController = new PIDController(0, 0, 0, m_Encoder, m_Lifter);
 
+	m_PIDController->SetOutputRange(MAX_ELEVATOR_DOWN, MAX_ELEVATOR_UP);
 
 }
 //Cole Was here
@@ -35,6 +36,11 @@ void ElevatorModule::disable(){
 	m_Motor_1->Disable();
 	m_Motor_2->Disable();
 	m_PIDController->Disable();
+}
+
+void ElevatorModule::reset(){
+	m_PIDController->Reset();
+	m_Encoder->Reset();
 }
 
 void ElevatorModule::setPosition(double height){

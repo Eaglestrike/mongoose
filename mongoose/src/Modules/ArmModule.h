@@ -71,11 +71,11 @@ public:
 	void disableDeltaX();
 	void enable();
 	void disable();
+	void reset();
 	void setLeftArm(float setpoint);
 	void setRightArm(float setpoint);
 	void setLeftPower(float power);
 	void setRightPower(float power);
-	void reset();
 	void calibrate();
 
 	bool getLeftButton();

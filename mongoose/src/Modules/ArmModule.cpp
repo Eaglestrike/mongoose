@@ -115,6 +115,11 @@ void ArmModule::calibrate() {
 	m_Left_Encoder->Reset();
 }
 
+void ArmModule::reset(){
+	m_Left_Encoder->Reset();
+	m_Right_Encoder->Reset();
+}
+
 ArmModule::~ArmModule() {}
 
 bool ArmModule::getLeftButton(){

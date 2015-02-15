@@ -11,6 +11,7 @@
 #include <WPILib.h>
 #include "../Peripherals/SafeTalonSRX.h"
 #include "RobotModule.h"
+#include "../Settings.h"
 
 class DualMotor: public PIDOutput{
 public:
