@@ -55,6 +55,7 @@ public:
 	void setPID(double p, double i, double d);
 
 	bool getButton();
+	double Get();
 
 private:
 	SafeTalonSRX* m_Motor_1;

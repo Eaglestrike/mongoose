@@ -9,6 +9,7 @@
 #define SAFETALON_H_
 
 #include "WPIlib.h"
+#include <iostream>
 
 class SafeTalonSRX: public TalonSRX{
 

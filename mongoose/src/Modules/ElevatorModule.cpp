@@ -48,7 +48,10 @@ void ElevatorModule::setPosition(double height){
 }
 
 void ElevatorModule::setPower(double power){
-	m_Lifter->Set(power);
+	if(m_Enabled)
+		m_Lifter->Set(power);
+	else
+		m_Lifter->Set(0);
 }
 
 void ElevatorModule::setPID(double p, double i, double d){
@@ -57,4 +60,8 @@ void ElevatorModule::setPID(double p, double i, double d){
 
 bool ElevatorModule::getButton(){
 	return m_SafteyButton->Get();
+}
+
+double ElevatorModule::Get(){
+	return m_Lifter->Get();
 }
