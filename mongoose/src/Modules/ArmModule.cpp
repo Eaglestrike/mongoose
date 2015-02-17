@@ -8,6 +8,7 @@
 #include "ArmModule.h"
 #include "../Settings.h"
 #include "../Error/CalibrationError.h"
+#include "../Error/MovementError.h"
 
 #define MAX_LEFT 0.5
 #define MAX_RIGHT 0.5
@@ -18,7 +19,6 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	DigitalInput* rightButton = new DigitalInput(rightButtonPort);
 	DigitalInput* leftButton = new DigitalInput(leftButtonPort);
 	m_Saftey_Button = new DigitalInput(midButtonPort);
-
 	m_Left_Talon = new SafeTalonSRX(leftTalonPort, leftButton, false);
 	m_Right_Talon = new SafeTalonSRX(rightTalonPort, rightButton, true);
 	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
@@ -34,6 +34,29 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
 	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Difference_Controller = new PIDController(0, 0, 0, m_Arm_Difference_Input, m_Diff_Output);
+}
+
+
+void ArmModule::checkError(){
+
+	return;
+
+	while(true){
+
+		//TODO possibly not do thread, have a periodic method that gets called every periodic
+		//TODO add a timer. this will not work right now
+		//TODO not sure how error throwing works with multiple threads
+		//TODO joining error threads?
+
+
+		if(abs(m_Right_Encoder->GetRate()) < 0.05 && abs(m_Right_Talon->Get()) > 0.7)
+			throw MovementError("ArmModule::checkError()", "Right encoder not moving at sufficient rate! (could be unplugged)", true);
+
+		if(abs(m_Left_Encoder->GetRate()) < 0.05 && abs(m_Left_Talon->Get()) > 0.7)
+			throw MovementError("ArmModule::checkError()", "Left encoder not moving at sufficient rate! (could be unplugged)", true);
+
+		Wait(0.01);
+	}
 }
 
 void ArmModule::enable() {
@@ -56,10 +79,15 @@ void ArmModule::disablePID(){
 }
 
 void ArmModule::setSetPoint(float setPoint) {
-	m_Left_Arm_Controller->SetSetpoint(setPoint);
-	m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
-	m_Right_Talon->Set(m_Right_Output->getPower() + m_Diff_Output->getPower());
-	m_Left_Talon->Set(m_Left_Output->getPower() + m_Diff_Output->getPower());
+	if(m_Enabled){
+		m_Left_Arm_Controller->SetSetpoint(setPoint);
+		m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
+		m_Right_Talon->Set(m_Right_Output->getPower() + m_Diff_Output->getPower());
+		m_Left_Talon->Set(m_Left_Output->getPower() + m_Diff_Output->getPower());
+	}else{
+		m_Right_Talon->Set(0);
+		m_Left_Talon->Set(0);
+	}
 }
 
 void ArmModule::setLeftArm(float setpoint) {
@@ -138,7 +166,10 @@ void ArmModule::disable() {
 	disableDeltaX();
 	m_Right_Arm_Controller->Disable();
 	m_Left_Arm_Controller->Disable();
+	m_Left_Talon->Disable();
+	m_Right_Talon->Disable();
 }
+
 void ArmModule::calibrate() {
 
 	Timer timeout;

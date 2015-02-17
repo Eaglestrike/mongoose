@@ -9,6 +9,7 @@
 #define EAGLESTRIKEERROR_H_
 
 #include <string>
+#include <iostream>
 
 class EaglestrikeError {
 public:
@@ -17,6 +18,7 @@ public:
 	const char* what();
 	const char* where();
 	bool shouldBeFatal();
+	friend std::ostream& operator << (std::ostream& os, EaglestrikeError&);
 private:
 	const char* m_Error;
 	const char* m_Location;

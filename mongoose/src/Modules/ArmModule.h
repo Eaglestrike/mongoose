@@ -79,6 +79,7 @@ public:
 	void setLeftPower(float power);
 	void setRightPower(float power);
 	void calibrate();
+	void checkError();
 
 	bool getLeftButton();
 	bool getMidButton();
