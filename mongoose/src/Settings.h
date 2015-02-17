@@ -29,8 +29,8 @@
 #define LEFT_ARM_MOTOR 6
 #define RIGHT_ARM_MOTOR 7
 #define LEFT_ARM_BUTTON 0
-#define MID_ARM_BUTTON 1
-#define RIGHT_ARM_BUTTON 2
+#define MID_ARM_BUTTON 2
+#define RIGHT_ARM_BUTTON 1
 #define LEFT_ARM_ENCODER_A 4
 #define LEFT_ARM_ENCODER_B 5
 #define RIGHT_ARM_ENCODER_A 6
@@ -56,7 +56,7 @@
 #define DIFF_ARM_2_KD 0.0
 #define DIFF_ARM_2_KI 0.0
 
-#define MAX_DELTA_X 14
+#define MAX_DELTA_X 13.5
 
 /*Drive*/
 #define DRIVE_LEFT_1 0
@@ -67,5 +67,10 @@
 #define DRIVE_ENCODER_B 10
 #define DRIVE_GYRO 0
 
+/*Intake*/
+#define INTAKE_SOLENOID_1 1
+#define INTAKE_SOLENOID_2 2
+#define INTAKE_MOTOR_1 8
+#define INTAKE_MOTOR_2 9
 
 #endif /* SETTINGS_H_ */

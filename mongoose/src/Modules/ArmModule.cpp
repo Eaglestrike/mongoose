@@ -62,6 +62,14 @@ void ArmModule::setSetPoint(float setPoint) {
 }
 
 void ArmModule::setLeftArm(float setpoint) {
+
+	if(setpoint < 0)
+		setpoint = 0;
+
+	if(setpoint + m_Difference_Controller->GetSetpoint() > MAX_DELTA_X){
+		setpoint = MAX_DELTA_X - m_Difference_Controller->GetSetpoint();
+	}
+
 	if(m_DeltaX != 0) {
 		setSetPoint(setpoint);
 	}
@@ -72,6 +80,13 @@ void ArmModule::setLeftArm(float setpoint) {
 }
 
 void ArmModule::setRightArm(float setpoint) {
+
+	if(setpoint > MAX_DELTA_X)
+		setpoint = MAX_DELTA_X;
+
+	if(setpoint < m_Difference_Controller->GetSetpoint())
+		setpoint = m_Difference_Controller->GetSetpoint();
+
 	if(m_DeltaX != 0) {
 		setSetPoint(setpoint - m_DeltaX);
 	}
@@ -102,6 +117,12 @@ void ArmModule::setRightPower(float power){
 
 void ArmModule::setDeltaX(double deltaX) {
 	m_Difference_Controller->Enable();
+
+	if(deltaX < 0)
+		deltaX = 0;
+	if(deltaX > MAX_DELTA_X)
+		deltaX = MAX_DELTA_X;
+
 	m_Difference_Controller->SetSetpoint(deltaX);
 	m_DeltaX = deltaX;
 }
@@ -122,23 +143,33 @@ void ArmModule::calibrate() {
 	if(!m_Enabled)
 		return;
 
+	bool renablePid = false;
+
+	if(m_Left_Arm_Controller->IsEnabled() || m_Right_Arm_Controller->IsEnabled()){
+		disablePID();
+		renablePid = true;
+	}
+
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 		if(m_Right_Talon->getButton()) {
 			m_Right_Talon->Set(0);
 		}
 		else {
-			m_Right_Talon->Set(MAX_RIGHT);
+			m_Right_Talon->Set(MAX_RIGHT * 1);
 		}
 		if(m_Left_Talon->getButton()) {
 			m_Left_Talon->Set(0);
 		}
 		else {
-			m_Left_Talon->Set(-MAX_LEFT);
+			m_Left_Talon->Set(-MAX_LEFT * 0.9);
 		}
 	}
 
 	m_Right_Encoder->Reset();
 	m_Left_Encoder->Reset();
+
+	if(renablePid)
+		enablePID();
 }
 
 void ArmModule::reset(){

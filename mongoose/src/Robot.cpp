@@ -16,12 +16,14 @@ private:
 	DriveModule* driveModule;
 	ArmModule* armModule;
 	ScorpionModule* scorpionModule;
+	IntakeModule* intakeModule;
 	Timer* timer;
 
 	Joystick* leftJoy;
 	Joystick* rightJoy;
 	Xbox* xbox;
-
+	int toggleY = 0;
+	bool previous;
 	unsigned long printCounter = 0;
 
 	void RobotInit()
@@ -36,6 +38,7 @@ private:
 		armModule = new ArmModule(RIGHT_ARM_MOTOR, LEFT_ARM_MOTOR, RIGHT_ARM_BUTTON, MID_ARM_BUTTON, LEFT_ARM_BUTTON, RIGHT_ARM_ENCODER_A, RIGHT_ARM_ENCODER_B, LEFT_ARM_ENCODER_A, LEFT_ARM_ENCODER_B);
 		cout << "ScorpionModule()" << endl;
 		scorpionModule = new ScorpionModule(SCORPION_PORT);
+		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 
 		cout << "Timer()" << endl;
 		timer = new Timer();
@@ -61,6 +64,8 @@ private:
 		armModule->reset();
 
 		printCounter = 0;
+
+		armModule->disablePID();
 	}
 
 	void AutonomousInit()
@@ -82,11 +87,15 @@ private:
 
 	void TeleopInit()
 	{
-		elevatorModule->disable();
-		driveModule->disable();
+		elevatorModule->enable();
+		driveModule->enable();
 		armModule->enable();
+		scorpionModule->enable();
+		armModule->enablePID();
+		armModule->calibrate();
 	}
 
+	double leftSetpoint = 0;
 
 	void TeleopPeriodic()
 	{
@@ -95,24 +104,24 @@ private:
 		driveModule->drive(-leftJoy->GetY(), -rightJoy->GetX());
 		scorpionModule->Set(rightJoy->GetRawButton(4));
 
-		double leftArmPower = xbox->getLX() * MAX_ARM_POWER;
-		double rightArmPower = xbox->getRX() * MAX_ARM_POWER;
-
-		if(armModule->getLeftButton() && leftArmPower < 0)
-			leftArmPower = 0;
-
-		if(armModule->getRightButton() && rightArmPower > 0)
-			rightArmPower = 0;
-
-		if(armModule->getMidButton()){
-			if(leftArmPower > 0)
-				leftArmPower = 0;
-			if(rightArmPower < 0)
-				rightArmPower = 0;
-		}
-
-		armModule->setLeftPower(leftArmPower);
-		armModule->setRightPower(rightArmPower);
+//		double leftArmPower = xbox->getLX() * MAX_ARM_POWER;
+//		double rightArmPower = xbox->getRX() * MAX_ARM_POWER;
+//
+//		if(armModule->getLeftButton() && leftArmPower < 0)
+//			leftArmPower = 0;
+//
+//		if(armModule->getRightButton() && rightArmPower > 0)
+//			rightArmPower = 0;
+//
+//		if(armModule->getMidButton()){
+//			if(leftArmPower > 0)
+//				leftArmPower = 0;
+//			if(rightArmPower < 0)
+//				rightArmPower = 0;
+//		}
+//
+//		armModule->setLeftPower(leftArmPower);
+//		armModule->setRightPower(rightArmPower);
 
 		double elevatorPower = xbox->getLY() * MAX_ELEVATOR_UP;
 		if(elevatorPower < MAX_ELEVATOR_DOWN)
@@ -122,6 +131,43 @@ private:
 			elevatorPower = 0;
 
 		elevatorModule->setPower(elevatorPower);
+
+
+		if(xbox->getX()){
+			armModule->setDeltaX(3.5625);
+			leftSetpoint = 4;
+		}else{
+//			armModule->setDeltaX(13.5);
+			armModule->setDeltaX(13.5);
+			//armModule->setRightArm(armModule->getRightPosition() + xbox->getRX() / 20.0);
+			leftSetpoint = 0;
+		}
+
+		leftSetpoint += xbox->getLX() / 20.0;
+
+		armModule->setLeftArm(leftSetpoint);
+
+		if(previous != xbox->getY()) {
+			toggleY++;
+		}
+		previous = xbox->getY();
+
+		if(toggleY % 4 == 0) {
+			intakeModule->extend();
+		}
+		else if(toggleY % 2 == 0) {
+			intakeModule->retract();
+		}
+
+		if(xbox->getA()) {
+			intakeModule->intake(.5);
+		}
+		else if(xbox->getB()) {
+			intakeModule->intake(-.5);
+		}
+		else {
+			intakeModule->intake(0);
+		}
 
 		if(printCounter % 50 == 0){
 			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
@@ -143,7 +189,7 @@ private:
 
 
 		if(xbox->getStart()){
-			//armModule->setDeltaX(5);
+			armModule->setDeltaX(5);
 			armModule->setLeftArm(4);
 		}else{
 			armModule->setDeltaX(13);

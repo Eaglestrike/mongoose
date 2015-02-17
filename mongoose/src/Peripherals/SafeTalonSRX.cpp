@@ -21,7 +21,7 @@ void SafeTalonSRX::Set(float output, uint8_t syncGroup){
 		output *= -1;
 
 	if(m_Safety_Button->Get() && output < 0){
-		std::cout << "button pressed and power < 0" << " power: " << output << std::endl;
+		std::cerr << "Error: button pressed and power < 0" << " power: " << output << std::endl;
 		output = 0;
 	}
 
