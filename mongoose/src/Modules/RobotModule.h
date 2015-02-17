@@ -15,9 +15,9 @@ public:
 	void reset();
 	double* getLoggingData();
 protected:
-	bool m_Enabled;
 	std::string m_Module_Name;
 	std::thread m_Error_Checking_Thread;
+	bool m_Enabled;
 
 	void checkError();
 	static void callCheckError(void*);

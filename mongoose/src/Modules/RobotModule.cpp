@@ -1,7 +1,7 @@
 #include "RobotModule.h"
 
 
-RobotModule::RobotModule(std::string name): m_Module_Name(name), m_Error_Checking_Thread(RobotModule::callCheckError, this){
+RobotModule::RobotModule(std::string name): m_Module_Name(name), m_Error_Checking_Thread(RobotModule::callCheckError, this), m_Enabled(false){
 	
 }
 
