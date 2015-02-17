@@ -33,7 +33,7 @@ void IntakeModule::retract(){
 
 void IntakeModule::intake(double power){
 	m_Motor_1->Set(power);
-	m_Motor_2->Set(power);
+	m_Motor_2->Set(-power);
 }
 
 void IntakeModule::enable(){

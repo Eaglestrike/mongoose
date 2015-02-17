@@ -6,9 +6,7 @@
  */
 
 #include "ArmModule.h"
-#include "../Settings.h"
-#include "../Error/CalibrationError.h"
-#include "../Error/MovementError.h"
+
 
 #define MAX_LEFT 0.5
 #define MAX_RIGHT 0.5
@@ -31,6 +29,9 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Arm_Difference_Input = new ArmDifference(m_Right_Encoder, m_Left_Encoder);
 	m_Diff_Output = new ArmOut();
 
+	m_Manual = false;
+	m_Calibrating = false;
+
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
 	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Difference_Controller = new PIDController(0, 0, 0, m_Arm_Difference_Input, m_Diff_Output);
@@ -39,24 +40,58 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 
 void ArmModule::checkError(){
 
-	return;
+	std::cout << "ARM MODULE: checkError()" << std::endl;
+
+	Timer leftTimer;
+	Timer rightTimer;
+
+	leftTimer.Start();
+	rightTimer.Start();
+
+	std::cout << "ARM MODULE: while(true) " << std::endl;
 
 	while(true){
 
-		//TODO possibly not do thread, have a periodic method that gets called every periodic
-		//TODO add a timer. this will not work right now
-		//TODO not sure how error throwing works with multiple threads
-		//TODO joining error threads?
+		if(m_Enabled && !m_Manual && m_Calibrating){
+
+			//TODO possibly not do thread, have a periodic method that gets called every periodic
+			//TODO add a timer. this will not work right now
+			//TODO not sure how error throwing works with multiple threads
+			//TODO joining error threads?
 
 
-		if(abs(m_Right_Encoder->GetRate()) < 0.05 && abs(m_Right_Talon->Get()) > 0.7)
-			throw MovementError("ArmModule::checkError()", "Right encoder not moving at sufficient rate! (could be unplugged)", true);
+			if(abs(m_Left_Encoder->GetRate()) < 0.05 && abs(m_Left_Talon->Get()) > 0.7){
 
-		if(abs(m_Left_Encoder->GetRate()) < 0.05 && abs(m_Left_Talon->Get()) > 0.7)
-			throw MovementError("ArmModule::checkError()", "Left encoder not moving at sufficient rate! (could be unplugged)", true);
+			}else{
+				leftTimer.Reset();
+			}
+
+			if(abs(m_Right_Encoder->GetRate()) < 0.05 && abs(m_Right_Talon->Get()) > 0.7){
+
+			}else{
+				rightTimer.Reset();
+			}
+
+			std::cout << "LTime: " << leftTimer.Get() << " RTime: " << rightTimer.Get() << " lr: " << m_Left_Encoder->GetRate() << " rr: " << m_Right_Encoder->GetRate() << " lp: " << m_Left_Talon->Get() << " rp: " << m_Right_Talon->Get() << std::endl;
+
+			if(leftTimer.Get() > 0.1){
+				std::cout << "THROWING ERROR" << std::endl;
+				throw MovementError(/*this*/"ArmModule::checkError()", "Left encoder not moving at sufficient rate! (could be unplugged)", true);
+			}
+			if(rightTimer.Get() > 0.1){
+				std::cout << "THROWING ERROR" << std::endl;
+				throw MovementError(/*this*/"ArmModule::checkError()", "Right encoder not moving at sufficient rate! (could be unplugged)", true);
+			}
+		}
 
 		Wait(0.01);
+
 	}
+}
+
+void ArmModule::handleFatalError(){
+	disablePID();
+	setManual(true);
 }
 
 void ArmModule::enable() {
@@ -64,21 +99,27 @@ void ArmModule::enable() {
 	m_Left_Arm_Controller->Enable();
 	m_Right_Arm_Controller->Enable();
 	m_Difference_Controller->Enable();
+	setManual(false);
 }
 
 void ArmModule::enablePID(){
 	m_Left_Arm_Controller->Enable();
 	m_Right_Arm_Controller->Enable();
 	m_Difference_Controller->Enable();
+	setManual(false);
 }
 
 void ArmModule::disablePID(){
 	m_Left_Arm_Controller->Disable();
 	m_Right_Arm_Controller->Disable();
 	m_Difference_Controller->Disable();
+	setManual(true);
 }
 
 void ArmModule::setSetPoint(float setPoint) {
+	if(m_Manual)
+		return;
+
 	if(m_Enabled){
 		m_Left_Arm_Controller->SetSetpoint(setPoint);
 		m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
@@ -91,6 +132,9 @@ void ArmModule::setSetPoint(float setPoint) {
 }
 
 void ArmModule::setLeftArm(float setpoint) {
+
+	if(m_Manual)
+		return;
 
 	if(setpoint < 0)
 		setpoint = 0;
@@ -110,6 +154,9 @@ void ArmModule::setLeftArm(float setpoint) {
 
 void ArmModule::setRightArm(float setpoint) {
 
+	if(m_Manual)
+		return;
+
 	if(setpoint > MAX_DELTA_X)
 		setpoint = MAX_DELTA_X;
 
@@ -126,7 +173,7 @@ void ArmModule::setRightArm(float setpoint) {
 }
 
 void ArmModule::setLeftPower(float power){
-	if(!m_Enabled)
+	if(!m_Enabled && !m_Manual)
 		power = 0;
 	if(m_Saftey_Button->Get() && power > 0)
 		m_Left_Talon->Set(0);
@@ -135,7 +182,7 @@ void ArmModule::setLeftPower(float power){
 }
 
 void ArmModule::setRightPower(float power){
-	if(!m_Enabled)
+	if(!m_Enabled && !m_Manual)
 		power = 0;
 
 	if(m_Saftey_Button->Get() && power < 0)
@@ -145,6 +192,9 @@ void ArmModule::setRightPower(float power){
 }
 
 void ArmModule::setDeltaX(double deltaX) {
+	if(m_Manual){
+		return;
+	}
 	m_Difference_Controller->Enable();
 
 	if(deltaX < 0)
@@ -172,8 +222,12 @@ void ArmModule::disable() {
 
 void ArmModule::calibrate() {
 
+	m_Calibrating = true;
+
 	Timer timeout;
 	timeout.Start();
+
+//	std::cout << "calibrate()" << std::endl;
 
 	if(!m_Enabled)
 		return;
@@ -188,7 +242,7 @@ void ArmModule::calibrate() {
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 
 		if(timeout.Get() > 3){
-			throw CalibrationError("calibrate()", "calibration timed out");
+			throw CalibrationError(/*this*/"ArmModule::calibrate()", "calibration timed out");
 		}
 
 
@@ -211,11 +265,18 @@ void ArmModule::calibrate() {
 
 	if(renablePid)
 		enablePID();
+
+	std::cout << "calibrate() end" << std::endl;
+	m_Calibrating = false;
 }
 
 void ArmModule::reset(){
 	m_Left_Encoder->Reset();
 	m_Right_Encoder->Reset();
+}
+
+void ArmModule::setManual(bool man){
+	m_Manual = man;
 }
 
 ArmModule::~ArmModule() {}
@@ -230,6 +291,10 @@ bool ArmModule::getMidButton(){
 
 bool ArmModule::getRightButton(){
 	return m_Right_Talon->getButton();
+}
+
+bool ArmModule::isManual(){
+	return m_Manual;
 }
 
 double ArmModule::getLeftPosition(){

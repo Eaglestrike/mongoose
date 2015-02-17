@@ -7,7 +7,7 @@
 
 #include "CalibrationError.h"
 
-CalibrationError::CalibrationError(const char* where, const char* what): EaglestrikeError(where, what, true) {
+CalibrationError::CalibrationError(/*RobotModule**/const char* where, const char* what): EaglestrikeError(where, what, true) {
 
 }
 

@@ -43,6 +43,14 @@ void ElevatorModule::reset(){
 	m_Encoder->Reset();
 }
 
+void ElevatorModule::checkError(){
+
+}
+
+void ElevatorModule::handleFatalError(){
+
+}
+
 void ElevatorModule::setPosition(double height){
 	m_PIDController->SetSetpoint(height);
 }

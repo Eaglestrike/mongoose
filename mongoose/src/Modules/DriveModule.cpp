@@ -1,6 +1,4 @@
 #include "DriveModule.h"
-#include <math.h> 
-#include <algorithm>
 
 
 DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB, int gyroPort) :

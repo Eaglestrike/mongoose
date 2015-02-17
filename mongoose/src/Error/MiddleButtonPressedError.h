@@ -10,9 +10,9 @@
 #ifndef SRC_ERROR_MIDDLEBUTTONPRESSEDERROR_H_
 #define SRC_ERROR_MIDDLEBUTTONPRESSEDERROR_H_
 
-class MiddleButtonPressedError : public EagleStrikeError {
+class MiddleButtonPressedError : public EaglestrikeError {
 public:
-	MiddleButtonPressedError(const char* where, const char* what);
+	MiddleButtonPressedError(/*RobotModule**/const char* where, const char* what);
 	virtual ~MiddleButtonPressedError();
 };
 

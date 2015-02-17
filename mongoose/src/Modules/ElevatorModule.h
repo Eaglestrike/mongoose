@@ -9,9 +9,9 @@
 #define ELEVATORMODULE_H_
 
 #include <WPILib.h>
-#include "../Peripherals/SafeTalonSRX.h"
-#include "RobotModule.h"
-#include "../Settings.h"
+#include "Modules/RobotModule.h"
+#include "Peripherals/SafeTalonSRX.h"
+#include "Settings.h"
 
 class DualMotor: public PIDOutput{
 public:
@@ -48,7 +48,8 @@ public:
 	void enable();
 	void disable();
 	void reset();
-
+	void checkError();
+	void handleFatalError();
 	void calibrate();
 	void setPosition(double height);
 	void setPower(double power);

@@ -1,5 +1,9 @@
+
+#ifndef __SCORPION_H
+#define __SCORPION_H
+
+#include "Modules/RobotModule.h"
 #include <WPILib.h>
-#include "RobotModule.h"
 
 class ScorpionModule : public RobotModule {
 public:
@@ -12,3 +16,5 @@ private:
 	Solenoid* m_solenoid;
 	
 };
+
+#endif

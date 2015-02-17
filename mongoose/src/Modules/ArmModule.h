@@ -9,9 +9,12 @@
 #define ARMMODULE_H_
 
 #include "WPILib.h"
-#include "RobotBase.h"
-#include "RobotModule.h"
-#include "../Peripherals/SafeTalonSRX.h"
+#include "Modules/RobotModule.h"
+#include "Peripherals/SafeTalonSRX.h"
+#include "Settings.h"
+#include "Error/CalibrationError.h"
+#include "Error/MovementError.h"
+
 
 class ModifiedEncoder: public Encoder {
 private:
@@ -69,21 +72,24 @@ public:
 	virtual ~ArmModule();
 	void setDeltaX(double deltaX);
 	void disableDeltaX();
-	void enable();
 	void enablePID();
 	void disablePID();
+	void enable();
 	void disable();
 	void reset();
+	void checkError();
+	void handleFatalError();
 	void setLeftArm(float setpoint);
 	void setRightArm(float setpoint);
 	void setLeftPower(float power);
 	void setRightPower(float power);
 	void calibrate();
-	void checkError();
+	void setManual(bool man);
 
 	bool getLeftButton();
 	bool getMidButton();
 	bool getRightButton();
+	bool isManual();
 
 	double getLeftPosition();
 	double getRightPosition();
@@ -112,7 +118,10 @@ private:
 	ArmOut* m_Right_Output;
 	ArmOut* m_Diff_Output;
 	ArmDifference* m_Arm_Difference_Input;
+
 	double m_DeltaX;
+	bool m_Manual;
+	bool m_Calibrating;
 
 };
 

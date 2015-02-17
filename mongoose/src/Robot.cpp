@@ -1,8 +1,12 @@
 
 #include <iostream>
 
+
+#include "Error/EaglestrikeError.h"
+#include "Modules/RobotModule.h"
+
 #include "WPIlib.h"
-#include "Modules/Modules.h"
+#include "Modules.h"
 #include "Error/CalibrationError.h"
 #include "Settings.h"
 #include "Xbox.h"
@@ -93,17 +97,25 @@ private:
 
 	void TeleopInit()
 	{
+
 		try{
 			elevatorModule->enable();
 			driveModule->enable();
 			armModule->enable();
-			scorpionModule->enable();
+			scorpionModule->disable();
 			armModule->enablePID();
+			std::cout << "calibrate()" << std::endl;
 			armModule->calibrate();
-			intakeModule->enable();
+			intakeModule->disable();
 		}catch(EaglestrikeError &e){
-			cerr << e << endl;
+			cout << "EaglestrikeError" << endl;
+			cerr << e.toString() << endl;
+			if(e.shouldBeFatal())
+				exit(1);
+
 		}
+
+		std::cout << "}catch(){}" << std::endl;
 	}
 
 	double leftSetpoint = 0;
@@ -143,20 +155,25 @@ private:
 
 		elevatorModule->setPower(elevatorPower);
 
+		if(!armModule->isManual()){
 
-		if(xbox->getX()){
-			armModule->setDeltaX(3.5625);
-			leftSetpoint = 4;
+			if(xbox->getX()){
+				armModule->setDeltaX(3.5625);
+				leftSetpoint = 4;
+			}else{
+	//			armModule->setDeltaX(13.5);
+				armModule->setDeltaX(13.5);
+				//armModule->setRightArm(armModule->getRightPosition() + xbox->getRX() / 20.0);
+				leftSetpoint = 0;
+			}
+
+			leftSetpoint += xbox->getLX() / 20.0;
+
+			armModule->setLeftArm(leftSetpoint);
 		}else{
-//			armModule->setDeltaX(13.5);
-			armModule->setDeltaX(13.5);
-			//armModule->setRightArm(armModule->getRightPosition() + xbox->getRX() / 20.0);
-			leftSetpoint = 0;
+			armModule->setLeftPower(xbox->getLX());
+			armModule->setRightPower(xbox->getRX());
 		}
-
-		leftSetpoint += xbox->getLX() / 20.0;
-
-		armModule->setLeftArm(leftSetpoint);
 
 		if(previous != xbox->getY()) {
 			toggleY++;
@@ -164,10 +181,10 @@ private:
 		previous = xbox->getY();
 
 		if(toggleY % 4 == 0) {
-			intakeModule->extend();
+			intakeModule->retract();
 		}
 		else if(toggleY % 2 == 0) {
-			intakeModule->retract();
+			intakeModule->extend();
 		}
 
 		if(xbox->getA()) {
@@ -180,7 +197,8 @@ private:
 			intakeModule->intake(0);
 		}
 
-		if(printCounter % 50 == 0){
+		if(printCounter % 20 == 0){
+			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
 			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
 		}
 

@@ -1,6 +1,5 @@
 #include "RobotModule.h"
 
-
 RobotModule::RobotModule(std::string name): m_Module_Name(name), m_Error_Checking_Thread(RobotModule::callCheckError, this), m_Enabled(false){
 	
 }
@@ -21,6 +20,10 @@ double* RobotModule::getLoggingData(){
 	return 0;
 }
 
+std::string RobotModule::getModuleName(){
+	return m_Module_Name;
+}
+
 RobotModule::~RobotModule(){
 	// Destructor
 }
@@ -30,6 +33,42 @@ void RobotModule::checkError(){
 }
 
 void RobotModule::callCheckError(void* m){
+
 	RobotModule* module = (RobotModule*) m;
-	module->checkError();
+
+	std::cout << module->getModuleName() << "::callCheckError()" << std::endl;
+
+	try{
+
+		module->checkError();
+
+	}catch(EaglestrikeError& e){
+
+		std::cout << "CAUGHT EAGLESTRIKE ERROR: " << std::endl;
+		std::cout << "Error ptr: " << &e << std::endl;
+
+		if(e.shouldBeFatal()){
+			std::cout << "Fatal Error: " << std::flush;
+		}else{
+			std::cout << "Error: " << std::flush;
+		}
+
+		std::cout << "getModuleName()" << std::endl;
+		module->getModuleName();
+		std::cout << "toString()" << std::endl;
+		e.toString();
+
+		std::cout << "In module: " << module->getModuleName() << " " << e.toString() << std::endl;
+
+		if(e.shouldBeFatal()){
+			module->handleFatalError();
+		}else
+			callCheckError(module);
+
+	}
+}
+
+
+void RobotModule::handleFatalError(){
+	disable();
 }

@@ -12,7 +12,7 @@
 
 class CalibrationError: public EaglestrikeError {
 public:
-	CalibrationError(const char*, const char*);
+	CalibrationError(/*RobotModule**/const char*, const char*);
 	virtual ~CalibrationError();
 };
 

@@ -5,9 +5,11 @@
  *      Author: Team 114
  */
 
-#include "EaglestrikeError.h"
+#include "Error/EaglestrikeError.h"
 
-EaglestrikeError::EaglestrikeError(const char* c_where, const char* c_what, bool c_fatal){
+EaglestrikeError::EaglestrikeError(/*RobotModule**/const char* c_where, const char* c_what, bool c_fatal){
+	std::cout << "EaglestrikeError" << std::endl;
+
 	m_Location = c_where;
 	m_Error = c_what;
 	m_Fatal = c_fatal;
@@ -17,7 +19,7 @@ const char* EaglestrikeError::what(){
 	return m_Error;
 }
 
-const char* EaglestrikeError::where(){
+/*RobotModule**/const char* EaglestrikeError::where(){
 	return m_Location;
 }
 
@@ -25,10 +27,10 @@ bool EaglestrikeError::shouldBeFatal(){
 	return m_Fatal;
 }
 
-std::ostream& operator<<(std::ostream& os, EaglestrikeError& err){
-	char* ret;
-	sprintf(ret, "Error: %s  Where: %s", err.what(), err.where());
-	return os << ret;
+const char* EaglestrikeError::toString(){
+	char ret[256];
+	sprintf(ret, "Error: %s  Where: %s", what(), where());
+	return (const char*)ret;
 }
 
 EaglestrikeError::~EaglestrikeError() {

@@ -8,8 +8,9 @@
 #ifndef INTAKEMODULE_H_
 #define INTAKEMODULE_H_
 
+#include "Modules/RobotModule.h"
 #include "WPILib.h"
-#include "RobotModule.h"
+
 
 class IntakeModule: public RobotModule {
 private:

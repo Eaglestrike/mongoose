@@ -31,6 +31,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mongoose/mongoose/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Ben Evans\wpilib\cpp\current\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Ben\wpilib\cpp\current\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mongoose/src}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1793678673" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -42,6 +43,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mongoose/mongoose/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Ben Evans\wpilib\cpp\current\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Ben\wpilib\cpp\current\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mongoose/src}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1060340803" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1033680971" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -75,7 +77,8 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Helpers" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src|Helpers" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -107,6 +110,7 @@
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/gazebo-3.1"/>
 									<listOptionValue builtIn="false" value="/usr/include/sdformat-2.2"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mongoose/src}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.1648211502" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.937474733" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
