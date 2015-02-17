@@ -7,6 +7,7 @@
 
 #include "ArmModule.h"
 #include "../Settings.h"
+#include "../Error/CalibrationError.h"
 
 #define MAX_LEFT 0.5
 #define MAX_RIGHT 0.5
@@ -140,6 +141,9 @@ void ArmModule::disable() {
 }
 void ArmModule::calibrate() {
 
+	Timer timeout;
+	timeout.Start();
+
 	if(!m_Enabled)
 		return;
 
@@ -151,6 +155,12 @@ void ArmModule::calibrate() {
 	}
 
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
+
+		if(timeout.Get() > 3){
+			throw CalibrationError("calibrate()", "calibration timed out");
+		}
+
+
 		if(m_Right_Talon->getButton()) {
 			m_Right_Talon->Set(0);
 		}

@@ -8,7 +8,7 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
-#define UNKNOWN_PORT 11
+#define UNKNOWN_PORT 27
 
 #define MAX_ELEVATOR_DOWN -0.1
 #define MAX_ELEVATOR_UP 1
@@ -20,8 +20,8 @@
 #define ELEVATOR_1 4
 #define ELEVATOR_2 5
 #define ELEVATOR_SAFTEY_BUTTON 3
-#define ELEVATOR_ENCODER_A 1
-#define ELEVATOR_ENCODER_B 2
+#define ELEVATOR_ENCODER_A 10
+#define ELEVATOR_ENCODER_B 11
 
 
 /*Arm*/
@@ -63,8 +63,8 @@
 #define DRIVE_LEFT_2 1
 #define DRIVE_RIGHT_1 2
 #define DRIVE_RIGHT_2 3
-#define DRIVE_ENCODER_A UNKNOWN_PORT
-#define DRIVE_ENCODER_B 10
+#define DRIVE_ENCODER_A 8
+#define DRIVE_ENCODER_B 9
 #define DRIVE_GYRO 0
 
 /*Intake*/

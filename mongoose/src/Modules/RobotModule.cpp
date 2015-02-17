@@ -17,7 +17,7 @@ void RobotModule::reset(){
 }
 //cole was here
 double* RobotModule::getLoggingData(){
-
+	return 0;
 }
 
 RobotModule::~RobotModule(){

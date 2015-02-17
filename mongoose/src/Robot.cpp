@@ -93,6 +93,7 @@ private:
 		scorpionModule->enable();
 		armModule->enablePID();
 		armModule->calibrate();
+		intakeModule->enable();
 	}
 
 	double leftSetpoint = 0;
