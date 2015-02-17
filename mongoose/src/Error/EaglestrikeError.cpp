@@ -25,10 +25,10 @@ bool EaglestrikeError::shouldBeFatal(){
 	return m_Fatal;
 }
 
-const char* EaglestrikeError::operator <<(EaglestrikeError& err){
+std::ostream& operator<<(std::ostream& os, EaglestrikeError& err){
 	char* ret;
 	sprintf(ret, "Error: %s  Where: %s", err.what(), err.where());
-	return (const char*) ret;
+	return os << ret;
 }
 
 EaglestrikeError::~EaglestrikeError() {
