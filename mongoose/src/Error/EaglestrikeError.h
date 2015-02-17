@@ -17,6 +17,7 @@ public:
 	const char* what();
 	const char* where();
 	bool shouldBeFatal();
+	friend ostream& operator << (ostream& os, EaglestrikeError&);
 private:
 	const char* m_Error;
 	const char* m_Location;

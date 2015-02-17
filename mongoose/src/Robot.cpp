@@ -3,6 +3,7 @@
 
 #include "WPIlib.h"
 #include "Modules/Modules.h"
+#include "Error/CalibrationError.h"
 #include "Settings.h"
 #include "Xbox.h"
 
@@ -68,9 +69,14 @@ private:
 		armModule->disablePID();
 	}
 
+	void DisabledPeriodic(){
+		DisabledInit();
+		Wait(0.05);
+	}
+
 	void AutonomousInit()
 	{
-
+		DisabledInit();
 	}
 
 	void AutonomousPeriodic()
@@ -87,13 +93,17 @@ private:
 
 	void TeleopInit()
 	{
-		elevatorModule->enable();
-		driveModule->enable();
-		armModule->enable();
-		scorpionModule->enable();
-		armModule->enablePID();
-		armModule->calibrate();
-		intakeModule->enable();
+		try{
+			elevatorModule->enable();
+			driveModule->enable();
+			armModule->enable();
+			scorpionModule->enable();
+			armModule->enablePID();
+			armModule->calibrate();
+			intakeModule->enable();
+		}catch(EaglestrikeError &e){
+			cerr << e << endl;
+		}
 	}
 
 	double leftSetpoint = 0;

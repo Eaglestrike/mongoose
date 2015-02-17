@@ -1,6 +1,7 @@
 #include "RobotModule.h"
+#include <thread>
 
-RobotModule::RobotModule(std::string){
+RobotModule::RobotModule(std::string): m_Error_Checking_Thread(RobotModule::checkError()){
 	
 }
 
