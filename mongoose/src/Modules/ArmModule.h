@@ -70,12 +70,14 @@ public:
 	void setDeltaX(double deltaX);
 	void disableDeltaX();
 	void enable();
+	void enablePID();
+	void disablePID();
 	void disable();
+	void reset();
 	void setLeftArm(float setpoint);
 	void setRightArm(float setpoint);
 	void setLeftPower(float power);
 	void setRightPower(float power);
-	void reset();
 	void calibrate();
 
 	bool getLeftButton();
@@ -86,6 +88,13 @@ public:
 	double getRightPosition();
 	double getLeftPower();
 	double getRightPower();
+	double getLeftSetpoint();
+	double getDiffSetpoint();
+	double getRightSetpoint();
+	double getLeftError();
+	double getDiffError();
+	double getRightError();
+
 
 private:
 	void setSetPoint(float setPoint);

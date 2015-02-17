@@ -11,6 +11,7 @@
 #include <WPILib.h>
 #include "../Peripherals/SafeTalonSRX.h"
 #include "RobotModule.h"
+#include "../Settings.h"
 
 class DualMotor: public PIDOutput{
 public:
@@ -54,6 +55,7 @@ public:
 	void setPID(double p, double i, double d);
 
 	bool getButton();
+	double Get();
 
 private:
 	SafeTalonSRX* m_Motor_1;
