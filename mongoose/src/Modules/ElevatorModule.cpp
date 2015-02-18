@@ -14,7 +14,7 @@ ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonP
 	m_Lifter = new DualMotor(m_Motor_1, m_Motor_2);
 	m_Encoder = new Encoder(encoderA, encoderB);
 	m_PIDController = new PIDController(0, 0, 0, m_Encoder, m_Lifter);
-	m_Manual = false;
+	m_Manual = true;
 
 	m_PIDController->SetOutputRange(MAX_ELEVATOR_DOWN, MAX_ELEVATOR_UP);
 
@@ -45,7 +45,21 @@ void ElevatorModule::reset(){
 }
 
 void ElevatorModule::checkError(){
+	std::cout<<"ELEVATOR MODULE: CHECKING ERROR" << std::endl;
+	Timer encoderTimeOut;
 
+	encoderTimeOut.Start();
+
+	while(true) {
+		if(m_Enabled && !m_Manual) {
+			if(abs(m_Encoder->GetRate()) < .05) { }
+			else encoderTimeOut.Reset();
+
+			if(encoderTimeOut.Get() > 0.1) {
+				throw MovementError("ElevatorModule::checkError()" , "check if Encoder is plugged in");
+			}
+		}
+	}
 }
 
 void ElevatorModule::handleFatalError(){
@@ -65,9 +79,35 @@ void ElevatorModule::setPower(double power){
 }
 
 void ElevatorModule::calibrate() {
-	while(getButton()) {
-
+	Timer timeOut;
+	timeOut.Start();
+	while(!getButton()) {
+		if(timeOut.Get() > MAX_ELEVATOR_CALIBRATE_TIME_OUT) {
+			throw CalibrationError("ElevatorModule::calibrate()" , "calibrate timed out");
+		}
+		setPower(CALIBRATE_ELEVATOR_DOWN);
 	}
+	setPower(0);
+	timeOut.Stop();
+	timeOut.Reset();
+	timeOut.Start();
+
+	m_Encoder->Reset();
+
+	while(timeOut.Get() < MAX_ELEVATOR_CALIBRATE_TIME_IN) {
+		setPower(CALIBRATE_ELEVATOR_UP);
+		if(!getButton()) {
+			if(m_Encoder->PIDGet() < MIN_ELEVATOR_DISTANCE_CALIBRATE) {
+				throw CalibrationError("ElevatorModule::calibrate()" , "check your encoder");
+			}
+			break;
+		}
+	}
+	setPower(0);
+	if(getButton()) {
+		throw CalibrationError("ElevatorModule::calibrate()" ,"check your button");
+	}
+
 }
 
 void ElevatorModule::setPID(double p, double i, double d){

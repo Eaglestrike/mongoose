@@ -13,7 +13,7 @@
 
 class MovementError: public EaglestrikeError {
 public:
-	MovementError(/*RobotModule**/const char*, const char*, bool);
+	MovementError(/*RobotModule**/const char*, const char*, bool fat = true);
 	virtual ~MovementError();
 };
 

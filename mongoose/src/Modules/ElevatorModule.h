@@ -12,6 +12,8 @@
 #include "Modules/RobotModule.h"
 #include "Peripherals/SafeTalonSRX.h"
 #include "Settings.h"
+#include "Error/CalibrationError.h"
+#include "Error/MovementError.h"
 
 class DualMotor: public PIDOutput{
 public:
