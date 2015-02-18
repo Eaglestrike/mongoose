@@ -227,7 +227,7 @@ void ArmModule::calibrate() {
 	Timer timeout;
 	timeout.Start();
 
-//	std::cout << "calibrate()" << std::endl;
+	//	std::cout << "calibrate()" << std::endl;
 
 	if(!m_Enabled)
 		return;
@@ -238,6 +238,8 @@ void ArmModule::calibrate() {
 		disablePID();
 		renablePid = true;
 	}
+
+
 
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 
@@ -262,6 +264,36 @@ void ArmModule::calibrate() {
 
 	m_Right_Encoder->Reset();
 	m_Left_Encoder->Reset();
+
+	Timer* timeTaken = new Timer();
+	timeTaken->Start();
+	while(timeTaken->Get() < .375) {
+		m_Right_Talon->Set(-.5);
+		m_Left_Talon->Set(.5);
+		if(!m_Right_Talon->getButton() && !m_Left_Talon->getButton()) {
+			if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - .1) {
+				throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
+			}
+			else if(m_Left_Encoder->PIDGet() < .1) {
+				throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
+			}
+			break;
+		}
+	}
+
+	if(m_Right_Talon->getButton()) {
+		throw CalibrationError("ArmModule::calibrate()", "check Right button, it might be unplugged");
+	}
+	else if(m_Left_Talon->getButton()) {
+		throw CalibrationError("ArmModule::calibrate()", "check Left button, it might be unplugged");
+	}
+	else if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - .1) {
+		throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
+	}
+	else if(m_Left_Encoder->PIDGet() < .1) {
+		throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
+	}
+	timeTaken->Stop();
 
 	if(renablePid)
 		enablePID();

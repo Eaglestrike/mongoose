@@ -14,6 +14,7 @@ ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonP
 	m_Lifter = new DualMotor(m_Motor_1, m_Motor_2);
 	m_Encoder = new Encoder(encoderA, encoderB);
 	m_PIDController = new PIDController(0, 0, 0, m_Encoder, m_Lifter);
+	m_Manual = false;
 
 	m_PIDController->SetOutputRange(MAX_ELEVATOR_DOWN, MAX_ELEVATOR_UP);
 
@@ -48,7 +49,8 @@ void ElevatorModule::checkError(){
 }
 
 void ElevatorModule::handleFatalError(){
-
+	calibrate();
+	m_Manual = true;
 }
 
 void ElevatorModule::setPosition(double height){
@@ -60,6 +62,12 @@ void ElevatorModule::setPower(double power){
 		m_Lifter->Set(power);
 	else
 		m_Lifter->Set(0);
+}
+
+void ElevatorModule::calibrate() {
+	while(getButton()) {
+
+	}
 }
 
 void ElevatorModule::setPID(double p, double i, double d){

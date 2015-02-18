@@ -71,6 +71,7 @@ private:
 	DualMotor* m_Lifter;
 	Encoder* m_Encoder;
 	PIDController* m_PIDController;
+	bool m_Manual;
 
 };
 
