@@ -45,7 +45,19 @@ void ElevatorModule::reset(){
 }
 
 void ElevatorModule::checkError(){
+	std::cout<<"ELEVATOR MODULE: CHECKING ERROR" << std::endl;
+	Timer encoderTimeOut;
 
+	encoderTimeOut.Start();
+
+	while(true) {
+		if(abs(m_Encoder->GetRate()) < .05) { }
+		else encoderTimeOut.Reset();
+
+		if(encoderTimeOut.Get() > 0.1) {
+			throw MovementError("ElevatorModule::checkError()" , "check if Encoder is plugged in");
+		}
+	}
 }
 
 void ElevatorModule::handleFatalError(){
@@ -65,9 +77,35 @@ void ElevatorModule::setPower(double power){
 }
 
 void ElevatorModule::calibrate() {
-	while(getButton()) {
-
+	Timer timeOut;
+	timeOut.Start();
+	while(!getButton()) {
+		if(timeOut.Get() > MAX_ELEVATOR_CALIBRATE_TIME_OUT) {
+			throw CalibrationError("ElevatorModule::calibrate()" , "calibrate timed out");
+		}
+		setPower(CALIBRATE_ELEVATOR_DOWN);
 	}
+	setPower(0);
+	timeOut.Stop();
+	timeOut.Reset();
+	timeOut.Start();
+
+	m_Encoder->Reset();
+
+	while(timeOut.Get() < MAX_ELEVATOR_CALIBRATE_TIME_OUT) {
+		setPower(CALIBRATE_ELEVATOR_UP);
+		if(!getButton()) {
+			if(m_Encoder < MIN_ELEVATOR_DISTANCE_CALIBRATE) {
+				throw CalibrationError("ElevatorModule::calibrate()" , "check your encoder");
+			}
+			break;
+		}
+	}
+	setPower(0);
+	if(getButton()) {
+		throw CalibrationError("ElevatorModule::calibrate()" ,"check your button");
+	}
+
 }
 
 void ElevatorModule::setPID(double p, double i, double d){
