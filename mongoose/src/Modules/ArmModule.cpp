@@ -20,7 +20,7 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Right_Talon = new SafeTalonSRX(rightTalonPort, rightButton, true);
 	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
 	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
-	m_Right_Encoder->SetReverseDirection(true);
+	m_Left_Encoder->SetReverseDirection(true);
 	m_Left_Encoder->SetDistancePerPulse(.001);
 	m_Right_Encoder->SetDistancePerPulse(.001);
 	m_Left_Output = new ArmOut();
@@ -284,19 +284,19 @@ void ArmModule::calibrate() {
 		std::cout << "t: " << timeTaken->Get() << " lb: " << m_Left_Talon->getButton() << " rb: " << m_Right_Talon->getButton() << " le: " << m_Left_Encoder->PIDGet() << " re: " << m_Right_Encoder->PIDGet() << std::endl;
 		m_Right_Talon->Set(-.5);
 		m_Left_Talon->Set(.5);
-		if(!m_Right_Talon->getButton() && !m_Left_Talon->getButton()) {
-			if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
-				m_Left_Talon->Set(0);
-				m_Right_Talon->Set(0);
-				throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
-			}
-			if(m_Left_Encoder->PIDGet() < MIN_CALIBRATION_DISTANCE) {
-				m_Left_Talon->Set(0);
-				m_Right_Talon->Set(0);
-				throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
-			}
-			break;
-		}
+//		if(!m_Right_Talon->getButton() && !m_Left_Talon->getButton()) {
+//			if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
+//				m_Left_Talon->Set(0);
+//				m_Right_Talon->Set(0);
+//				throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
+//			}
+//			if(m_Left_Encoder->PIDGet() < MIN_CALIBRATION_DISTANCE) {
+//				m_Left_Talon->Set(0);
+//				m_Right_Talon->Set(0);
+//				throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
+//			}
+//			break;
+//		}
 		Wait(0.005);
 	}
 

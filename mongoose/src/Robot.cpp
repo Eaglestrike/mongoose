@@ -102,12 +102,11 @@ private:
 			elevatorModule->enable();
 			driveModule->enable();
 			armModule->enable();
-			scorpionModule->disable();
+			armModule->enablePID();
+			scorpionModule->enable();
 			armModule->calibrate();
-			intakeModule->disable();
+			intakeModule->enable();
 			toggleY = 0;
-			armModule->disable();
-			armModule->disablePID();
 
 		}catch(EaglestrikeError &e){
 			cout << "EaglestrikeError" << endl;
@@ -160,9 +159,14 @@ private:
 		if(!armModule->isManual()){
 
 			if(xbox->getX()){
-				armModule->setDeltaX(3.5625);
+				armModule->setDeltaX(3.5625 - .25);
 				leftSetpoint = 4;
-			}else{
+			}
+			else if(xbox->getStart()) {
+				armModule->setDeltaX(5.8);
+				leftSetpoint = 4;
+			}
+			else{
 	//			armModule->setDeltaX(13.5);
 				armModule->setDeltaX(13.5);
 				//armModule->setRightArm(armModule->getRightPosition() + xbox->getRX() / 20.0);
