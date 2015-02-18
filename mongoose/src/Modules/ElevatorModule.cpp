@@ -73,3 +73,27 @@ bool ElevatorModule::getButton(){
 double ElevatorModule::Get(){
 	return m_Lifter->Get();
 }
+
+double ElevatorModule::getP() {
+	return m_PIDController->GetP();
+}
+
+double ElevatorModule::getI() {
+	return m_PIDController->GetI();
+}
+
+double ElevatorModule::getD() {
+	return m_PIDController->GetD();
+}
+
+void ElevatorModule::setP(double p) {
+	m_PIDController->SetPID(p, getI(), getD());
+}
+
+void ElevatorModule::setI(double i) {
+	m_PIDController->SetPID(getP(), i, getD());
+}
+
+void ElevatorModule::setD(double d) {
+	m_PIDController->SetPID(getP(), getI(), d);
+}

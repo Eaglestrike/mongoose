@@ -57,6 +57,12 @@ public:
 
 	bool getButton();
 	double Get();
+	double getP();
+	double getI();
+	double getD();
+	void setP(double p);
+	void setI(double i);
+	void setD(double d);
 
 private:
 	SafeTalonSRX* m_Motor_1;
