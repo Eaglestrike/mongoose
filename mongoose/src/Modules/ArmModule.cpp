@@ -8,8 +8,7 @@
 #include "ArmModule.h"
 
 
-#define MAX_LEFT 0.5
-#define MAX_RIGHT 0.5
+
 
 ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int midButtonPort, int leftButtonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
 : RobotModule("Arm")
@@ -222,77 +221,109 @@ void ArmModule::disable() {
 
 void ArmModule::calibrate() {
 
+	std::cout << "calibrate()" << std::endl;
+
 	m_Calibrating = true;
 
 	Timer timeout;
 	timeout.Start();
-
-	//	std::cout << "calibrate()" << std::endl;
 
 	if(!m_Enabled)
 		return;
 
 	bool renablePid = false;
 
+	std::cout << "checking if pid is enabled" << std::endl;
+
 	if(m_Left_Arm_Controller->IsEnabled() || m_Right_Arm_Controller->IsEnabled()){
 		disablePID();
 		renablePid = true;
 	}
 
+	if(m_Right_Talon->getButton() && m_Left_Talon->getButton() && m_Saftey_Button->Get())
+		throw CalibrationError("ArmModule::calibrate()", "All three buttons are pressed (wiring issue)");
 
+	std::cout << "going out" << std::endl;
 
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 
-		if(timeout.Get() > 3){
+		if(timeout.Get() > MAX_CALIBRATE_TIME_OUT){
 			throw CalibrationError(/*this*/"ArmModule::calibrate()", "calibration timed out");
 		}
 
 
 		if(m_Right_Talon->getButton()) {
 			m_Right_Talon->Set(0);
+		} else {
+			m_Right_Talon->Set(MAX_CALIBRATE_RIGHT_POWER);
 		}
-		else {
-			m_Right_Talon->Set(MAX_RIGHT * 1);
-		}
+
 		if(m_Left_Talon->getButton()) {
 			m_Left_Talon->Set(0);
+		} else {
+			m_Left_Talon->Set(-MAX_CALIBRATE_LEFT_POWER);
 		}
-		else {
-			m_Left_Talon->Set(-MAX_LEFT * 0.9);
-		}
+
+		Wait(0.005);
 	}
+
+	m_Left_Talon->Set(0);
+	m_Right_Talon->Set(0);
+
+	std::cout << "resetting encoders()" << std::endl;
 
 	m_Right_Encoder->Reset();
 	m_Left_Encoder->Reset();
 
 	Timer* timeTaken = new Timer();
 	timeTaken->Start();
-	while(timeTaken->Get() < .375) {
+
+	std::cout << "going in" << std::endl;
+
+	while(timeTaken->Get() < MAX_CALIBRATE_TIME_IN) {
+		std::cout << "t: " << timeTaken->Get() << " lb: " << m_Left_Talon->getButton() << " rb: " << m_Right_Talon->getButton() << " le: " << m_Left_Encoder->PIDGet() << " re: " << m_Right_Encoder->PIDGet() << std::endl;
 		m_Right_Talon->Set(-.5);
 		m_Left_Talon->Set(.5);
 		if(!m_Right_Talon->getButton() && !m_Left_Talon->getButton()) {
-			if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - .1) {
+			if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
+				m_Left_Talon->Set(0);
+				m_Right_Talon->Set(0);
 				throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
 			}
-			else if(m_Left_Encoder->PIDGet() < .1) {
+			if(m_Left_Encoder->PIDGet() < MIN_CALIBRATION_DISTANCE) {
+				m_Left_Talon->Set(0);
+				m_Right_Talon->Set(0);
 				throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
 			}
 			break;
 		}
+		Wait(0.005);
 	}
+
+
+	m_Left_Talon->Set(0);
+	m_Right_Talon->Set(0);
+
+	std::cout << "getting buttons" << std::endl;
 
 	if(m_Right_Talon->getButton()) {
 		throw CalibrationError("ArmModule::calibrate()", "check Right button, it might be unplugged");
 	}
-	else if(m_Left_Talon->getButton()) {
+
+	if(m_Left_Talon->getButton()) {
 		throw CalibrationError("ArmModule::calibrate()", "check Left button, it might be unplugged");
 	}
-	else if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - .1) {
+
+	std::cout << "getting buttons" << std::endl;
+
+	if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
 		throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
 	}
-	else if(m_Left_Encoder->PIDGet() < .1) {
+
+	if(m_Left_Encoder->PIDGet() < MIN_CALIBRATION_DISTANCE) {
 		throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
 	}
+
 	timeTaken->Stop();
 
 	if(renablePid)

@@ -103,10 +103,12 @@ private:
 			driveModule->enable();
 			armModule->enable();
 			scorpionModule->disable();
-			armModule->enablePID();
-			std::cout << "calibrate()" << std::endl;
 			armModule->calibrate();
 			intakeModule->disable();
+			toggleY = 0;
+			armModule->disable();
+			armModule->disablePID();
+
 		}catch(EaglestrikeError &e){
 			cout << "EaglestrikeError" << endl;
 			cerr << e.toString() << endl;
@@ -115,7 +117,7 @@ private:
 
 		}
 
-		std::cout << "}catch(){}" << std::endl;
+		std::cout << "no error in calibrate" << std::endl;
 	}
 
 	double leftSetpoint = 0;
@@ -188,10 +190,10 @@ private:
 		}
 
 		if(xbox->getA()) {
-			intakeModule->intake(.5);
+			intakeModule->intake(1);
 		}
 		else if(xbox->getB()) {
-			intakeModule->intake(-.5);
+			intakeModule->intake(-1);
 		}
 		else {
 			intakeModule->intake(0);
