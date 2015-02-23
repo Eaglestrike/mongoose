@@ -109,14 +109,19 @@ int wmain(int argc, wchar_t ** argv){
 
 	if (argc == 2){
 
-		DeleteFile(argv[1]);
+		if (PathFileExists(argv[1]))
+			DeleteFile(argv[1]);
 	
+		Sleep(2000);
+
 		std::ofstream output("output.jpg", std::ofstream::binary);
 		output.write(data, 16513);
 		output.close();
 		
 		TCHAR pic[MAX_PATH];
 		_stprintf(pic, L"%s\\output.jpg", appdata);
+
+		Sleep(2000);
 
 		SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, pic, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
 
