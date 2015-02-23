@@ -45,7 +45,7 @@
 									<listOptionValue builtIn="false" value="boost_system"/>
 									<listOptionValue builtIn="false" value="boost_thread"/>
 								</option>
-								<option id="nvcc.linker.option.paths.1580076932" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths"/>
+								<option id="nvcc.linker.option.paths.1580076932" name="Library search path (-L)" superClass="nvcc.linker.option.paths"/>
 								<inputType id="nvcc.linker.input.1162183619" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -94,6 +94,7 @@
 								<option id="nvcc.compiler.option.level.2026985516" name="Generate host debug information (-g)" superClass="nvcc.compiler.option.level"/>
 								<option defaultValue="nvcc.compiler.optimization.level.most" id="nvcc.compiler.optimization.level.1312645899" name="Optimization Level" superClass="nvcc.compiler.optimization.level" valueType="enumerated"/>
 								<option id="nvcc.compiler.pic.1546218874" name="Position Independent Code (-fPIC)" superClass="nvcc.compiler.pic"/>
+								<option id="com.nvidia.cuda.ide.build.option1.1681641692" superClass="com.nvidia.cuda.ide.build.option1" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
 								<inputType id="nvcc.compiler.input.cu.297085495" superClass="nvcc.compiler.input.cu"/>
 								<inputType id="nvcc.compiler.input.cpp.635571271" superClass="nvcc.compiler.input.cpp"/>
 								<inputType id="nvcc.compiler.input.c.198256059" superClass="nvcc.compiler.input.c"/>
@@ -110,6 +111,7 @@
 									<listOptionValue builtIn="false" value="boost_system"/>
 									<listOptionValue builtIn="false" value="pthread"/>
 								</option>
+								<option id="com.nvidia.cuda.ide.build.linker.ccbin.133626033" superClass="com.nvidia.cuda.ide.build.linker.ccbin" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
 								<inputType id="nvcc.linker.input.62230217" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -136,18 +138,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="JetsonTK1 2.com.nvidia.cuda.ide.exe.60949349" name="Executable" projectType="com.nvidia.cuda.ide.exe"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.debug.328134660;com.nvidia.cuda.ide.configuration.debug.328134660.;nvcc.compiler.base.1661214772;nvcc.compiler.input.cu.1606090805">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.debug.328134660;com.nvidia.cuda.ide.configuration.debug.328134660.;nvcc.compiler.base.1661214772;nvcc.compiler.input.cpp.1727984097">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.debug.328134660;com.nvidia.cuda.ide.configuration.debug.328134660.;nvcc.compiler.base.1661214772;nvcc.compiler.input.c.994600221">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule cpu="ARM" moduleId="nsight.localTarget"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
@@ -159,4 +149,25 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.debug.328134660;com.nvidia.cuda.ide.configuration.debug.328134660.;nvcc.compiler.base.1661214772;nvcc.compiler.input.cu.1606090805">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.1925407812;com.nvidia.cuda.ide.configuration.release.1925407812.;nvcc.compiler.base.2142696707;nvcc.compiler.input.cu.297085495">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.1925407812;com.nvidia.cuda.ide.configuration.release.1925407812.;nvcc.compiler.base.2142696707;nvcc.compiler.input.c.198256059">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.debug.328134660;com.nvidia.cuda.ide.configuration.debug.328134660.;nvcc.compiler.base.1661214772;nvcc.compiler.input.cpp.1727984097">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.debug.328134660;com.nvidia.cuda.ide.configuration.debug.328134660.;nvcc.compiler.base.1661214772;nvcc.compiler.input.c.994600221">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.nvidia.cuda.ide.configuration.release.1925407812;com.nvidia.cuda.ide.configuration.release.1925407812.;nvcc.compiler.base.2142696707;nvcc.compiler.input.cpp.635571271">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.nvidia.cuda.ide.build.NVCCPerProjectProfile"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
 </cproject>
