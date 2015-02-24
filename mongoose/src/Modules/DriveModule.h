@@ -93,6 +93,14 @@ public:
 	double getPower();
 	void resetEncoders();
 
+	double getDriveP();
+	double getDriveD();
+	double getDriveI();
+	
+	double getAngleP();
+	double getAngleI();
+	double getAngleD();
+	
 	double getLeftPower();
 	double getRightPower();
 
@@ -106,8 +114,8 @@ private:
 	ADXRS453Z* m_Gyro;
 
 	/* Pid Controller */
-	// PIDController controller;
-	// PIDReader angleReader;
+	PIDController* m_Drive_Controller;
+	PIDController* m_Angle_Controller;
 
 	/*drive Functions */
 	DriveFunction driveFunc;
