@@ -97,11 +97,13 @@ public:
 	double getDriveD();
 	double getDriveI();
 	void setDrivePID();
+	void setDriveSetpoint(float setpoint);
 	
 	double getAngleP();
 	double getAngleI();
 	double getAngleD();
 	void setAnglePID();
+	void setAngleSetpoint(float setpoint);
 	
 	double getLeftPower();
 	double getRightPower();
