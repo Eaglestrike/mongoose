@@ -96,10 +96,12 @@ public:
 	double getDriveP();
 	double getDriveD();
 	double getDriveI();
+	void setDrivePID();
 	
 	double getAngleP();
 	double getAngleI();
 	double getAngleD();
+	void setAnglePID();
 	
 	double getLeftPower();
 	double getRightPower();
