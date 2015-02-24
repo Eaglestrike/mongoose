@@ -83,6 +83,39 @@ double DriveModule::getRightPower(){
 	return m_Right_Victor_1->Get();
 }
 
+double DriveModule::getDriveP() { 
+	return m_Drive_Controller->GetP();
+}
+
+double DriveModule::getDriveI() { 
+	return m_Drive_Controller->GetI();
+}
+
+double DriveModule::getDriveD() { 
+	return m_Drive_Controller->GetD();
+}
+
+void DriveModule::setDrivePID(double p, double i, double d) { 
+	m_Drive_Controller->SetPID(p, i, d);
+}
+
+double DriveModule::getAngleP() { 
+	return m_Angle_Controller->GetP();
+}
+
+double DriveModule::getAngleI() { 
+	return m_Angle_Controller->GetI();
+}
+
+double DriveModule::getAngleD() { 
+	return m_Angle_Controller->GetD();
+}
+
+void DriveModule::setAnglePID(double p, double i, double d) { 
+	m_Angle_Controller->SetPID(p, i, d);
+}
+
+
 DriveModule::~DriveModule() {
 
 }
