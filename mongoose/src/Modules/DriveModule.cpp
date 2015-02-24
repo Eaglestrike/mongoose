@@ -16,9 +16,6 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 
 	m_Left_Encoder->SetReverseDirection(true);
 
-	/* PID */
-	m_Drive_Controller = new PIDController(DRIVE_1_P, DRIVE_1_I, DRIVE_1_D, m_Left_Encoder, m_Drive_Output);
-	m_Angle_Controller = new PIDController(ANGLE_1_P, ANGLE_1_I, ANGLE_1_D, m_Gyro, m_Angle_Output);
 }
 
 void DriveModule::enable(){
@@ -83,39 +80,6 @@ double DriveModule::getLeftPower(){
 double DriveModule::getRightPower(){
 	return m_Right_Victor_1->Get();
 }
-
-double DriveModule::getDriveP() { 
-	return m_Drive_Controller->GetP();
-}
-
-double DriveModule::getDriveI() { 
-	return m_Drive_Controller->GetI();
-}
-
-double DriveModule::getDriveD() { 
-	return m_Drive_Controller->GetD();
-}
-
-void DriveModule::setDrivePID(double p, double i, double d) { 
-	m_Drive_Controller->SetPID(p, i, d);
-}
-
-double DriveModule::getAngleP() { 
-	return m_Angle_Controller->GetP();
-}
-
-double DriveModule::getAngleI() { 
-	return m_Angle_Controller->GetI();
-}
-
-double DriveModule::getAngleD() { 
-	return m_Angle_Controller->GetD();
-}
-
-void DriveModule::setAnglePID(double p, double i, double d) { 
-	m_Angle_Controller->SetPID(p, i, d);
-}
-
 
 DriveModule::~DriveModule() {
 
