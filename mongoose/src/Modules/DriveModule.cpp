@@ -17,7 +17,8 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Left_Encoder->SetReverseDirection(true);
 
 	/* PID */
-
+	m_Drive_Controller = new PIDController(DRIVE_1_P, DRIVE_1_I, DRIVE_1_D, m_Left_Encoder, m_Drive_Output);
+	m_Angle_Controller = new PIDController(ANGLE_1_P, ANGLE_1_I, ANGLE_1_D, m_Gyro, m_Angle_Output);
 }
 
 void DriveModule::enable(){
