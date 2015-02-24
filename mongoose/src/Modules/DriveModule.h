@@ -9,7 +9,6 @@
 #include "Peripherals/ADXRS453Z.h"
 
 
-
 /*   Linear Functions   */
 class DriveFunction {  // methods in this are defaults
 public:
@@ -92,24 +91,11 @@ public:
 	void reset();
 	double getPower();
 	void resetEncoders();
-
-	double getDriveP();
-	double getDriveD();
-	double getDriveI();
-	void setDrivePID();
-	void setDriveSetpoint(float setpoint);
-	
-	double getAngleP();
-	double getAngleI();
-	double getAngleD();
-	void setAnglePID();
-	void setAngleSetpoint(float setpoint);
-	
 	double getLeftPower();
 	double getRightPower();
 
 private:
-	/*   Hardware Stuff    */
+	/*   Hardware    */
 	Victor* m_Left_Victor_1;
 	Victor* m_Left_Victor_2;
 	Victor* m_Right_Victor_1;
@@ -117,9 +103,7 @@ private:
 	Encoder* m_Left_Encoder;
 	ADXRS453Z* m_Gyro;
 
-	/* Pid Controller */
-	PIDController* m_Drive_Controller;
-	PIDController* m_Angle_Controller;
+	/* Pid */
 
 	/*drive Functions */
 	DriveFunction driveFunc;
