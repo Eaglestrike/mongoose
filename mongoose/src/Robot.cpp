@@ -87,7 +87,7 @@ private:
 	{
 		if(printCounter % 50 == 0){
 			cout 	<< "T: " << timer->Get() << " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-					<<	" RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl;
+							<<	" RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl;
 		}
 
 		printCounter++;
@@ -128,24 +128,24 @@ private:
 		driveModule->drive(-leftJoy->GetY(), -rightJoy->GetX());
 		scorpionModule->Set(rightJoy->GetRawButton(4));
 
-//		double leftArmPower = xbox->getLX() * MAX_ARM_POWER;
-//		double rightArmPower = xbox->getRX() * MAX_ARM_POWER;
-//
-//		if(armModule->getLeftButton() && leftArmPower < 0)
-//			leftArmPower = 0;
-//
-//		if(armModule->getRightButton() && rightArmPower > 0)
-//			rightArmPower = 0;
-//
-//		if(armModule->getMidButton()){
-//			if(leftArmPower > 0)
-//				leftArmPower = 0;
-//			if(rightArmPower < 0)
-//				rightArmPower = 0;
-//		}
-//
-//		armModule->setLeftPower(leftArmPower);
-//		armModule->setRightPower(rightArmPower);
+		//		double leftArmPower = xbox->getLX() * MAX_ARM_POWER;
+		//		double rightArmPower = xbox->getRX() * MAX_ARM_POWER;
+		//
+		//		if(armModule->getLeftButton() && leftArmPower < 0)
+		//			leftArmPower = 0;
+		//
+		//		if(armModule->getRightButton() && rightArmPower > 0)
+		//			rightArmPower = 0;
+		//
+		//		if(armModule->getMidButton()){
+		//			if(leftArmPower > 0)
+		//				leftArmPower = 0;
+		//			if(rightArmPower < 0)
+		//				rightArmPower = 0;
+		//		}
+		//
+		//		armModule->setLeftPower(leftArmPower);
+		//		armModule->setRightPower(rightArmPower);
 
 		double elevatorPower = xbox->getLY() * MAX_ELEVATOR_UP;
 		if(elevatorPower < MAX_ELEVATOR_DOWN)
@@ -167,7 +167,7 @@ private:
 				leftSetpoint = 4;
 			}
 			else{
-	//			armModule->setDeltaX(13.5);
+				//			armModule->setDeltaX(13.5);
 				armModule->setDeltaX(13.5);
 				//armModule->setRightArm(armModule->getRightPosition() + xbox->getRX() / 20.0);
 				leftSetpoint = 0;
@@ -206,6 +206,7 @@ private:
 		if(printCounter % 20 == 0){
 			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
 			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
+			cout << "angle: " << driveModule->getAngle() << endl;
 		}
 
 		printCounter++;
@@ -213,30 +214,51 @@ private:
 	}
 
 	void TestInit(){
-		armModule->enable();
-		armModule->disablePID();
-		armModule->calibrate();
-		armModule->enablePID();
+		armModule->disable();
+		driveModule->enable();
+		driveModule->enablePID();
+		elevatorModule->enable();
+		intakeModule->enable();
 	}
 
 	void TestPeriodic()
 	{
 
 
-		if(xbox->getStart()){
-			armModule->setDeltaX(5);
-			armModule->setLeftArm(4);
-		}else{
-			armModule->setDeltaX(13);
-			armModule->setLeftArm(0.5);
+		if(xbox->getA()) {
+			driveModule->setAnglePID(driveModule->getAngleP() - .001, driveModule->getAngleI(), driveModule->getAngleD());
 		}
+		else if(xbox->getY()) {
+			driveModule->setAnglePID(driveModule->getAngleP() + .001, driveModule->getAngleI(), driveModule->getAngleD());
+		}
+		else if(xbox->getB()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() + .001, driveModule->getAngleD());
+		}
+		else if(xbox->getL3()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() - .001);
+		}
+		else if(xbox->getR3()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() + .001);
+		}
+		else if(xbox->getLB()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() - .001, driveModule->getAngleD());
+		}
+
+//		if(xbox->getX()) {
+//			driveModule->setAngleSetpoint(360);
+//		}
+//		else {
+//			driveModule->setAngleSetpoint(0);
+//		}
 
 		if(printCounter % 12 == 0){
-			cout << "lb: " << armModule->getLeftButton() << " mb: " << armModule->getMidButton() << " rb: " << armModule->getRightButton()  << " ds: " << armModule->getDiffSetpoint() << " rs: " << armModule->getRightSetpoint() << " de: " << armModule->getDiffError() << " re: " << armModule->getRightError() << endl;
+			cout << "p: " << driveModule->getAngleP() << " d: " << driveModule->getAngleD() << " i: " <<driveModule->getAngleI() << " error: " << driveModule->getAngleError()<< endl;
 		}
-
+		driveModule->setPower(driveModule->getAngleOutput(), -driveModule->getAngleOutput());
 		printCounter++;
 		lw->Run();
+
+
 	}
 };
 
