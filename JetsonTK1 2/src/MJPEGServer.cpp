@@ -1,4 +1,6 @@
 
+#if 0
+
 #include "MJPEGServer.h"
 
 
@@ -28,3 +30,5 @@ void MJPEGServer::acceptUser(int i/*sboost::asio::ip::tcp::socket socket*/){
 
 	std::cout << "acceptUser()" << std::endl;
 }
+
+#endif
