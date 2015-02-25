@@ -76,6 +76,14 @@
 #define DRIVE_ENCODER_B 9
 #define DRIVE_GYRO 0
 
+#define DRIVE_1_P 0
+#define DRIVE_1_I 0
+#define DRIVE_1_D 0
+
+#define ANGLE_1_P 0
+#define ANGLE_1_I 0
+#define ANGLE_1_D 0
+
 /*Intake*/
 #define INTAKE_SOLENOID_1 1
 #define INTAKE_SOLENOID_2 2

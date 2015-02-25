@@ -3,12 +3,14 @@
 #include <iostream>
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
-#include "MJPEGServer.h"
+//#include "MJPEGServer.h"
 
 using namespace cv;
 using namespace std;
 
 int main(){
+
+	std::cout << "test" << std::endl;
 
 //	VideoCapture vc(0);
 //	Mat image;
@@ -19,9 +21,9 @@ int main(){
 //
 //	namedWindow("test");
 
-	boost::asio::io_service io_Service;
-	MJPEGServer server(io_Service, 5000);
-	io_Service.run();
+//	boost::asio::io_service io_Service;
+//	MJPEGServer server(io_Service, 5000);
+//	io_Service.run();
 
 	return 0;
 

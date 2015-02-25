@@ -16,8 +16,6 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 
 	m_Left_Encoder->SetReverseDirection(true);
 
-	/* PID */
-
 }
 
 void DriveModule::enable(){
