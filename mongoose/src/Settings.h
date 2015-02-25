@@ -80,6 +80,6 @@
 #define INTAKE_SOLENOID_1 1
 #define INTAKE_SOLENOID_2 2
 #define INTAKE_MOTOR_1 8
-#define INTAKE_MOTOR_2 10
+#define INTAKE_MOTOR_2 14
 
 #endif /* SETTINGS_H_ */
