@@ -1,4 +1,8 @@
 
+
+
+#if 0
+
 #ifndef MJPEGSERVER_H_
 #define MJPEGSERVER_H_
 
@@ -27,4 +31,5 @@ private:
 
 
 
+#endif
 #endif
