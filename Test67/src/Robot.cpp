@@ -1,18 +1,17 @@
 #include "WPILib.h"
-#include <iostream>
 
 class Robot: public IterativeRobot
 {
 private:
 	LiveWindow *lw;
-	DigitalInput* testButton;
-	TalonSRX* v;
+	TalonSRX* asdf;
+	TalonSRX* awqer;
 
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-		testButton = new DigitalInput(14);
-		v = new Victor(10);
+		asdf = new TalonSRX(6);
+		awqer = new TalonSRX(7);
 	}
 
 	void AutonomousInit()
@@ -22,8 +21,8 @@ private:
 
 	void AutonomousPeriodic()
 	{
-		std::cout << testButton->Get() << std::endl;
-		Wait(0.1);
+		asdf->Set(0);
+		awqer->Set(0);
 	}
 
 	void TeleopInit()
