@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <iostream>
+#include <vector>
 
 #include "Error/EaglestrikeError.h"
 
@@ -18,7 +19,8 @@ public:
 	void enable();
 	void disable();
 	void reset();
-	double* getLoggingData();
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
 
 	std::string getModuleName();
 protected:

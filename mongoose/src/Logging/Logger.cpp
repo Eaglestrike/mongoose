@@ -12,7 +12,7 @@
 #include <string>
 #include <exception>
 #include <stdexcept>
-#include <cstring>
+#include <vector>
 using namespace std;
 
 char* filename;
@@ -26,8 +26,9 @@ Logger::Logger(char* file_name) {
 	headed = false;
 }
 
-void Logger::writeHeader(string headers[], int length) {
+void Logger::writeHeader(vector<string> headers) {
 	try{
+		int length = headers.size();
 		if (length == 0) { throw length_error("zero"); }
 		if (!headed) {
 			writeFile.open(filename, std::ios_base::app);
@@ -50,8 +51,9 @@ void Logger::writeHeader(string headers[], int length) {
 	}
 }
 
-void Logger::writeData(double data[], int length) {
+void Logger::writeData(vector<double> data) {
 	try {
+		int length = data.size();
 		if (length == 0) { throw length_error("zero"); }
 		if (length != catagories) { throw length_error("matching"); }
 		cout << "checked for errors" << endl;
