@@ -8,7 +8,7 @@
 #ifndef SRC_ERROR_MOVEMENTERROR_H_
 #define SRC_ERROR_MOVEMENTERROR_H_
 
-#include "Error/EaglestrikeError.h"
+#include "EaglestrikeError.h"
 
 
 class MovementError: public EaglestrikeError {

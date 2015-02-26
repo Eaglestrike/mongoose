@@ -8,7 +8,7 @@
 #ifndef INTAKEMODULE_H_
 #define INTAKEMODULE_H_
 
-#include "Modules/RobotModule.h"
+#include "RobotModule.h"
 #include "WPILib.h"
 
 

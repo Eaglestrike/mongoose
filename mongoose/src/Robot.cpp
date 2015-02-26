@@ -87,7 +87,9 @@ private:
 	{
 		if(printCounter % 50 == 0){
 			cout 	<< "T: " << timer->Get() << " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-					<<	" RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl;
+					<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
+					<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance() << endl;
+
 		}
 
 		printCounter++;

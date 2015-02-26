@@ -6,7 +6,7 @@
 #include <thread>
 #include <iostream>
 
-#include "Error/EaglestrikeError.h"
+#include "../Error/EaglestrikeError.h"
 
 //class EaglestrikeError;
 

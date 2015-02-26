@@ -10,11 +10,11 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Right_Victor_1 = new Victor(rv1);
 	m_Right_Victor_2 = new Victor(rv2);
 
-	m_Left_Encoder = new Encoder(l_EA, l_EB);
+	m_Encoder = new Encoder(l_EA, l_EB);
 
 	m_Gyro = new ADXRS453Z(gyroPort);
 
-	m_Left_Encoder->SetReverseDirection(true);
+	m_Encoder->SetReverseDirection(true);
 
 }
 
@@ -27,7 +27,7 @@ void DriveModule::disable() {
 }
 
 void DriveModule::reset() {
-	m_Left_Encoder->Reset();
+	m_Encoder->Reset();
 	m_Gyro->reset();
 }
 
@@ -79,6 +79,10 @@ double DriveModule::getLeftPower(){
 
 double DriveModule::getRightPower(){
 	return m_Right_Victor_1->Get();
+}
+
+double DriveModule::getEncoderDistance(){
+	return m_Encoder->PIDGet();
 }
 
 DriveModule::~DriveModule() {

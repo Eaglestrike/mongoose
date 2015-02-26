@@ -3,10 +3,10 @@
 #define __DRIVE_MODULE_H
 
 #include "WPILib.h"
-#include "Modules/RobotModule.h"
+#include "RobotModule.h"
 #include <math.h>
 #include <algorithm>
-#include "Peripherals/ADXRS453Z.h"
+#include "../Peripherals/ADXRS453Z.h"
 
 
 /*   Linear Functions   */
@@ -93,6 +93,7 @@ public:
 	void resetEncoders();
 	double getLeftPower();
 	double getRightPower();
+	double getEncoderDistance();
 
 private:
 	/*   Hardware    */
@@ -100,7 +101,7 @@ private:
 	Victor* m_Left_Victor_2;
 	Victor* m_Right_Victor_1;
 	Victor* m_Right_Victor_2;
-	Encoder* m_Left_Encoder;
+	Encoder* m_Encoder;
 	ADXRS453Z* m_Gyro;
 
 	/* Pid */
