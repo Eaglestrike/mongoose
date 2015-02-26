@@ -7,7 +7,25 @@
 #include <math.h>
 #include <algorithm>
 #include "../Peripherals/ADXRS453Z.h"
+#include "../Settings.h"
 
+
+/* PIDOutput */
+class PIDOut : public PIDOutput {
+private:
+	double a = 0;
+public:
+	PIDOut() { }
+
+	void PIDWrite(float output) {
+		a = output;
+	}
+
+	double getOutput() {
+		return a;
+	}
+
+};
 
 /*   Linear Functions   */
 class DriveFunction {  // methods in this are defaults
@@ -52,8 +70,8 @@ public:
 		double victor_fit_c1		= -1.56847;
 		double victor_fit_a1		= (- (125.0 * victor_fit_e1  + 125.0 * victor_fit_c1 - 116.0) / 125.0);
 		double answer_5th_order = (victor_fit_a1 * goal_speed5
-			+ victor_fit_c1 * goal_speed3
-			+ victor_fit_e1 * goal_speed);
+				+ victor_fit_c1 * goal_speed3
+				+ victor_fit_e1 * goal_speed);
 
 		// Constants for the 7th order polynomial
 		double victor_fit_c2 = -5.46889;
@@ -61,14 +79,14 @@ public:
 		double victor_fit_g2 = -0.042375;
 		double victor_fit_a2 = (- (125.0 * (victor_fit_c2 + victor_fit_e2 + victor_fit_g2) - 116.0) / 125.0);
 		double answer_7th_order = (victor_fit_a2 * goal_speed7
-			+ victor_fit_c2 * goal_speed5
-			+ victor_fit_e2 * goal_speed3
-			+ victor_fit_g2 * goal_speed);
+				+ victor_fit_c2 * goal_speed5
+				+ victor_fit_e2 * goal_speed3
+				+ victor_fit_g2 * goal_speed);
 
 
 		// Average the 5th and 7th order polynomials
 		double answer =  0.85 * 0.5 * (answer_7th_order + answer_5th_order)
-		+ .15 * goal_speed * (1.0 - deadband_value);
+				+ .15 * goal_speed * (1.0 - deadband_value);
 
 		if (answer > 0.001)
 			answer += deadband_value;
@@ -94,6 +112,28 @@ public:
 	double getLeftPower();
 	double getRightPower();
 	double getEncoderDistance();
+	double getDriveOutput();
+	double getAngleOutput();
+
+	double getDriveP();
+	double getDriveD();
+	double getDriveI();
+	void setDrivePID(double p, double i, double d);
+	void setDriveSetpoint(float setpoint);
+	double getDriveError();
+
+	double getAngleP();
+	double getAngleI();
+	double getAngleD();
+	void setAnglePID(double p, double i, double d);
+	void setAngleSetpoint(float setpoint);
+	double getAngleError();
+	double getAngle();
+	void setPower(double left, double right);
+
+	void disablePID();
+	void enablePID();
+>>>>>>> a45fbb9d0e29ab4a06f61f7c35c85f0ce7045d6e
 
 private:
 	/*   Hardware    */
@@ -105,11 +145,14 @@ private:
 	ADXRS453Z* m_Gyro;
 
 	/* Pid */
+	PIDController* m_Drive_Controller;
+	PIDController* m_Angle_Controller;
+	PIDOut* m_Drive_Output;
+	PIDOut* m_Angle_Output;
 
 	/*drive Functions */
 	DriveFunction driveFunc;
 
-	void setPower(double left, double right);
 
 };
 

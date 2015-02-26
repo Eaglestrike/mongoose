@@ -10,20 +10,40 @@ using namespace std;
 
 int main(){
 
-	std::cout << "test" << std::endl;
+	cout << "making classifier" << endl;
 
-//	VideoCapture vc(0);
-//	Mat image;
-//
-//
-//	gpu::GpuMat gpuImage;
-//	gpu::GpuMat grey;
-//
-//	namedWindow("test");
+	VideoCapture vc(0);
+	gpu::CascadeClassifier_GPU classifier;
 
-//	boost::asio::io_service io_Service;
-//	MJPEGServer server(io_Service, 5000);
-//	io_Service.run();
+	cout << "loading classifier" << endl;
+
+	if(!classifier.load("cascade.xml")){
+		cerr << "Error loading cascade classifier" << endl;
+		return -1;
+	}
+
+	namedWindow("video", WINDOW_AUTOSIZE);
+
+	Mat frame;
+	Mat grey_frame;
+	gpu::GpuMat gpu_frame;
+
+	while(1){
+		vc >> frame;
+		cvtColor(frame, grey_frame, CV_BGR2GRAY);
+		gpu_frame.upload(grey_frame);
+
+		vector<Rect> detections;
+		gpu::GpuMat faceBuf;
+		int numDetections = 0;
+
+
+
+		imshow("video", frame);
+
+		if(waitKey(50) >= 0)
+			break;
+	}
 
 	return 0;
 
