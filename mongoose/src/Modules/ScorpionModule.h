@@ -2,7 +2,7 @@
 #ifndef __SCORPION_H
 #define __SCORPION_H
 
-#include "Modules/RobotModule.h"
+#include "RobotModule.h"
 #include <WPILib.h>
 
 class ScorpionModule : public RobotModule {

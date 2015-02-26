@@ -3,11 +3,11 @@
 #define __DRIVE_MODULE_H
 
 #include "WPILib.h"
-#include "Modules/RobotModule.h"
+#include "RobotModule.h"
 #include <math.h>
 #include <algorithm>
-#include "Peripherals/ADXRS453Z.h"
-#include "Settings.h"
+#include "../Peripherals/ADXRS453Z.h"
+#include "../Settings.h"
 
 
 /* PIDOutput */
@@ -111,6 +111,7 @@ public:
 	void resetEncoders();
 	double getLeftPower();
 	double getRightPower();
+	double getEncoderDistance();
 	double getDriveOutput();
 	double getAngleOutput();
 
@@ -132,6 +133,7 @@ public:
 
 	void disablePID();
 	void enablePID();
+>>>>>>> a45fbb9d0e29ab4a06f61f7c35c85f0ce7045d6e
 
 private:
 	/*   Hardware    */
@@ -139,7 +141,7 @@ private:
 	Victor* m_Left_Victor_2;
 	Victor* m_Right_Victor_1;
 	Victor* m_Right_Victor_2;
-	Encoder* m_Left_Encoder;
+	Encoder* m_Encoder;
 	ADXRS453Z* m_Gyro;
 
 	/* Pid */

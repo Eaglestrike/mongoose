@@ -145,3 +145,8 @@ void ElevatorModule::setI(double i) {
 void ElevatorModule::setD(double d) {
 	m_PIDController->SetPID(getP(), getI(), d);
 }
+
+double ElevatorModule::getEncoderDistance(){
+	return m_Encoder->PIDGet();
+}
+

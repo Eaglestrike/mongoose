@@ -9,11 +9,11 @@
 #define ARMMODULE_H_
 
 #include "WPILib.h"
-#include "Modules/RobotModule.h"
-#include "Peripherals/SafeTalonSRX.h"
-#include "Settings.h"
-#include "Error/CalibrationError.h"
-#include "Error/MovementError.h"
+#include "RobotModule.h"
+#include "../Peripherals/SafeTalonSRX.h"
+#include "../Settings.h"
+#include "../Error/CalibrationError.h"
+#include "../Error/MovementError.h"
 
 
 class ModifiedEncoder: public Encoder {

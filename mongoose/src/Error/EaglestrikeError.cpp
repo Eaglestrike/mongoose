@@ -5,7 +5,7 @@
  *      Author: Team 114
  */
 
-#include "Error/EaglestrikeError.h"
+#include "EaglestrikeError.h"
 
 EaglestrikeError::EaglestrikeError(/*RobotModule**/const char* c_where, const char* c_what, bool c_fatal){
 	std::cout << "EaglestrikeError" << std::endl;
