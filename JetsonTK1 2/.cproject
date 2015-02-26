@@ -18,7 +18,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="com.nvidia.cuda.ide.configuration.debug.328134660" name="Debug" parent="com.nvidia.cuda.ide.configuration.debug.328134660">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="com.nvidia.cuda.ide.configuration.debug.328134660" name="Debug">
 					<folderInfo id="com.nvidia.cuda.ide.configuration.debug.328134660." name="/" resourcePath="">
 						<toolChain id="com.nvidia.cuda.tools.toolchain.exe.debug.1281133439" name="CUDA Toolkit 6.5">
 							<targetPlatform archList="all" binaryParser="com.nvidia.cuda.ide.elf;com.nvidia.cuda.ide.macho;com.nvidia.cuda.ide.cubin" id="com.nvidia.cuda.ide.targetPlatform.1521600072" isAbstract="false" name="Debug Platform" osList="linux,macosx"/>
@@ -97,7 +97,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.debug.1079487741" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.debug">
 								<option id="gnu.cpp.compiler.mingw.exe.debug.option.optimization.level.1236423296" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level.919565425" name="Debug Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.include.paths.544836690" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.cpp.compiler.option.include.paths.544836690" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;C:\OpenCV-2.4.9\build\include&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.232228442" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -109,6 +109,54 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.exe.debug.1828122326" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug.868578762" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug">
+								<option id="gnu.cpp.link.option.paths.1814659314" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;C:\OpenCV-2.4.9\build\x86\mingw\lib&quot;"/>
+								</option>
+								<option id="gnu.cpp.link.option.libs.680418845" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="opencv_core249"/>
+									<listOptionValue builtIn="false" value="opencv_calib3d_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_calib3d249"/>
+									<listOptionValue builtIn="false" value="opencv_contrib_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_contrib249"/>
+									<listOptionValue builtIn="false" value="opencv_core_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_core249"/>
+									<listOptionValue builtIn="false" value="opencv_features2d_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_features2d249"/>
+									<listOptionValue builtIn="false" value="opencv_flann_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_flann249"/>
+									<listOptionValue builtIn="false" value="opencv_gpu_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_gpu249"/>
+									<listOptionValue builtIn="false" value="opencv_haartraining_engine"/>
+									<listOptionValue builtIn="false" value="opencv_highgui_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_highgui249"/>
+									<listOptionValue builtIn="false" value="opencv_imgproc_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_imgproc249"/>
+									<listOptionValue builtIn="false" value="opencv_java249"/>
+									<listOptionValue builtIn="false" value="opencv_legacy_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_legacy249"/>
+									<listOptionValue builtIn="false" value="opencv_ml_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_ml249"/>
+									<listOptionValue builtIn="false" value="opencv_nonfree_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_nonfree249"/>
+									<listOptionValue builtIn="false" value="opencv_objdetect_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_objdetect249"/>
+									<listOptionValue builtIn="false" value="opencv_ocl_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_ocl249"/>
+									<listOptionValue builtIn="false" value="opencv_perf_core_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_photo_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_photo249"/>
+									<listOptionValue builtIn="false" value="opencv_stitching_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_stitching249"/>
+									<listOptionValue builtIn="false" value="opencv_superres_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_superres249"/>
+									<listOptionValue builtIn="false" value="opencv_test_core_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_ts_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_ts249"/>
+									<listOptionValue builtIn="false" value="opencv_video_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_video249"/>
+									<listOptionValue builtIn="false" value="opencv_videostab_pch_dephelp"/>
+									<listOptionValue builtIn="false" value="opencv_videostab249"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1592446530" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -127,10 +175,11 @@
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule cpu="ARM" moduleId="nsight.localTarget"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Release">
+		<configuration configurationName="Windows"/>
+		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/JetsonTK1 2"/>
 		</configuration>
-		<configuration configurationName="Debug">
+		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/JetsonTK1 2"/>
 		</configuration>
 	</storageModule>
