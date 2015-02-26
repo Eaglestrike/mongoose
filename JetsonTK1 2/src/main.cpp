@@ -30,15 +30,19 @@ int main(){
 
 	while(1){
 		vc >> frame;
+
+		if(frame.empty()){
+			cout << "empty frame!" << endl;
+			return -1;
+		}
+
 		cvtColor(frame, grey_frame, CV_BGR2GRAY);
 		gpu_frame.upload(grey_frame);
 
 		vector<Rect> detections;
 		gpu::GpuMat faceBuf;
 		int numDetections = 0;
-
-
-
+// DO THE INTERVIEW NOWWWWW
 		imshow("video", frame);
 
 		if(waitKey(50) >= 0)
