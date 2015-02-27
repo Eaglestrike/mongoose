@@ -15,6 +15,9 @@
 #include <vector>
 using namespace std;
 
+
+#if 0
+
 char* filename;
 ofstream writeFile;
 bool headed;
@@ -75,6 +78,7 @@ void Logger::writeData(vector<double> data) {
 	}
 }
 
+#endif
 
 Logger::~Logger() {
 	// TODO Auto-generated destructor stub

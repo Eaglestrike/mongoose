@@ -16,8 +16,9 @@ void RobotModule::reset(){
 
 }
 //cole was here
-double* RobotModule::getLoggingData(){
-	return 0;
+std::vector<double> RobotModule::getLoggingData(){
+	std::vector<double> asdf;
+	return asdf;
 }
 
 std::string RobotModule::getModuleName(){

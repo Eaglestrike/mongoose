@@ -9,6 +9,8 @@
 #include <vector>
 using namespace std;
 
+#if 0
+
 string folderName;
 vector<Logger> logs;
 
@@ -20,3 +22,5 @@ void addModule(RobotModule module) {
 	string filePath = folderName + "/" + module.getModuleName();
 	Logger log = new Logger(filePath);
 }
+
+#endif

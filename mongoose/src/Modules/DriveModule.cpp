@@ -20,7 +20,7 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Drive_Output = new PIDOut();
 	m_Angle_Output = new PIDOut();
 
-	m_Drive_Controller = new PIDController(DRIVE_1_P, DRIVE_1_I, DRIVE_1_D, m_Left_Encoder, m_Drive_Output);
+	m_Drive_Controller = new PIDController(DRIVE_1_P, DRIVE_1_I, DRIVE_1_D, m_Encoder, m_Drive_Output);
 	m_Angle_Controller = new PIDController(ANGLE_1_P, ANGLE_1_I, ANGLE_1_D, m_Gyro, m_Angle_Output);
 
 }
@@ -80,6 +80,17 @@ void DriveModule::drive(double throttle, double angle) {
 	setPower(leftMotorOutput, rightMotorOutput);
 }
 
+void DriveModule::setAngleSetpoint(float setpoint) {
+	m_Angle_Controller->SetSetpoint(setpoint);
+}
+
+double DriveModule::getAngleSetpoint(){
+	return m_Angle_Controller->GetSetpoint();
+}
+
+void DriveModule::setDriveSetpoint(float setpoint) {
+	m_Drive_Controller->SetSetpoint(setpoint);
+}
 double DriveModule::getLeftPower(){
 	return m_Left_Victor_1->Get();
 }

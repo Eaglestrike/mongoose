@@ -61,8 +61,8 @@
 #define DIFF_ARM_2_KI 0.0
 
 #define MAX_DELTA_X 13.5
-#define MAX_CALIBRATE_TIME_IN 0.15
-#define MAX_CALIBRATE_TIME_OUT 3
+#define MAX_CALIBRATE_TIME_IN 0.5
+#define MAX_CALIBRATE_TIME_OUT 4
 #define MIN_CALIBRATION_DISTANCE 0.05
 #define MAX_CALIBRATE_LEFT_POWER 0.45
 #define MAX_CALIBRATE_RIGHT_POWER 0.5
@@ -80,14 +80,14 @@
 #define DRIVE_1_I 0
 #define DRIVE_1_D 0
 
-#define ANGLE_1_P 0
+#define ANGLE_1_P 0.0286
 #define ANGLE_1_I 0
-#define ANGLE_1_D 0
+#define ANGLE_1_D 0.1096
 
 /*Intake*/
 #define INTAKE_SOLENOID_1 1
 #define INTAKE_SOLENOID_2 2
 #define INTAKE_MOTOR_1 8
-#define INTAKE_MOTOR_2 14
+#define INTAKE_MOTOR_2 13
 
 #endif /* SETTINGS_H_ */

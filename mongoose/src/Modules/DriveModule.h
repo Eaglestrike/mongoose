@@ -128,12 +128,12 @@ public:
 	void setAnglePID(double p, double i, double d);
 	void setAngleSetpoint(float setpoint);
 	double getAngleError();
+	double getAngleSetpoint();
 	double getAngle();
 	void setPower(double left, double right);
 
 	void disablePID();
 	void enablePID();
->>>>>>> a45fbb9d0e29ab4a06f61f7c35c85f0ce7045d6e
 
 private:
 	/*   Hardware    */

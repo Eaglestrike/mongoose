@@ -172,7 +172,7 @@ void ArmModule::setRightArm(float setpoint) {
 }
 
 void ArmModule::setLeftPower(float power){
-	if(!m_Enabled && !m_Manual)
+	if(!m_Enabled || !m_Manual)
 		power = 0;
 	if(m_Saftey_Button->Get() && power > 0)
 		m_Left_Talon->Set(0);
@@ -181,7 +181,7 @@ void ArmModule::setLeftPower(float power){
 }
 
 void ArmModule::setRightPower(float power){
-	if(!m_Enabled && !m_Manual)
+	if(!m_Enabled || !m_Manual)
 		power = 0;
 
 	if(m_Saftey_Button->Get() && power < 0)

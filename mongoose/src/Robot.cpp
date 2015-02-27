@@ -68,6 +68,8 @@ private:
 		driveModule->reset();
 		armModule->reset();
 
+		timer->Reset();
+
 		printCounter = 0;
 
 		armModule->disablePID();
@@ -75,6 +77,7 @@ private:
 
 	void DisabledPeriodic(){
 		DisabledInit();
+		updatePID();
 		Wait(0.05);
 	}
 
@@ -100,13 +103,13 @@ private:
 	{
 
 		try{
-			elevatorModule->enable();
+			elevatorModule->disable();
 			driveModule->enable();
-			armModule->enable();
-			armModule->enablePID();
-			scorpionModule->enable();
-			armModule->calibrate();
-			intakeModule->enable();
+			armModule->disable();
+//			armModule->enablePID();
+			scorpionModule->disable();
+//			armModule->calibrate();
+			intakeModule->disable();
 			toggleY = 0;
 
 		}catch(EaglestrikeError &e){
@@ -218,48 +221,56 @@ private:
 		armModule->disable();
 		driveModule->enable();
 		driveModule->enablePID();
-		elevatorModule->enable();
-		intakeModule->enable();
+		elevatorModule->disable();
+		intakeModule->disable();
+	}
+
+	void updatePID(){
+		if(xbox->getA()) {
+			driveModule->setAnglePID(driveModule->getAngleP() - .0001, driveModule->getAngleI(), driveModule->getAngleD());
+		}
+		else if(xbox->getY()) {
+			driveModule->setAnglePID(driveModule->getAngleP() + .0001, driveModule->getAngleI(), driveModule->getAngleD());
+		}
+		else if(xbox->getB()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() + .0001/10, driveModule->getAngleD());
+		}
+		else if(xbox->getL3()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() - .0001);
+		}
+		else if(xbox->getR3()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() + .0001);
+		}
+		else if(xbox->getLB()) {
+			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() - .001, driveModule->getAngleD());
+		}
+
+		if(printCounter % 12 == 0){
+			cout << "p: " << driveModule->getAngleP() << " d: " << driveModule->getAngleD() << " i: " <<driveModule->getAngleI() << " error: " << driveModule->getAngleError() << " angle: " << driveModule->getAngle() << " setpoint: " << driveModule->getAngleSetpoint() << endl;
+		}
+
+		printCounter++;
+
 	}
 
 	void TestPeriodic()
 	{
 
 
-		if(xbox->getA()) {
-			driveModule->setAnglePID(driveModule->getAngleP() - .001, driveModule->getAngleI(), driveModule->getAngleD());
+		updatePID();
+
+		if(xbox->getX()) {
+			driveModule->setAngleSetpoint(180);
 		}
-		else if(xbox->getY()) {
-			driveModule->setAnglePID(driveModule->getAngleP() + .001, driveModule->getAngleI(), driveModule->getAngleD());
-		}
-		else if(xbox->getB()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() + .001, driveModule->getAngleD());
-		}
-		else if(xbox->getL3()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() - .001);
-		}
-		else if(xbox->getR3()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() + .001);
-		}
-		else if(xbox->getLB()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() - .001, driveModule->getAngleD());
+		else {
+			driveModule->setAngleSetpoint(0);
 		}
 
-//		if(xbox->getX()) {
-//			driveModule->setAngleSetpoint(360);
-//		}
-//		else {
-//			driveModule->setAngleSetpoint(0);
-//		}
-
-		if(printCounter % 12 == 0){
-			cout << "p: " << driveModule->getAngleP() << " d: " << driveModule->getAngleD() << " i: " <<driveModule->getAngleI() << " error: " << driveModule->getAngleError()<< endl;
-		}
 		driveModule->setPower(driveModule->getAngleOutput(), -driveModule->getAngleOutput());
-		printCounter++;
 		lw->Run();
 
 
+		Wait(0.05);
 	}
 };
 

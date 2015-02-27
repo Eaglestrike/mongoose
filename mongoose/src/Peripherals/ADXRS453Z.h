@@ -28,7 +28,7 @@ private:
 
 	double lastTime;
 	double angle;
-	double adjustment = -0.406;
+	double adjustment = 0.0902;
 
 	int ignoreCounter = 0;
 
