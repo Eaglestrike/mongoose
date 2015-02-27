@@ -49,7 +49,7 @@ void AutonomousHelper::right(/*DistanceProfile* prof*/ double angle) {
 	Timer* time = new Timer();
 	while(time->Get() < .2) {
 		setPower(turnOut->getA(), -turnOut->getA());
-		if(turnController->GetError() < 70) {
+		if(turnController->GetError() < 2.5) {
 			time->Start();
 		}
 		else {
