@@ -11,10 +11,12 @@
  *
  */
 
+#include "../../Modules.h"
+#include "DistanceProfile.h"
+
+
 #ifndef PERIPHERALS_AUTONOMOUSCODE_AUTONOMOUSCOMMANDBASE_H_
 #define PERIPHERALS_AUTONOMOUSCODE_AUTONOMOUSCOMMANDBASE_H_
-
-#include "Modules.h"
 
 class AutonomousCommandBase {
 public:

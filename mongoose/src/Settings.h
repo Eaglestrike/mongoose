@@ -76,13 +76,14 @@
 #define DRIVE_ENCODER_B 9
 #define DRIVE_GYRO 0
 
-#define DRIVE_1_P 0
+#define FEET_PER_DRIVE_PULSE .00584
+#define DRIVE_1_P 0.33009
 #define DRIVE_1_I 0
-#define DRIVE_1_D 0
+#define DRIVE_1_D 0.00939999
 
-#define ANGLE_1_P 0.0286
+#define ANGLE_1_P 0.0333
 #define ANGLE_1_I 0
-#define ANGLE_1_D 0.1096
+#define ANGLE_1_D 0.1091
 
 /*Intake*/
 #define INTAKE_SOLENOID_1 1

@@ -5,7 +5,7 @@
  *      Author: Ankith Uppunda
  */
 
-#include <LogisticFunction.h>
+#include "LogisticFunction.h"
 #include <math.h>
 #include <iostream>
 

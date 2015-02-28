@@ -1,11 +1,11 @@
 /*
  * DistanceProfile.cpp
  *
- *  Created on: Jan 16, 2015
- *      Author: Ankith Uppunda
+ *  Created on: Feb 27, 2015
+ *      Author: Team 114
  */
 
-#include <DistanceProfile.h>
+#include "DistanceProfile.h"
 #include <math.h>
 #include <iostream>
 //#include <complex>
@@ -26,7 +26,7 @@ DistanceProfile::~DistanceProfile() {
 double DistanceProfile::getSetPoint(double time) {
 	//use function to calculate setPoint
 	if(end == start) return 0;
-	if(time > totalTime + .5) isDone = true;
+	if(time > totalTime) isDone = true;
 	return model.applyFunction(time);
 }
 
@@ -34,13 +34,7 @@ LogisticFunction DistanceProfile::getFunction() {
 	if(start < end) {
 		double K = end -start;
 		double h = 0;
-		if(end < 15){
-		  h = start;
-		}
-		else {
-			h = start + 15;
-			K = end - start - 15;
-		}
+		h = start;
 		double exp1 = log((K - .5)/.5);
 		double exp2 = log(K/(K-.5) - 1);
 		double j = totalTime * exp1/(exp1 - exp2);
@@ -52,11 +46,7 @@ LogisticFunction DistanceProfile::getFunction() {
 	else {
 		double K = -start + end;
 		double h = 0;
-		if(start > 15) {
-			h = -end - 15;
-			K = -start + end + 15;
-		}
-		else h = -end;
+		h = -end;
 		double exp1 = log((K + .5)/-.5);
 		double exp2 = log(K/(K+.5) - 1);
 		double k = (exp1 - exp2)/totalTime;

@@ -20,17 +20,20 @@ void AutonomousCommandBase::turnAngle(double angle) {
 	m_Drive->enablePID();
 	m_Drive->setAngleSetpoint(angle);
 	Timer* time = new Timer();
+	int in = 0;
 	while(time->Get() < .2) {
 		m_Drive->setPower(m_Drive->getAngleOutput(), -m_Drive->getAngleOutput());
 		if(in % 100000  == 0)
 			std::cout<< "gyro angle: "<< m_Drive->getAngle() << std::endl;
-		if(abs(m_Drive->getAngleError()) < m_Drive->getAngleSetpoint()*5/360 ) {
+		if(abs(m_Drive->getAngleError()) < 7.5) {
 			time->Start();
 		}
 		else {
 			time->Reset();
 		}
+		in++;
 	}
+	m_Drive->setPower(0,0);
 	m_Drive->reset();
 	m_Drive->disablePID();
 
@@ -50,18 +53,12 @@ void AutonomousCommandBase::move(DistanceProfile* path) {
 void AutonomousCommandBase::runDistanceProf(DistanceProfile* path) {
 	Timer* time = new Timer();
 	time->Start();
-	while(!prof->isDone) {
-		m_Drive->setDriveSetpoint(prof->getSetPoint(time->Get()));
-		m_Drive->setPower(m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
-		if(in % 100000 == 0)
-			std::cout<< "renc: " << renc->Get() << " ;lenc:" << lenc->Get() << " ;gyro:" << gyro->getAngle() << " ;Setpoint: " << driveController->GetSetpoint() << std::endl;
-		in++;
+	while(!path->isDone) {
+		m_Drive->setDriveSetpoint(path->getSetPoint(time->Get()));
+		m_Drive->setPower(-m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), -m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
 	}
-	time->~Timer();
+	time->Stop();
 	m_Drive->setPower(0,0);
-	if(in % 10 == 0)
-		std::cout<< "renc: " << renc->Get() << " ;lenc:" << lenc->Get() << " ;gyro:" << gyro->getAngle() << " ;Setpoint: " << driveController->GetSetpoint() << std::endl;
-	in++;
 }
 
 AutonomousCommandBase::~AutonomousCommandBase() {

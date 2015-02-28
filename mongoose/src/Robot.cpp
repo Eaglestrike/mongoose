@@ -10,6 +10,8 @@
 #include "Error/CalibrationError.h"
 #include "Settings.h"
 #include "Xbox.h"
+#include "Peripherals/AutonomousCode/AutonomousCommandBase.h"
+#include "Peripherals/AutonomousCode/DistanceProfile.h"
 
 using namespace std;
 
@@ -26,6 +28,7 @@ private:
 
 	Joystick* leftJoy;
 	Joystick* rightJoy;
+	AutonomousCommandBase* autonomousDriver;
 	Xbox* xbox;
 	int toggleY = 0;
 	bool previous;
@@ -55,6 +58,7 @@ private:
 		rightJoy = new Joystick(1);
 		xbox = new Xbox(2);
 
+		autonomousDriver = new AutonomousCommandBase(driveModule);
 		cout << "RobotInit() end" << endl;
 
 	}
@@ -77,7 +81,7 @@ private:
 
 	void DisabledPeriodic(){
 		DisabledInit();
-		updatePID();
+		//updatePID();
 		Wait(0.05);
 	}
 
@@ -90,8 +94,8 @@ private:
 	{
 		if(printCounter % 50 == 0){
 			cout 	<< "T: " << timer->Get() << " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-					<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
-					<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance() << endl;
+							<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
+							<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
@@ -103,13 +107,13 @@ private:
 	{
 
 		try{
-			elevatorModule->disable();
+			elevatorModule->enable();
 			driveModule->enable();
-			armModule->disable();
-//			armModule->enablePID();
-			scorpionModule->disable();
-//			armModule->calibrate();
-			intakeModule->disable();
+			armModule->enable();
+			armModule->enablePID();
+			scorpionModule->enable();
+			armModule->calibrate();
+			intakeModule->enable();
 			toggleY = 0;
 
 		}catch(EaglestrikeError &e){
@@ -223,30 +227,28 @@ private:
 		driveModule->enablePID();
 		elevatorModule->disable();
 		intakeModule->disable();
+
+		autonomousDriver->turnAngle(180);
+		autonomousDriver->move(new DistanceProfile(0, 5, 3));
+		autonomousDriver->turnAngle(90);
 	}
 
 	void updatePID(){
 		if(xbox->getA()) {
-			driveModule->setAnglePID(driveModule->getAngleP() - .0001, driveModule->getAngleI(), driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP() - .001/10, driveModule->getDriveI(), driveModule->getDriveD());
 		}
 		else if(xbox->getY()) {
-			driveModule->setAnglePID(driveModule->getAngleP() + .0001, driveModule->getAngleI(), driveModule->getAngleD());
-		}
-		else if(xbox->getB()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() + .0001/10, driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP() + .001/10, driveModule->getDriveI(), driveModule->getDriveD());
 		}
 		else if(xbox->getL3()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() - .0001);
+			driveModule->setDrivePID(driveModule->getDriveP(), driveModule->getDriveI(), driveModule->getDriveD() - .0001);
 		}
 		else if(xbox->getR3()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI(), driveModule->getAngleD() + .0001);
-		}
-		else if(xbox->getLB()) {
-			driveModule->setAnglePID(driveModule->getAngleP(), driveModule->getAngleI() - .001, driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP(), driveModule->getDriveI(), driveModule->getDriveD() + .0001);
 		}
 
 		if(printCounter % 12 == 0){
-			cout << "p: " << driveModule->getAngleP() << " d: " << driveModule->getAngleD() << " i: " <<driveModule->getAngleI() << " error: " << driveModule->getAngleError() << " angle: " << driveModule->getAngle() << " setpoint: " << driveModule->getAngleSetpoint() << endl;
+			cout << "p: " << driveModule->getDriveP() << " d: " << driveModule->getDriveD() << " i: " <<driveModule->getDriveI() << " error: " << driveModule->getDriveError() << " angle: " << driveModule->getAngle()  << endl;
 		}
 
 		printCounter++;
@@ -257,16 +259,9 @@ private:
 	{
 
 
-		updatePID();
+		//updatePID();
 
-		if(xbox->getX()) {
-			driveModule->setAngleSetpoint(180);
-		}
-		else {
-			driveModule->setAngleSetpoint(0);
-		}
 
-		driveModule->setPower(driveModule->getAngleOutput(), -driveModule->getAngleOutput());
 		lw->Run();
 
 

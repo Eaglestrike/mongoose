@@ -1,12 +1,12 @@
 /*
  * DistanceProfile.h
  *
- *  Created on: Jan 16, 2015
- *      Author: Ankith Uppunda
+ *  Created on: Feb 27, 2015
+ *      Author: Team 114
  */
 
-#ifndef SRC_DISTANCEPROFILE_H_
-#define SRC_DISTANCEPROFILE_H_
+#ifndef DISTANCEPROFILE_H_
+#define DISTANCEPROFILE_H_
 
 #include "LogisticFunction.h"
 
@@ -27,5 +27,4 @@ private:
 
 	LogisticFunction model;
 };
-
-#endif /* SRC_DISTANCEPROFILE_H_ */
+#endif /* DISTANCEPROFILE_H_ */
