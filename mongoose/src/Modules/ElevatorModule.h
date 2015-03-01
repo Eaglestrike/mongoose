@@ -65,7 +65,12 @@ public:
 	void setP(double p);
 	void setI(double i);
 	void setD(double d);
+	void enablePID();
+	void disablePID();
+	double getError();
+	double getEncoderTicks();
 	double getEncoderDistance();
+	double getSetpoint();
 
 private:
 	SafeTalonSRX* m_Motor_1;
@@ -75,6 +80,7 @@ private:
 	Encoder* m_Encoder;
 	PIDController* m_PIDController;
 	bool m_Manual;
+	bool m_Calibration_Is_Done;
 
 };
 

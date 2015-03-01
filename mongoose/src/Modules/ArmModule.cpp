@@ -30,6 +30,7 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 
 	m_Manual = false;
 	m_Calibrating = false;
+	m_Has_Calibrated = false;
 
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
 	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
@@ -102,6 +103,12 @@ void ArmModule::enable() {
 }
 
 void ArmModule::enablePID(){
+
+	if(!m_Has_Calibrated){
+		disablePID();
+		return;
+	}
+
 	m_Left_Arm_Controller->Enable();
 	m_Right_Arm_Controller->Enable();
 	m_Difference_Controller->Enable();
@@ -284,19 +291,7 @@ void ArmModule::calibrate() {
 		std::cout << "t: " << timeTaken->Get() << " lb: " << m_Left_Talon->getButton() << " rb: " << m_Right_Talon->getButton() << " le: " << m_Left_Encoder->PIDGet() << " re: " << m_Right_Encoder->PIDGet() << std::endl;
 		m_Right_Talon->Set(-.5);
 		m_Left_Talon->Set(.5);
-//		if(!m_Right_Talon->getButton() && !m_Left_Talon->getButton()) {
-//			if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
-//				m_Left_Talon->Set(0);
-//				m_Right_Talon->Set(0);
-//				throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
-//			}
-//			if(m_Left_Encoder->PIDGet() < MIN_CALIBRATION_DISTANCE) {
-//				m_Left_Talon->Set(0);
-//				m_Right_Talon->Set(0);
-//				throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
-//			}
-//			break;
-//		}
+
 		Wait(0.005);
 	}
 
@@ -331,6 +326,7 @@ void ArmModule::calibrate() {
 
 	std::cout << "calibrate() end" << std::endl;
 	m_Calibrating = false;
+	m_Has_Calibrated = true;
 }
 
 void ArmModule::reset(){
