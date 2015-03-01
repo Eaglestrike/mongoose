@@ -122,6 +122,7 @@ private:
 	double m_DeltaX;
 	bool m_Manual;
 	bool m_Calibrating;
+	bool m_Has_Calibrated;
 
 };
 
