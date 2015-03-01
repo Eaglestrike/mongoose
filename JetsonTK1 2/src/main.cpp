@@ -42,7 +42,6 @@ int main(){
 		vector<Rect> detections;
 		gpu::GpuMat faceBuf;
 		int numDetections = 0;
-// DO THE INTERVIEW NOWWWWW
 		imshow("video", frame);
 
 		if(waitKey(50) >= 0)
