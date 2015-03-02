@@ -94,8 +94,8 @@ private:
 	{
 		if(printCounter % 50 == 0){
 			cout 	<< "T: " << timer->Get() << " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-											<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
-											<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl;
+													<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
+													<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl;
 		}
 
 		printCounter++;
@@ -108,12 +108,14 @@ private:
 
 		try{
 			elevatorModule->enable();
-			driveModule->disable();
-			armModule->disable();
-			scorpionModule->disable();
+			driveModule->enable();
+			armModule->enable();
+			scorpionModule->enable();
 			armModule->calibrate();
+			elevatorModule->calibrate();
+			elevatorModule->enablePID();
 			armModule->enablePID();
-			intakeModule->disable();
+			intakeModule->enable();
 			toggleY = 0;
 
 		}catch(EaglestrikeError &e){
@@ -155,15 +157,15 @@ private:
 		//		armModule->setLeftPower(leftArmPower);
 		//		armModule->setRightPower(rightArmPower);
 
-		double elevatorPower = xbox->getLY();
+		//double elevatorPower = xbox->getLY();
 //		double elevatorPower = xbox->getLY() * MAX_ELEVATOR_UP;
-		if(elevatorPower < MAX_ELEVATOR_DOWN)
-			elevatorPower = MAX_ELEVATOR_DOWN;
-
-		if(elevatorModule->getButton() && elevatorPower < 0)
-			elevatorPower = 0;
-
-		elevatorModule->setPower(elevatorPower);
+//		if(elevatorPower < MAX_ELEVATOR_DOWN)
+//			elevatorPower = MAX_ELEVATOR_DOWN;
+//
+//		if(elevatorModule->getButton() && elevatorPower < 0)
+//			elevatorPower = 0;
+//
+//		elevatorModule->setPower(elevatorPower);
 
 		if(!armModule->isManual()){
 
@@ -212,11 +214,28 @@ private:
 			intakeModule->intake(0);
 		}
 
+		if(rightJoy->GetRawButton(6)){
+			elevatorModule->setPosition(0);
+		}else if(rightJoy->GetRawButton(7)){
+			elevatorModule->setPosition(12);
+		}else if(rightJoy->GetRawButton(8)){
+			elevatorModule->setPosition(24);
+		}else if(rightJoy->GetRawButton(9)){
+			elevatorModule->setPosition(36);
+		}else if(rightJoy->GetRawButton(10)){
+			elevatorModule->setPosition(48);
+		}else if(rightJoy->GetRawButton(11)){
+			elevatorModule->setPosition(5);
+		}else{
+
+		}
+
 		if(printCounter % 20 == 0){
-			//			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
-			//			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
-			//			cout << "angle: " << driveModule->getAngle() << endl;
+			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
+			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
+			cout << "angle: " << driveModule->getAngle() << endl;
 			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: " << elevatorModule->getEncoderTicks() << " BUTTON: "<<elevatorModule->getButton() << endl;
+			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
@@ -258,15 +277,15 @@ private:
 			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI()  + .0001/10, elevatorModule->getD());
 		}
 		else if(xbox->getStart()) {
-			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI(), elevatorModule->getD()  + .001/10);
+			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI(), elevatorModule->getD()  + .01/10);
 		}
 		else if(xbox->getBack()) {
-			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI(), elevatorModule->getD()  + .001/10);
+			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI(), elevatorModule->getD()  - .01/10);
 		}
 
 
-		if(printCounter % 12 == 0){
-			cout << "p: " << elevatorModule->getP() << " d: " << elevatorModule->getD() << " i: " <<elevatorModule->getI() << " error: " << elevatorModule->getError() << " height: " << elevatorModule->getEncoderDistance() << " setpoint: " << elevatorModule->getSetpoint()  << " Elevator Power: " << elevatorModule->Get() << endl;
+		if(printCounter % 6 == 0){
+			cout << "p: " << elevatorModule->getP() << " d: " << elevatorModule->getD() << " i: " <<elevatorModule->getI() << " error: " << elevatorModule->getError() << " %error: " << elevatorModule->getError() / elevatorModule->getEncoderDistance() * 100 << " height: " << elevatorModule->getEncoderDistance() << " setpoint: " << elevatorModule->getSetpoint()  << " Elevator Power: " << elevatorModule->Get() << endl;
 		}
 
 		printCounter++;
@@ -280,10 +299,10 @@ private:
 		updatePID();
 
 		if(xbox->getX()) {
-			elevatorModule->setPosition(28);
+			elevatorModule->setPosition(20);
 		}
 		else {
-			elevatorModule->setPosition(0);
+			elevatorModule->setPosition(10);
 		}
 		lw->Run();
 

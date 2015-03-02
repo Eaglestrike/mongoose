@@ -22,7 +22,7 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
 	m_Left_Encoder->SetReverseDirection(true);
 	m_Left_Encoder->SetDistancePerPulse(.001);
-	m_Right_Encoder->SetDistancePerPulse(.001);
+	m_Right_Encoder->SetDistancePerPulse(.001* 4);
 	m_Left_Output = new ArmOut();
 	m_Right_Output = new ArmOut();
 	m_Arm_Difference_Input = new ArmDifference(m_Right_Encoder, m_Left_Encoder);

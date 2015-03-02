@@ -83,11 +83,18 @@ void ElevatorModule::handleFatalError(){
 }
 
 void ElevatorModule::setPosition(double height){
+	if(height > MAX_ELEVATOR_INPUT)
+		height = MAX_ELEVATOR_INPUT;
+	else if(height < MIN_ELEVATOR_INPUT) {
+		height = MIN_ELEVATOR_INPUT;
+	}
+	if(m_Manual)
+		return;
 	m_PIDController->SetSetpoint(height);
 }
 
 void ElevatorModule::setPower(double power){
-	if(m_Enabled)
+	if(m_Enabled && m_Manual)
 		m_Lifter->Set(power);
 	else
 		m_Lifter->Set(0);
