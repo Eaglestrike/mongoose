@@ -6,13 +6,13 @@ class Robot: public IterativeRobot
 private:
 	LiveWindow *lw;
 	DigitalInput* testButton;
-	TalonSRX* v;
+
 
 	void RobotInit()
 	{
 		lw = LiveWindow::GetInstance();
-		testButton = new DigitalInput(14);
-		v = new Victor(10);
+		testButton = new DigitalInput(10);
+
 	}
 
 	void AutonomousInit()

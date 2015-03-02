@@ -4,6 +4,9 @@
 class CombinedLogs {
 public:
 	CombinedLogs();
+	void addModule();
+	int getVersion();
+	void initializeFolder();
 };
 
 

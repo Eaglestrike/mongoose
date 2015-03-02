@@ -5,6 +5,7 @@
  *      Author: Nathan
  */
 #include <iostream>
+#include <stdio.h>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -16,13 +17,10 @@ vector<Logger> logs;
 int version;
 
 CombinedLogs::CombinedLogs() {
-	ofstream versionLog;
-	versionLog.open("version.txt");
-	string stringNum = versionLog.getline();
-	//Parse Version
-
-	string versionString = "log" + version;
-	system("mkdir \"versionString\"");
+	version = getVersion();
+	versionLog << to_string(version + 1);
+	folderName = "log" + stringNum;
+	initializeFolder(folderName);
 }
 
 void addModule(RobotModule module) {
@@ -31,7 +29,17 @@ void addModule(RobotModule module) {
 }
 
 int getVersion() {
-
+	ofstream versionLog;
+	versionLog.open("version.txt");
+	string stringNum >> getline(versionLog);
+	version = stoi(versionLog);
+	return version;
 }
+
+void initializeFolder(char* folderName) {
+	char* command = 'mkdir\"' + folderName + '\"';
+	system(command);
+}
+
 
 #endif

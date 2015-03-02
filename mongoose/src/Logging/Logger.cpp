@@ -7,6 +7,7 @@
 
 #include "Logger.h"
 #include <iostream>
+#include <stdio.h>
 #include <fstream>
 #include <cstdlib>
 #include <string>
@@ -45,7 +46,7 @@ void Logger::writeHeader(vector<string> headers) {
 	headed = true;
 	catagories = length;
 	} catch (const length_error e) {
-		if (strcmp(e.what(), "zero") == 0) {
+		if (std::strcmp(e.what(), "zero") == 0) {
 			cerr << "There is no data passed in";
 		}
 		return;
