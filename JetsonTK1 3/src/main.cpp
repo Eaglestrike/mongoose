@@ -4,7 +4,7 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/gpu/gpu.hpp"
 #include <ctime>
-//#include "MJPEGServer.h"
+#include "server.hpp"
 
 using namespace cv;
 using namespace std;

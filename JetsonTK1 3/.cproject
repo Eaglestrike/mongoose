@@ -27,7 +27,7 @@
 								<option id="nvcc.compiler.option.level.760747077" name="Generate host debug information (-g)" superClass="nvcc.compiler.option.level" value="true" valueType="boolean"/>
 								<option defaultValue="nvcc.compiler.optimization.level.none" id="nvcc.compiler.optimization.level.258883408" name="Optimization Level" superClass="nvcc.compiler.optimization.level" valueType="enumerated"/>
 								<option id="nvcc.compiler.pic.1294830660" name="Position Independent Code (-fPIC)" superClass="nvcc.compiler.pic"/>
-								<option id="com.nvidia.cuda.ide.build.option1.282621951" superClass="com.nvidia.cuda.ide.build.option1" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
+								<option id="com.nvidia.cuda.ide.build.option1.282621951" name="Compiler Path (-ccbin)" superClass="com.nvidia.cuda.ide.build.option1" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
 								<inputType id="nvcc.compiler.input.cu.116791173" superClass="nvcc.compiler.input.cu"/>
 								<inputType id="nvcc.compiler.input.cpp.693774064" superClass="nvcc.compiler.input.cpp"/>
 								<inputType id="nvcc.compiler.input.c.1919403891" superClass="nvcc.compiler.input.c"/>
@@ -35,12 +35,13 @@
 							<tool id="nvcc.linker.base.531926093" name="NVCC Linker" superClass="nvcc.linker.base">
 								<option id="nvcc.linker.option.libs.548940077" name="Libraries (-l)" superClass="nvcc.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="opencv_core"/>
+									<listOptionValue builtIn="false" value="boost_system"/>
 									<listOptionValue builtIn="false" value="opencv_tegra"/>
 									<listOptionValue builtIn="false" value="opencv_gpu"/>
 									<listOptionValue builtIn="false" value="opencv_highgui"/>
 									<listOptionValue builtIn="false" value="opencv_imgproc"/>
 								</option>
-								<option id="com.nvidia.cuda.ide.build.linker.ccbin.1880243507" superClass="com.nvidia.cuda.ide.build.linker.ccbin" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
+								<option id="com.nvidia.cuda.ide.build.linker.ccbin.1880243507" name="Compiler Path (-ccbin)" superClass="com.nvidia.cuda.ide.build.linker.ccbin" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
 								<inputType id="nvcc.linker.input.1264433769" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -97,7 +98,7 @@
 								<inputType id="nvcc.compiler.input.c.1186463476" superClass="nvcc.compiler.input.c"/>
 							</tool>
 							<tool id="nvcc.linker.base.817703155" name="NVCC Linker" superClass="nvcc.linker.base">
-								<option id="com.nvidia.cuda.ide.build.linker.ccbin.2050265915" superClass="com.nvidia.cuda.ide.build.linker.ccbin" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
+								<option id="com.nvidia.cuda.ide.build.linker.ccbin.2050265915" name="Compiler Path (-ccbin)" superClass="com.nvidia.cuda.ide.build.linker.ccbin" value="arm-linux-gnueabihf-g++-4.8" valueType="string"/>
 								<inputType id="nvcc.linker.input.704041399" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
