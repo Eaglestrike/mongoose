@@ -10,9 +10,10 @@
 
 #include "EaglestrikeError.h"
 
+
 class CalibrationError: public EaglestrikeError {
 public:
-	CalibrationError(/*RobotModule**/const char*, const char*);
+	CalibrationError(RobotModule*, const char*);
 	virtual ~CalibrationError();
 };
 

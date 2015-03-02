@@ -7,9 +7,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../Error/EaglestrikeError.h"
-
-//class EaglestrikeError;
+#include "Error/EaglestrikeError.h"
 
 class RobotModule {
 public:

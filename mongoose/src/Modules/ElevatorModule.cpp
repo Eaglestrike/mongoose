@@ -78,7 +78,7 @@ void ElevatorModule::checkError(){
 }
 
 void ElevatorModule::handleFatalError(){
-	calibrate();
+	disablePID();
 	m_Manual = true;
 }
 

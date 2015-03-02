@@ -7,7 +7,7 @@
 
 #include "InWrongModeError.h"
 
-InWrongModeError::InWrongModeError(const char* where, const char* what) : EaglestrikeError(where, what, false){
+InWrongModeError::InWrongModeError(RobotModule module, std::string where, std::string what) : EaglestrikeError(module, where, what, false){
 	// TODO Auto-generated constructor stub
 
 }

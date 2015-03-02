@@ -76,11 +76,11 @@ void ArmModule::checkError(){
 
 			if(leftTimer.Get() > 0.1){
 				std::cout << "THROWING ERROR" << std::endl;
-				throw MovementError(/*this*/"ArmModule::checkError()", "Left encoder not moving at sufficient rate! (could be unplugged)", true);
+				throw MovementError(this, "ArmModule::checkError()", "Left encoder not moving at sufficient rate! (could be unplugged)", true);
 			}
 			if(rightTimer.Get() > 0.1){
 				std::cout << "THROWING ERROR" << std::endl;
-				throw MovementError(/*this*/"ArmModule::checkError()", "Right encoder not moving at sufficient rate! (could be unplugged)", true);
+				throw MovementError(this, "ArmModule::checkError()", "Right encoder not moving at sufficient rate! (could be unplugged)", true);
 			}
 		}
 

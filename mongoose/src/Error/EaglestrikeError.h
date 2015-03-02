@@ -10,21 +10,23 @@
 
 #include <string>
 #include <iostream>
-//#include "Modules.h"
+#include "Modules/RobotModule.h"
 
 class RobotModule;
 
 class EaglestrikeError {
 public:
-	explicit EaglestrikeError(/*RobotModule**/const char* where, const char* what, bool fatal = false);
+	explicit EaglestrikeError(RobotModule* module, std::string where, std::string what, bool fatal = false);
 	virtual ~EaglestrikeError();
-	const char* what();
-	/*RobotModule**/const char* where();
-	const char* toString();
+	std::string what();
+	RobotModule* getModule();
+	std::string where();
+	std::string toString();
 	bool shouldBeFatal();
 private:
-	const char* m_Error;
-	/*RobotModule**/const char* m_Location;
+	std::string m_Error;
+	std::string m_Where;
+	RobotModule * m_Module;
 	bool m_Fatal;
 };
 

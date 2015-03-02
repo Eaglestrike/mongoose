@@ -7,30 +7,35 @@
 
 #include "EaglestrikeError.h"
 
-EaglestrikeError::EaglestrikeError(/*RobotModule**/const char* c_where, const char* c_what, bool c_fatal){
+EaglestrikeError::EaglestrikeError(RobotModule* c_module, std::string c_where, std::string c_what, bool c_fatal){
 	std::cout << "EaglestrikeError" << std::endl;
 
-	m_Location = c_where;
+	m_Module = c_module;
+	m_Where = c_where;
 	m_Error = c_what;
 	m_Fatal = c_fatal;
 }
 
-const char* EaglestrikeError::what(){
+std::string EaglestrikeError::what(){
 	return m_Error;
 }
 
-/*RobotModule**/const char* EaglestrikeError::where(){
-	return m_Location;
+std::string EaglestrikeError::where(){
+	return m_Where;
+}
+
+RobotModule* EaglestrikeError::getModule(){
+	return m_Module;
 }
 
 bool EaglestrikeError::shouldBeFatal(){
 	return m_Fatal;
 }
 
-const char* EaglestrikeError::toString(){
-	char* ret = (char*) malloc(256);
-	sprintf(ret, "Error: %s  Where: %s", what(), where());
-	return (const char*)ret;
+std::string EaglestrikeError::toString(){
+	std::string ret;
+	ret + "Error: " + what() + " Where: " + where();
+	return ret;
 }
 
 EaglestrikeError::~EaglestrikeError() {
