@@ -18,7 +18,7 @@ int version;
 CombinedLogs::CombinedLogs() {
 	ofstream versionLog;
 	versionLog.open("version.txt");
-
+	string stringNum = versionLog.getline();
 	//Parse Version
 
 	string versionString = "log" + version;
