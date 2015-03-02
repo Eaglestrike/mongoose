@@ -28,7 +28,7 @@ bool EaglestrikeError::shouldBeFatal(){
 }
 
 const char* EaglestrikeError::toString(){
-	char ret[256];
+	char* ret = (char*) malloc(256);
 	sprintf(ret, "Error: %s  Where: %s", what(), where());
 	return (const char*)ret;
 }
