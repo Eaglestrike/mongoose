@@ -15,6 +15,7 @@ using namespace std;
 #if 1
 string folderName;
 vector<Logger> logs;
+vector<RobotModule*> modules;
 int version;
 
 CombinedLogs::CombinedLogs() {
@@ -24,9 +25,11 @@ CombinedLogs::CombinedLogs() {
 	initializeFolder(folderName);
 }
 
-void addModule(RobotModule module) {
-	string filePath = folderName + "/" + module.getModuleName();
+void addModule(RobotModule* module) {
+	string filePath = folderName + "/" + module->getModuleName();
 	Logger log = new Logger(filePath);
+	logs.push_back(log);
+	modules.push_back(module);
 }
 
 int getVersion() {
