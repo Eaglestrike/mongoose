@@ -15,7 +15,7 @@ void RobotModule::disable(){
 void RobotModule::reset(){
 
 }
-//cole was here
+
 std::vector<double> RobotModule::getLoggingData(){
 	std::vector<double> asdf;
 	return asdf;
@@ -26,7 +26,7 @@ std::string RobotModule::getModuleName(){
 }
 
 RobotModule::~RobotModule(){
-	// Destructor
+
 }
 
 void RobotModule::checkError(){

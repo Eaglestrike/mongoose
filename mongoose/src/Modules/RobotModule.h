@@ -28,6 +28,7 @@ protected:
 
 	virtual void checkError();
 	static void callCheckError(void*);
+public:
 	virtual void handleFatalError();
 
 };

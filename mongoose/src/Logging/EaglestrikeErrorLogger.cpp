@@ -25,3 +25,7 @@ void EaglestrikeErrorLogger::logError(EaglestrikeError& e){
 			<< "\tshouldBeFatal() " << e.shouldBeFatal() << std::endl
 			<< "\tTimer::GetMatchTime() " << Timer::GetFPGATimestamp() << std::endl << std::endl;
 }
+
+void EaglestrikeErrorLogger::log(std::string message){
+	file << message << std::endl;
+}

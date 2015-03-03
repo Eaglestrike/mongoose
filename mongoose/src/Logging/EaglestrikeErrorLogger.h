@@ -17,6 +17,7 @@ public:
 	EaglestrikeErrorLogger(std::string filename);
 	virtual ~EaglestrikeErrorLogger();
 	void logError(EaglestrikeError& e);
+	void log(std::string);
 private:
 	std::fstream file;
 };

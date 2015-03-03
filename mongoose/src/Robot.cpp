@@ -12,6 +12,7 @@
 #include "Xbox.h"
 #include "Peripherals/AutonomousCode/AutonomousCommandBase.h"
 #include "Peripherals/AutonomousCode/DistanceProfile.h"
+#include "Logging/EaglestrikeErrorLogger.h"
 
 using namespace std;
 
@@ -24,7 +25,9 @@ private:
 	ArmModule* armModule;
 	ScorpionModule* scorpionModule;
 	IntakeModule* intakeModule;
+
 	Timer* timer;
+	EaglestrikeErrorLogger* eaglestrikeLogger;
 
 	Joystick* leftJoy;
 	Joystick* rightJoy;
@@ -36,34 +39,41 @@ private:
 
 	void RobotInit()
 	{
-		cout << "RobotInit()" << endl;
+
+		eaglestrikeLogger = new EaglestrikeErrorLogger("eaglestrike.log");
+		printL("Booting up mongoose");
+		printL("RobotInit()");
+
 		lw = LiveWindow::GetInstance();
-		cout << "ElevatorModule()" << endl;
+
+		printL("\tElevatorModule()");
 		elevatorModule = new ElevatorModule(ELEVATOR_1, ELEVATOR_2, ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
-		cout << "DriveModule()" << endl;
+		printL("\tDriveModule()");
 		driveModule = new DriveModule(DRIVE_LEFT_1, DRIVE_LEFT_2, DRIVE_RIGHT_1, DRIVE_RIGHT_2, DRIVE_ENCODER_A, DRIVE_ENCODER_B, DRIVE_GYRO);
-		cout << "ArmModule()" << endl;
+		printL("\tArmModule()");
 		armModule = new ArmModule(RIGHT_ARM_MOTOR, LEFT_ARM_MOTOR, RIGHT_ARM_BUTTON, MID_ARM_BUTTON, LEFT_ARM_BUTTON, RIGHT_ARM_ENCODER_A, RIGHT_ARM_ENCODER_B, LEFT_ARM_ENCODER_A, LEFT_ARM_ENCODER_B);
-		cout << "ScorpionModule()" << endl;
+		printL("\tScorpionModule()");
 		scorpionModule = new ScorpionModule(SCORPION_PORT);
+		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 
-		cout << "Timer()" << endl;
 		timer = new Timer();
-
 		timer->Start();
 
-		cout << "Joystick()" << endl;
 		leftJoy = new Joystick(0);
 		rightJoy = new Joystick(1);
 		xbox = new Xbox(2);
 
+		printL("\tAutonomousCommandBase()");
 		autonomousDriver = new AutonomousCommandBase(driveModule);
-		cout << "RobotInit() end" << endl;
+		printL("RobotInit() end");
 
 	}
 
 	void DisabledInit(){
+
+		printL("DisabledInit()");
+
 		elevatorModule->disable();
 		driveModule->disable();
 		armModule->disable();
@@ -87,15 +97,16 @@ private:
 
 	void AutonomousInit()
 	{
+		printL("AutonomousInit()");
 		DisabledInit();
 	}
 
 	void AutonomousPeriodic()
 	{
 		if(printCounter % 50 == 0){
-			cout 	<< "T: " << timer->Get() << " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-													<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
-													<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl;
+			cout << "T: " << timer->Get()	<< " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
+											<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
+											<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl;
 		}
 
 		printCounter++;
@@ -106,27 +117,39 @@ private:
 	void TeleopInit()
 	{
 
-		try{
-			elevatorModule->enable();
-			driveModule->enable();
-			armModule->enable();
-			scorpionModule->enable();
-			armModule->calibrate();
-			elevatorModule->calibrate();
-			elevatorModule->enablePID();
-			armModule->enablePID();
-			intakeModule->enable();
-			toggleY = 0;
+		printL("TeleopInit()");
 
+		elevatorModule->enable();
+		driveModule->enable();
+		armModule->enable();
+		scorpionModule->enable();
+		intakeModule->enable();
+		toggleY = 0;
+
+		try{
+			armModule->calibrate();
+			armModule->enablePID();
 		}catch(EaglestrikeError &e){
-			cout << "EaglestrikeError" << endl;
-			cerr << e.toString() << endl;
+			cerr << "EaglestrikeError: " << e.toString() << endl;
+			eaglestrikeLogger->logError(e);
 			if(e.shouldBeFatal())
-				exit(1);
+				e.getModule()->handleFatalError();
 
 		}
 
-		std::cout << "no error in calibrate" << std::endl;
+		try{
+
+			elevatorModule->calibrate();
+			elevatorModule->enablePID();
+
+		}catch(EaglestrikeError &e){
+			cerr << "EaglestrikeError: " << e.toString() << endl;
+			eaglestrikeLogger->logError(e);
+			if(e.shouldBeFatal())
+				e.getModule()->handleFatalError();
+
+		}
+
 	}
 
 	double leftSetpoint = 0;
@@ -309,6 +332,13 @@ private:
 
 		Wait(0.05);
 	}
+
+
+	void printL(std::string message){
+		eaglestrikeLogger->log(message);
+		std::cout << message << endl;
+	}
+
 };
 
 START_ROBOT_CLASS(Robot);
