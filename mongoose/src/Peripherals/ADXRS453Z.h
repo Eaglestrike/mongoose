@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 
-class ADXRS453Z: public SensorBase, public PIDSource{
+class ADXRS453Z: public SensorBase, public PIDSource, public LiveWindowSendable{
 public:
 	ADXRS453Z(SPI::Port);
 	ADXRS453Z(int);
@@ -37,6 +37,16 @@ private:
 	void init(SPI::Port);
 	uint32_t uint8_tTouint32_t(uint8_t*);
 
+public:
+	virtual std::string GetSmartDashboardType();
+	virtual void InitTable(ITable *subtable);
+	virtual void UpdateTable();
+	virtual ITable* GetTable();
+	virtual void StartLiveWindowMode() {}
+	virtual void StopLiveWindowMode() {}
+
+private:
+	ITable* m_table;
 };
 
 

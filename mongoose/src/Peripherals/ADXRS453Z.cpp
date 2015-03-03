@@ -122,3 +122,24 @@ uint32_t ADXRS453Z::uint8_tTouint32_t(uint8_t bytes[]){
 
 	return ret;
 }
+
+std::string ADXRS453Z::GetSmartDashboardType(){
+	return "Gyroscope";
+}
+
+void ADXRS453Z::InitTable(ITable* subtable){
+	m_table = subtable;
+	UpdateTable();
+}
+
+void ADXRS453Z::UpdateTable(){
+	if(m_table != NULL){
+		m_table->PutNumber("Angle", getAngle());
+		m_table->PutNumber("AnglePerSecond", getAnglePerSecond());
+	}
+}
+
+
+ITable* ADXRS453Z::GetTable(){
+	return m_table;
+}
