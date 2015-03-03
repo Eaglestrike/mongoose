@@ -6,14 +6,17 @@
  */
 
 #include "EaglestrikeError.h"
+#include <WPILib.h>
 
 EaglestrikeError::EaglestrikeError(RobotModule* c_module, std::string c_where, std::string c_what, bool c_fatal){
-	std::cout << "EaglestrikeError" << std::endl;
+	std::cout << "EaglestrikeError(" << std::endl;
 
 	m_Module = c_module;
 	m_Where = c_where;
 	m_Error = c_what;
 	m_Fatal = c_fatal;
+
+	DriverStation::ReportError(toString());
 }
 
 std::string EaglestrikeError::what(){
@@ -33,9 +36,7 @@ bool EaglestrikeError::shouldBeFatal(){
 }
 
 std::string EaglestrikeError::toString(){
-	std::string ret;
-	ret + "Error: " + what() + " Where: " + where();
-	return ret;
+	return "Error in module: " + m_Module->getModuleName() + " at " + m_Where + ": " + m_Error;
 }
 
 EaglestrikeError::~EaglestrikeError() {
