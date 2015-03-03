@@ -23,7 +23,6 @@ RobotModule("Elevator"){
 	m_Calibration_Is_Done = false;
 
 }
-//Cole Was here
 
 ElevatorModule::~ElevatorModule(){
 
