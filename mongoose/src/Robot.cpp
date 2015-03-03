@@ -40,8 +40,8 @@ private:
 	void RobotInit()
 	{
 
-		eaglestrikeLogger = new EaglestrikeErrorLogger("eaglestrike.log");
-		printL("Booting up mongoose");
+		eaglestrikeLogger = new EaglestrikeErrorLogger("/home/lvuser/eaglestrike.log");
+		printL("\nBooting up mongoose");
 		printL("RobotInit()");
 
 		lw = LiveWindow::GetInstance();
@@ -71,8 +71,6 @@ private:
 	}
 
 	void DisabledInit(){
-
-		printL("DisabledInit()");
 
 		elevatorModule->disable();
 		driveModule->disable();
