@@ -14,10 +14,11 @@
 #include <exception>
 #include <stdexcept>
 #include <vector>
+#include <cstring>
 using namespace std;
 
 
-#if 0
+#if 1
 
 char* filename;
 ofstream writeFile;
