@@ -9,17 +9,18 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "Modules.h"
 using namespace std;
 
-#if 0
+#if 1
 string folderName;
 vector<Logger> logs;
 int version;
 
 CombinedLogs::CombinedLogs() {
 	version = getVersion();
-	versionLog << to_string(version + 1);
-	folderName = "log" + stringNum;
+	char* stringNum = std::to_string(version);
+	char* folderName = 'log' + stringNum;
 	initializeFolder(folderName);
 }
 
@@ -29,10 +30,15 @@ void addModule(RobotModule module) {
 }
 
 int getVersion() {
-	ofstream versionLog;
-	versionLog.open("version.txt");
-	string stringNum >> getline(versionLog);
-	version = stoi(versionLog);
+	ifstream versionLogRead;
+	ofstream versionLogWrite;
+	versionLogRead.open("version.txt");
+	string stringNum;
+	getline(versionLogRead, stringNum);
+	version = stoi(stringNum); //Reads from the file to get version
+
+	versionLogWrite.open("version.txt");
+	versionLogWrite << to_string(version + 1); //Writes the next version to the file
 	return version;
 }
 
