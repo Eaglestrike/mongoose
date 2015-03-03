@@ -5,7 +5,7 @@
  *      Author: Team 114
  */
 
-#include <WPILib.h>
+#include <WPIlib.h>
 #include "SafeTalonSRX.h"
 
 SafeTalonSRX::SafeTalonSRX(int talonSRXPort, DigitalInput* button, bool reverse): TalonSRX(talonSRXPort), m_Reverse(reverse){

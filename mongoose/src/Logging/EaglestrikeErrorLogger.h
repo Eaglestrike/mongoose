@@ -15,11 +15,10 @@
 class EaglestrikeErrorLogger {
 public:
 	EaglestrikeErrorLogger(std::string filename);
-	EaglestrikeErrorLogger(const char* filename);
 	virtual ~EaglestrikeErrorLogger();
 	void logError(EaglestrikeError& e);
 private:
-	std::ofstream file;
+	std::fstream file;
 };
 
 #endif /* LOGGING_EAGLESTRIKEERRORLOGGER_H_ */

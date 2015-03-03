@@ -7,14 +7,8 @@
 
 #include "EaglestrikeErrorLogger.h"
 
-EaglestrikeErrorLogger::EaglestrikeErrorLogger(const char* filename):
-file(filename)
-{
-
-}
-
 EaglestrikeErrorLogger::EaglestrikeErrorLogger(std::string filename):
-file(filename)
+file(filename, std::ios_base::app)
 {
 
 }
@@ -25,8 +19,9 @@ EaglestrikeErrorLogger::~EaglestrikeErrorLogger() {
 }
 
 void EaglestrikeErrorLogger::logError(EaglestrikeError& e){
-	file 	<< "Error in module: " << e.where() << std::endl
+	file 	<< "Error in module: " << e.getModule()->getModuleName() << std::endl
+			<< "\twhere() " << e.where() << std::endl
 			<< "\twhat() " << e.what() << std::endl
 			<< "\tshouldBeFatal() " << e.shouldBeFatal() << std::endl
-			<< "\tTimer::GetMatchTime() " << Timer::GetMatchTime() << std::endl << std::endl;
+			<< "\tTimer::GetMatchTime() " << Timer::GetFPGATimestamp() << std::endl << std::endl;
 }

@@ -12,7 +12,7 @@
 
 class InWrongModeError : public EaglestrikeError {
 public:
-	InWrongModeError(const char* where, const char* what);
+	InWrongModeError(RobotModule* module, std::string where, std::string what);
 	virtual ~InWrongModeError();
 };
 

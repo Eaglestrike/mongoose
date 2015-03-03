@@ -13,7 +13,7 @@
 
 class CalibrationError: public EaglestrikeError {
 public:
-	CalibrationError(RobotModule*, const char*);
+	CalibrationError(RobotModule*, std::string, std::string);
 	virtual ~CalibrationError();
 };
 

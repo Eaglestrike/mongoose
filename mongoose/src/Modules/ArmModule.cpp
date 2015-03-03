@@ -248,14 +248,14 @@ void ArmModule::calibrate() {
 	}
 
 	if(m_Right_Talon->getButton() && m_Left_Talon->getButton() && m_Saftey_Button->Get())
-		throw CalibrationError("ArmModule::calibrate()", "All three buttons are pressed (wiring issue)");
+		throw CalibrationError(this, "ArmModule::calibrate()", "All three buttons are pressed (wiring issue)");
 
 	std::cout << "going out" << std::endl;
 
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 
 		if(timeout.Get() > MAX_CALIBRATE_TIME_OUT){
-			throw CalibrationError(/*this*/"ArmModule::calibrate()", "calibration timed out");
+			throw CalibrationError(this, "ArmModule::calibrate()", "calibration timed out");
 		}
 
 
@@ -302,21 +302,21 @@ void ArmModule::calibrate() {
 	std::cout << "getting buttons" << std::endl;
 
 	if(m_Right_Talon->getButton()) {
-		throw CalibrationError("ArmModule::calibrate()", "check Right button, it might be unplugged");
+		throw CalibrationError(this, "ArmModule::calibrate()", "check Right button, it might be unplugged");
 	}
 
 	if(m_Left_Talon->getButton()) {
-		throw CalibrationError("ArmModule::calibrate()", "check Left button, it might be unplugged");
+		throw CalibrationError(this, "ArmModule::calibrate()", "check Left button, it might be unplugged");
 	}
 
 	std::cout << "getting buttons" << std::endl;
 
 	if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
-		throw CalibrationError("ArmModule::calibrate()", "Arm right encoder might be unplugged");
+		throw CalibrationError(this, "ArmModule::calibrate()", "Arm right encoder might be unplugged");
 	}
 
 	if(m_Left_Encoder->PIDGet() < MIN_CALIBRATION_DISTANCE) {
-		throw CalibrationError("ArmModule::calibrate()", "Arm left encoder might be unplugged");
+		throw CalibrationError(this, "ArmModule::calibrate()", "Arm left encoder might be unplugged");
 	}
 
 	timeTaken->Stop();

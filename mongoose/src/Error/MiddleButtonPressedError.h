@@ -12,7 +12,7 @@
 
 class MiddleButtonPressedError : public EaglestrikeError {
 public:
-	MiddleButtonPressedError(/*RobotModule**/const char* where, const char* what);
+	MiddleButtonPressedError(RobotModule* module, std::string where, std::string what);
 	virtual ~MiddleButtonPressedError();
 };
 

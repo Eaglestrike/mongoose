@@ -71,7 +71,7 @@ void ElevatorModule::checkError(){
 			else encoderTimeOut.Reset();
 
 			if(encoderTimeOut.Get() > 0.1) {
-				throw MovementError("ElevatorModule::checkError()" , "check if Encoder is plugged in");
+				throw MovementError(this, "ElevatorModule::checkError()" , "check if Encoder is plugged in");
 			}
 		}
 	}
@@ -109,7 +109,7 @@ void ElevatorModule::calibrate() {
 	std::cout << "while(!getButton())" ;
 	while(!getButton()) {
 		if(timeOut.Get() > MAX_ELEVATOR_CALIBRATE_TIME_DOWN) {
-			throw CalibrationError("ElevatorModule::calibrate()" , "calibrate timed out");
+			throw CalibrationError(this, "ElevatorModule::calibrate()" , "calibrate timed out");
 		}
 		setPower(CALIBRATE_ELEVATOR_DOWN);
 	}
@@ -135,10 +135,10 @@ void ElevatorModule::calibrate() {
 	std::cout << " done" << std::endl;
 
 	if(getButton()) {
-		throw CalibrationError("ElevatorModule::calibrate()" ,"check your button");
+		throw CalibrationError(this, "ElevatorModule::calibrate()" ,"check your button");
 	}
 	if(m_Encoder->PIDGet() < MIN_ELEVATOR_DISTANCE_CALIBRATE) {
-		throw CalibrationError("ElevatorModule::calibrate()" , "check your encoder");
+		throw CalibrationError(this, "ElevatorModule::calibrate()" , "check your encoder");
 	}
 
 

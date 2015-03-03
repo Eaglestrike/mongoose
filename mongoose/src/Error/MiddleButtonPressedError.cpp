@@ -7,7 +7,7 @@
 
 #include "MiddleButtonPressedError.h"
 
-MiddleButtonPressedError::MiddleButtonPressedError(/*RobotModule**/const char* where, const char* what) : EaglestrikeError(where, what, false){
+MiddleButtonPressedError::MiddleButtonPressedError(RobotModule* module, std::string where, std::string what) : EaglestrikeError(module, where, what, false){
 
 }
 

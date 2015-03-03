@@ -3,7 +3,7 @@
 #define __SCORPION_H
 
 #include "RobotModule.h"
-#include <WPILib.h>
+#include <WPIlib.h>
 
 class ScorpionModule : public RobotModule {
 public:

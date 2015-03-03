@@ -9,7 +9,7 @@
 #define INTAKEMODULE_H_
 
 #include "RobotModule.h"
-#include "WPILib.h"
+#include "WPIlib.h"
 
 
 class IntakeModule: public RobotModule {

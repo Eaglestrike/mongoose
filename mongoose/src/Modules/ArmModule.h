@@ -8,7 +8,7 @@
 #ifndef ARMMODULE_H_
 #define ARMMODULE_H_
 
-#include "WPILib.h"
+#include <WPIlib.h>
 #include "RobotModule.h"
 #include "../Peripherals/SafeTalonSRX.h"
 #include "../Settings.h"
