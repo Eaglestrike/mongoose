@@ -191,7 +191,7 @@ private:
 		if(!armModule->isManual()){
 
 			if(xbox->getX()){
-				armModule->setDeltaX(3.5625 - .25);
+				armModule->setDeltaX(3.5625 - 0.75);
 				leftSetpoint = 4;
 			}
 			else if(xbox->getStart()) {
@@ -320,10 +320,10 @@ private:
 		updatePID();
 
 		if(xbox->getX()) {
-			elevatorModule->setPosition(20);
+			elevatorModule->setPosition(40);
 		}
 		else {
-			elevatorModule->setPosition(10);
+			elevatorModule->setPosition(0);
 		}
 		lw->Run();
 

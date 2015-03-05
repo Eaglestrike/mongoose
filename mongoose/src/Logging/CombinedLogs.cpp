@@ -12,7 +12,7 @@
 #include "Modules.h"
 using namespace std;
 
-#if 1
+#if 0
 string folderName;
 vector<Logger> logs;
 vector<RobotModule*> modules;
