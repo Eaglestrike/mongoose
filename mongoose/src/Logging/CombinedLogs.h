@@ -4,9 +4,11 @@
 class CombinedLogs {
 public:
 	CombinedLogs();
-	void addModule();
+	void addModule(RobotModule* module);
 	int getVersion();
-	void initializeFolder();
+	void initializeFolder(char* FolderName);
+	void addHeaders();
+	void update();
 };
 
 
