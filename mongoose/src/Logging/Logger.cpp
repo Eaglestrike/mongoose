@@ -17,15 +17,9 @@
 #include <cstring>
 using namespace std;
 
+#if 0
 
-#if 1
-
-char* filename;
-ofstream writeFile;
-bool headed;
-int catagories;
-
-Logger::Logger(char* file_name) {
+Logger::Logger(std::string file_name) {
 	// TODO Auto-generated constructor stub
 	filename = file_name;
 	headed = false;
@@ -80,9 +74,9 @@ void Logger::writeData(vector<double> data) {
 	}
 }
 
-#endif
 
 Logger::~Logger() {
 	// TODO Auto-generated destructor stub
 }
+#endif
 

@@ -4,39 +4,28 @@
  *  Created on: Feb 26, 2015
  *      Author: Nathan
  */
-#include <iostream>
-#include <stdio.h>
-#include <fstream>
-#include <string>
-#include <vector>
-#include "Modules.h"
-using namespace std;
 
-#if 1
-string folderName;
-vector<Logger> logs;
-vector<RobotModule*> modules;
-int version;
+#include "CombinedLogs.h"
+#if 0
 
 CombinedLogs::CombinedLogs() {
 	version = getVersion();
-	char* stringNum = std::to_string(version);
-	char* folderName = 'log' + stringNum;
+	std::string folderName = "log" + std::to_string(version);
 	initializeFolder(folderName);
 }
 
-void addModule(RobotModule* module) {
-	string filePath = folderName + "/" + module->getModuleName();
+void CombinedLogs::addModule(RobotModule* module) {
+	std::string filePath = folderName + "/" + module->getModuleName();
 	Logger log = new Logger(filePath);
 	logs.push_back(log);
 	modules.push_back(module);
 }
 
-int getVersion() {
+int CombinedLogs::getVersion() {
 	ifstream versionLogRead;
 	ofstream versionLogWrite;
 	versionLogRead.open("version.txt");
-	string stringNum;
+	std::string stringNum;
 	getline(versionLogRead, stringNum);
 	version = stoi(stringNum); //Reads from the file to get version
 
@@ -45,18 +34,18 @@ int getVersion() {
 	return version;
 }
 
-void initializeFolder(char* folderName) {
-	char* command = 'mkdir\"' + folderName + '\"';
-	system(command);
+void CombinedLogs::initializeFolder(std::string folderName) {
+	std::string command = "mkdir \"/home/lvuser/" + folderName + "\"";
+	system(command.c_str());
 }
 
-void addHeaders() {
+void CombinedLogs::addHeaders() {
 	for (int i = 0; i < logs.size(); i++) {
-		logs[i].writeHeader(modules[i]->getLoggingHeader())
+		logs[i].writeHeader(modules[i]->getLoggingHeader());
 	}
 }
 
-void update() {
+void CombinedLogs::update() {
 	for (int i = 0; i < logs.size(); i++) {
 		logs[i].writeData(modules[i]->getLoggingData());
 	}

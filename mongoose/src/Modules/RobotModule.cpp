@@ -16,9 +16,15 @@ void RobotModule::reset(){
 
 }
 
+std::vector<std::string> RobotModule::getLoggingHeader(){
+	std::vector<std::string> header;
+	header.push_back("test");
+}
+
 std::vector<double> RobotModule::getLoggingData(){
-	std::vector<double> asdf;
-	return asdf;
+	std::vector<double> data;
+	data.push_back(0);
+	return data;
 }
 
 std::string RobotModule::getModuleName(){

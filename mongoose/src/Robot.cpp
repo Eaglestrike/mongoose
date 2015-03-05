@@ -13,6 +13,7 @@
 #include "Peripherals/AutonomousCode/AutonomousCommandBase.h"
 #include "Peripherals/AutonomousCode/DistanceProfile.h"
 #include "Logging/EaglestrikeErrorLogger.h"
+//#include "Logging/CombinedLogs.h"
 
 using namespace std;
 
@@ -38,7 +39,7 @@ private:
 	unsigned long printCounter = 0;
 
 	int logCounter = 100; //How many milliseconds between logging entries
-	CombinedLogs* logs;
+//	CombinedLogs* logs;
 
 	void RobotInit()
 	{
@@ -60,13 +61,13 @@ private:
 		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 
-		logs = new CombinedLogs();
-		logs->addModule(elevatorModule);
-		logs->addModule(driveModule);
-		logs->addModule(armModule);
-		logs->addModule(scorpionModule);
-		logs->addModule(intakeModule);
-		logs->addHeaders();
+//		logs = new CombinedLogs();
+//		logs->addModule(elevatorModule);
+//		logs->addModule(driveModule);
+//		logs->addModule(armModule);
+//		logs->addModule(scorpionModule);
+//		logs->addModule(intakeModule);
+//		logs->addHeaders();
 
 		timer = new Timer();
 		timer->Start();
@@ -249,11 +250,11 @@ private:
 		if(rightJoy->GetRawButton(6)){
 			elevatorModule->setPosition(0);
 		}else if(rightJoy->GetRawButton(7)){
-			elevatorModule->setPosition(12);
+			elevatorModule->setPosition(12.5);
 		}else if(rightJoy->GetRawButton(8)){
-			elevatorModule->setPosition(28);
+			elevatorModule->setPosition(25);
 		}else if(rightJoy->GetRawButton(9)){
-			elevatorModule->setPosition(41);
+			elevatorModule->setPosition(37);
 		}else if(rightJoy->GetRawButton(10)){
 			elevatorModule->setPosition(52);
 		}else if(rightJoy->GetRawButton(11)){
@@ -270,9 +271,9 @@ private:
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
 		}
 
-		if (printCounter % logCounter == 0) {
-			logs->update();
-		}
+//		if (printCounter % logCounter == 0) {
+//			logs->update();
+//		}
 
 		printCounter++;
 		Wait(0.01);
