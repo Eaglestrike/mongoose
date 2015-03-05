@@ -191,7 +191,7 @@ private:
 		if(!armModule->isManual()){
 
 			if(xbox->getX()){
-				armModule->setDeltaX(3.5625 - 0.75);
+				armModule->setDeltaX(2.5625);
 				leftSetpoint = 4;
 			}
 			else if(xbox->getStart()) {
@@ -240,13 +240,13 @@ private:
 		}else if(rightJoy->GetRawButton(7)){
 			elevatorModule->setPosition(12);
 		}else if(rightJoy->GetRawButton(8)){
-			elevatorModule->setPosition(24);
+			elevatorModule->setPosition(28);
 		}else if(rightJoy->GetRawButton(9)){
-			elevatorModule->setPosition(36);
+			elevatorModule->setPosition(41);
 		}else if(rightJoy->GetRawButton(10)){
-			elevatorModule->setPosition(48);
+			elevatorModule->setPosition(52);
 		}else if(rightJoy->GetRawButton(11)){
-			elevatorModule->setPosition(5);
+			elevatorModule->setPosition(53);
 		}else{
 
 		}
