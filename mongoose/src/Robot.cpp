@@ -37,6 +37,9 @@ private:
 	bool previous;
 	unsigned long printCounter = 0;
 
+	int logCounter = 100; //How many milliseconds between logging entries
+	CombinedLogs* logs;
+
 	void RobotInit()
 	{
 
@@ -56,6 +59,14 @@ private:
 		scorpionModule = new ScorpionModule(SCORPION_PORT);
 		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
+
+		logs = new CombinedLogs();
+		logs->addModule(elevatorModule);
+		logs->addModule(driveModule);
+		logs->addModule(armModule);
+		logs->addModule(scorpionModule);
+		logs->addModule(intakeModule);
+		logs->addHeaders();
 
 		timer = new Timer();
 		timer->Start();
@@ -257,6 +268,10 @@ private:
 			cout << "angle: " << driveModule->getAngle() << endl;
 			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: " << elevatorModule->getEncoderTicks() << " BUTTON: "<<elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
+		}
+
+		if (printCounter % logCounter == 0) {
+			logs->update();
 		}
 
 		printCounter++;

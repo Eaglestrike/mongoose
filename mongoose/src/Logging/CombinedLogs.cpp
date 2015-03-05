@@ -12,7 +12,7 @@
 #include "Modules.h"
 using namespace std;
 
-#if 0
+#if 1
 string folderName;
 vector<Logger> logs;
 vector<RobotModule*> modules;
@@ -50,5 +50,16 @@ void initializeFolder(char* folderName) {
 	system(command);
 }
 
+void addHeaders() {
+	for (int i = 0; i < logs.size(); i++) {
+		logs[i].writeHeader(modules[i]->getLoggingHeader())
+	}
+}
+
+void update() {
+	for (int i = 0; i < logs.size(); i++) {
+		logs[i].writeData(modules[i]->getLoggingData());
+	}
+}
 
 #endif
