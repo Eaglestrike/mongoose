@@ -6,7 +6,7 @@
  */
 
 #include "CombinedLogs.h"
-#if 0
+#if 1
 
 CombinedLogs::CombinedLogs() {
 	version = getVersion();
@@ -16,21 +16,21 @@ CombinedLogs::CombinedLogs() {
 
 void CombinedLogs::addModule(RobotModule* module) {
 	std::string filePath = folderName + "/" + module->getModuleName();
-	Logger log = new Logger(filePath);
+	Logger log(filePath);
 	logs.push_back(log);
 	modules.push_back(module);
 }
 
 int CombinedLogs::getVersion() {
-	ifstream versionLogRead;
-	ofstream versionLogWrite;
+	std::ifstream versionLogRead;
+	std::ofstream versionLogWrite;
 	versionLogRead.open("version.txt");
 	std::string stringNum;
 	getline(versionLogRead, stringNum);
 	version = stoi(stringNum); //Reads from the file to get version
 
 	versionLogWrite.open("version.txt");
-	versionLogWrite << to_string(version + 1); //Writes the next version to the file
+	versionLogWrite << std::to_string(version + 1); //Writes the next version to the file
 	return version;
 }
 
