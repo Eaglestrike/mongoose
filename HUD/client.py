@@ -156,37 +156,42 @@ def runB():
                 cy += 10
                   
         if clawpos == 2:
-            if cy > -683:
+            if cy > -664:
                 cy -= 10
                   
-            if cy < -683:
+            if cy < -664:
                 cy += 10
                   
         if clawpos == 3:
-            if cy > -816:
+            if cy > -778:
                 cy -= 10
                   
-            if cy < -816:
+            if cy < -778:
                 cy += 10
         if clawpos == 4:
-            if cy > -949:
+            if cy > -892:
                 cy -= 10
                   
-            if cy < -949:
+            if cy < -892:
                 cy += 10
                   
         if clawpos == 5:
-            if cy > -1082:
+            if cy > -1006:
                 cy -= 10
                   
-            if cy < -1082:
+            if cy < -1006:
                 cy += 10
                   
         if clawpos == 6:
-            if cy > -1215:
+            if cy > -1110:
                 cy -= 10
                   
-            if cy < -1215:
+            if cy < -1110:
+                cy += 10
+        if clawpos == 7:
+            if cy > -1224:
+                cy -= 10
+            if cy < - 1224:
                 cy += 10
                   
         

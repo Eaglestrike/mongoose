@@ -10,14 +10,22 @@
 #include <iostream>
 #include <string>
 #include <vector>
-using namespace std;
+
+#if 0
 
 class Logger {
 public:
-	Logger(char*);
+	Logger(std::string);
 	virtual ~Logger();
-	void writeHeader(vector<string>);
-	void writeData(vector<double>);
+	void writeHeader(std::vector<std::string>);
+	void writeData(std::vector<double>);
+private:
+	std::string filename;
+	std::ofstream writeFile;
+	bool headed;
+	int catagories;
 };
+
+#endif
 
 #endif /* LOGGER_H_ */
