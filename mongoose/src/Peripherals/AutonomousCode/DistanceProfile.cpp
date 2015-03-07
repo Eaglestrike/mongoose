@@ -30,6 +30,10 @@ double DistanceProfile::getSetPoint(double time) {
 	return model.applyFunction(time);
 }
 
+void DistanceProfile::reset() {
+	isDone = false;
+}
+
 LogisticFunction DistanceProfile::getFunction() {
 	if(start < end) {
 		double K = end -start;
