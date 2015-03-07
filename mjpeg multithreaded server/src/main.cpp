@@ -5,9 +5,10 @@
  *      Author: Ben
  */
 
+#include "server.hpp"
 
 int main(){
-
+	server s(5000);
 }
 
 
