@@ -13,6 +13,7 @@
 #include "Peripherals/AutonomousCode/AutonomousCommandBase.h"
 #include "Peripherals/AutonomousCode/DistanceProfile.h"
 #include "Logging/EaglestrikeErrorLogger.h"
+//#include "Logging/CombinedLogs.h"
 
 using namespace std;
 
@@ -37,6 +38,11 @@ private:
 	bool previous;
 	unsigned long printCounter = 0;
 
+	int logCounter = 100; //How many milliseconds between logging entries
+//	CombinedLogs* logs;
+
+	NamedSendable* sendable;
+
 	void RobotInit()
 	{
 
@@ -57,6 +63,16 @@ private:
 		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 
+
+
+//		logs = new CombinedLogs();
+//		logs->addModule(elevatorModule);
+//		logs->addModule(driveModule);
+//		logs->addModule(armModule);
+//		logs->addModule(scorpionModule);
+//		logs->addModule(intakeModule);
+//		logs->addHeaders();
+
 		timer = new Timer();
 		timer->Start();
 
@@ -66,8 +82,9 @@ private:
 
 		printL("\tAutonomousCommandBase()");
 		autonomousDriver = new AutonomousCommandBase(driveModule);
-		printL("RobotInit() end");
 
+
+		printL("RobotInit() end");
 	}
 
 	void DisabledInit(){
@@ -95,6 +112,8 @@ private:
 
 	void AutonomousInit()
 	{
+		int autostate = 0;
+		SmartDashboard::GetNumber("Slider 0:", autostate);
 		printL("AutonomousInit()");
 		DisabledInit();
 	}
@@ -191,7 +210,7 @@ private:
 		if(!armModule->isManual()){
 
 			if(xbox->getX()){
-				armModule->setDeltaX(3.5625 - 0.75);
+				armModule->setDeltaX(2.5625);
 				leftSetpoint = 4;
 			}
 			else if(xbox->getStart()) {
@@ -238,15 +257,15 @@ private:
 		if(rightJoy->GetRawButton(6)){
 			elevatorModule->setPosition(0);
 		}else if(rightJoy->GetRawButton(7)){
-			elevatorModule->setPosition(12);
+			elevatorModule->setPosition(12.5);
 		}else if(rightJoy->GetRawButton(8)){
-			elevatorModule->setPosition(24);
+			elevatorModule->setPosition(25);
 		}else if(rightJoy->GetRawButton(9)){
-			elevatorModule->setPosition(36);
+			elevatorModule->setPosition(37);
 		}else if(rightJoy->GetRawButton(10)){
-			elevatorModule->setPosition(48);
+			elevatorModule->setPosition(52);
 		}else if(rightJoy->GetRawButton(11)){
-			elevatorModule->setPosition(5);
+			elevatorModule->setPosition(53);
 		}else{
 
 		}
@@ -258,6 +277,10 @@ private:
 			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: " << elevatorModule->getEncoderTicks() << " BUTTON: "<<elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
 		}
+
+//		if (printCounter % logCounter == 0) {
+//			logs->update();
+//		}
 
 		printCounter++;
 		Wait(0.01);

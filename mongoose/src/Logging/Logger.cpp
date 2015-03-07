@@ -6,26 +6,11 @@
  */
 
 #include "Logger.h"
-#include <iostream>
-#include <stdio.h>
-#include <fstream>
-#include <cstdlib>
-#include <string>
-#include <exception>
-#include <stdexcept>
-#include <vector>
-#include <cstring>
 using namespace std;
-
 
 #if 1
 
-char* filename;
-ofstream writeFile;
-bool headed;
-int catagories;
-
-Logger::Logger(char* file_name) {
+Logger::Logger(std::string file_name):writeFile() {
 	// TODO Auto-generated constructor stub
 	filename = file_name;
 	headed = false;
@@ -36,13 +21,13 @@ void Logger::writeHeader(vector<string> headers) {
 		int length = headers.size();
 		if (length == 0) { throw length_error("zero"); }
 		if (!headed) {
-			writeFile.open(filename, std::ios_base::app);
+			writeFile->open(filename, std::ios_base::app);
 			cout << headers[0] << endl;
 			for(int i = 0; i < length-1; ++i)  {
-				writeFile << headers[i] << ", ";
+				(*writeFile) << headers[i] << ", ";
 			}
-			writeFile << headers[length - 1] << "\n";
-			writeFile.close();
+			(*writeFile) << headers[length - 1] << "\n";
+			writeFile->close();
 		}
 	headed = true;
 	catagories = length;
@@ -62,13 +47,13 @@ void Logger::writeData(vector<double> data) {
 		if (length == 0) { throw length_error("zero"); }
 		if (length != catagories) { throw length_error("matching"); }
 		cout << "checked for errors" << endl;
-		writeFile.open(filename, std::ios_base::app);
+		writeFile->open(filename, std::ios_base::app);
 		cout << length << endl;
 		for(int i = 0; i < length-1; i++)  {
-			writeFile << data[i] << ", ";
+			(*writeFile) << data[i] << ", ";
 		}
-		writeFile << data[length - 1] << "\n";
-		writeFile.close();
+		(*writeFile) << data[length - 1] << "\n";
+		writeFile->close();
 	} catch (const length_error e) {
 		if (strcmp(e.what(), "matching") == 0) {
 			cerr << "The number of arguments does not match the number of headers";
@@ -80,9 +65,9 @@ void Logger::writeData(vector<double> data) {
 	}
 }
 
-#endif
 
 Logger::~Logger() {
 	// TODO Auto-generated destructor stub
 }
+#endif
 

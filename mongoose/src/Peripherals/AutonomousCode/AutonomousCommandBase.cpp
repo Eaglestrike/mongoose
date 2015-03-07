@@ -50,6 +50,11 @@ void AutonomousCommandBase::move(DistanceProfile* path) {
 
 }
 
+void AutonomousCommandBase::move(double distance, double totalTime) {
+	DistanceProfile* path = new DistanceProfile(0, distance, totalTime);
+	move(path);
+}
+
 void AutonomousCommandBase::runDistanceProf(DistanceProfile* path) {
 	Timer* time = new Timer();
 	time->Start();

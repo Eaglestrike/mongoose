@@ -16,6 +16,7 @@ public:
 	virtual ~DistanceProfile();
 
 	double getSetPoint(double time);
+	void reset();
 	LogisticFunction getFunction();
 
 	bool isDone;
