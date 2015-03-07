@@ -9,6 +9,7 @@
 
 
 server::server(int port):
+	io_service_(),
 	endpoint_(boost::asio::ip::tcp::v4(), port),
 	acceptor_(io_service_),
 	socket_(io_service_),
@@ -23,6 +24,8 @@ server::server(int port):
 	acceptor_.listen();
 	acceptor_.async_accept(socket_, boost::bind(&server::handle_accept, this, boost::asio::placeholders::error));
 
+	io_service_.run();
+
 }
 
 void server::handle_write(const boost::system::error_code &e, std::size_t bytes){
@@ -35,7 +38,7 @@ void server::handle_accept(const boost::system::error_code& e){
 		boost::asio::async_write(socket_, boost::asio::buffer(header), &server::handle_write);
 		while(true){
 			char header[128];
-			sprintf(header, "--mjpegstream\r\nContent-Type: image/jpeg\r\nContent-Length: %lu\r\n\r\n", image.size());
+			sprintf(header, "--mjpegstream\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n", image.size());
 			boost::asio::async_write(socket_, boost::asio::buffer(std::string(header)), &server::handle_write);
 		}
 	}

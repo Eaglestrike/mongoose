@@ -1,9 +1,9 @@
 /*
- * server.hpp
- *
- *  Created on: Mar 4, 2015
- *      Author: Ben
- */
+* server.hpp
+*
+*  Created on: Mar 4, 2015
+*      Author: Ben
+*/
 
 #ifndef SRC_SERVER_HPP_
 #define SRC_SERVER_HPP_
