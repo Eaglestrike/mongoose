@@ -10,8 +10,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <fstream>
+#include <cstdlib>
+#include <exception>
+#include <stdexcept>
+#include <cstring>
 
-#if 0
+#if 1
 
 class Logger {
 public:
@@ -21,7 +27,7 @@ public:
 	void writeData(std::vector<double>);
 private:
 	std::string filename;
-	std::ofstream writeFile;
+	std::ofstream* writeFile;
 	bool headed;
 	int catagories;
 };

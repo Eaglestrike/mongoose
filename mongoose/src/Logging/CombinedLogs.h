@@ -1,7 +1,7 @@
 #ifndef COMBINEDLOGS_H_
 #define COMBINEDLOGS_H_
 
-#if 0
+#if 1
 
 #include <string>
 #include <vector>
