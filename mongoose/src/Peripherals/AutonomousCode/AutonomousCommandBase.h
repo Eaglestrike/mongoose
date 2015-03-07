@@ -24,6 +24,7 @@ public:
 	virtual ~AutonomousCommandBase();
 	void turnAngle(double angle);
 	void move(DistanceProfile* path);
+	void move(double distance, double totalTime);
 
 private:
 	DriveModule* m_Drive;

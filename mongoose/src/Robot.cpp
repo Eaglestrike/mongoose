@@ -41,6 +41,8 @@ private:
 	int logCounter = 100; //How many milliseconds between logging entries
 //	CombinedLogs* logs;
 
+	NamedSendable* sendable;
+
 	void RobotInit()
 	{
 
@@ -61,6 +63,8 @@ private:
 		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 
+
+
 //		logs = new CombinedLogs();
 //		logs->addModule(elevatorModule);
 //		logs->addModule(driveModule);
@@ -78,8 +82,9 @@ private:
 
 		printL("\tAutonomousCommandBase()");
 		autonomousDriver = new AutonomousCommandBase(driveModule);
-		printL("RobotInit() end");
 
+
+		printL("RobotInit() end");
 	}
 
 	void DisabledInit(){
@@ -107,6 +112,8 @@ private:
 
 	void AutonomousInit()
 	{
+		int autostate = 0;
+		SmartDashboard::GetNumber("Slider 0:", autostate);
 		printL("AutonomousInit()");
 		DisabledInit();
 	}
