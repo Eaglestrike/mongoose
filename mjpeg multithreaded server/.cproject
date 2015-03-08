@@ -26,9 +26,11 @@
 								<option id="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level.1751046218" name="Debug Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1489062927" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;E:\OpenCV-2.4.9\build\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\opencv-2.4.9\build\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\boost_1_57_0&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;E:\boost_1_57_0&quot;"/>
 								</option>
+								<option id="gnu.cpp.compiler.option.other.other.289013151" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -D__USE_W32_SOCKETS" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.195244831" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug.1415601270" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug">
@@ -40,12 +42,27 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug.1271482805" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug">
 								<option id="gnu.cpp.link.option.paths.1576763062" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;E:\OpenCV-2.4.9\build\x86\MinGW\lib&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\boost_1_57_0\bin.v2\libs\system\build\gcc-mingw-4.8.1\debug\link-static\threading-multi&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;E:\boost_1_57_0\bin.v2\libs\system\build\gcc-mingw-4.8.1\debug\link-static\threading-multi&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\opencv-2.4.9\build\x86\MinGW\lib&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.111265292" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="opencv_core"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="boost_system"/>
+									<listOptionValue builtIn="false" value="opencv_calib3d249"/>
+									<listOptionValue builtIn="false" value="opencv_contrib249"/>
+									<listOptionValue builtIn="false" value="opencv_core249"/>
+									<listOptionValue builtIn="false" value="opencv_features2d249"/>
+									<listOptionValue builtIn="false" value="opencv_flann249"/>
+									<listOptionValue builtIn="false" value="opencv_gpu249"/>
+									<listOptionValue builtIn="false" value="opencv_highgui249"/>
+									<listOptionValue builtIn="false" value="opencv_imgproc249"/>
+									<listOptionValue builtIn="false" value="opencv_legacy249"/>
+									<listOptionValue builtIn="false" value="opencv_ml249"/>
+									<listOptionValue builtIn="false" value="opencv_nonfree249"/>
+									<listOptionValue builtIn="false" value="opencv_objdetect249"/>
+									<listOptionValue builtIn="false" value="opencv_ocl249"/>
+									<listOptionValue builtIn="false" value="opencv_photo249"/>
+									<listOptionValue builtIn="false" value="opencv_stitching249"/>
+									<listOptionValue builtIn="false" value="opencv_superres249"/>
+									<listOptionValue builtIn="false" value="opencv_video249"/>
+									<listOptionValue builtIn="false" value="opencv_videostab249"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.865156816" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -121,4 +138,5 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope"/>
 </cproject>
