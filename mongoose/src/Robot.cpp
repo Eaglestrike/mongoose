@@ -39,7 +39,7 @@ private:
 	unsigned long printCounter = 0;
 
 	int logCounter = 100; //How many milliseconds between logging entries
-//	CombinedLogs* logs;
+	//	CombinedLogs* logs;
 
 	NamedSendable* sendable;
 
@@ -63,15 +63,16 @@ private:
 		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 
+		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
 
 
-//		logs = new CombinedLogs();
-//		logs->addModule(elevatorModule);
-//		logs->addModule(driveModule);
-//		logs->addModule(armModule);
-//		logs->addModule(scorpionModule);
-//		logs->addModule(intakeModule);
-//		logs->addHeaders();
+		//		logs = new CombinedLogs();
+		//		logs->addModule(elevatorModule);
+		//		logs->addModule(driveModule);
+		//		logs->addModule(armModule);
+		//		logs->addModule(scorpionModule);
+		//		logs->addModule(intakeModule);
+		//		logs->addHeaders();
 
 		timer = new Timer();
 		timer->Start();
@@ -112,8 +113,7 @@ private:
 
 	void AutonomousInit()
 	{
-		int autostate = 0;
-		SmartDashboard::GetNumber("Slider 0:", autostate);
+		//		int autostate = 0;
 		printL("AutonomousInit()");
 		DisabledInit();
 	}
@@ -122,8 +122,9 @@ private:
 	{
 		if(printCounter % 50 == 0){
 			cout << "T: " << timer->Get()	<< " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-											<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
-											<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl;
+													<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
+													<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl
+													<< "DeltaX: " << SmartDashboard::GetNumber("DeltaX") << endl;
 		}
 
 		printCounter++;
@@ -139,7 +140,7 @@ private:
 		elevatorModule->enable();
 		driveModule->enable();
 		armModule->enable();
-		scorpionModule->enable();
+		scorpionModule->disable();
 		intakeModule->enable();
 		toggleY = 0;
 
@@ -167,13 +168,19 @@ private:
 
 		}
 
+		leftSetpoint = 0;
+		deltaX = 13.5;
+
 	}
 
-	double leftSetpoint = 0;
+	double leftSetpoint = 0, deltaX = 13.5;
+
+	bool hasLS = false;
 
 	void TeleopPeriodic()
 	{
 
+		lw->Run();
 
 		driveModule->drive(-leftJoy->GetY(), -rightJoy->GetX());
 		scorpionModule->Set(rightJoy->GetRawButton(4));
@@ -198,35 +205,57 @@ private:
 		//		armModule->setRightPower(rightArmPower);
 
 		//double elevatorPower = xbox->getLY();
-//		double elevatorPower = xbox->getLY() * MAX_ELEVATOR_UP;
-//		if(elevatorPower < MAX_ELEVATOR_DOWN)
-//			elevatorPower = MAX_ELEVATOR_DOWN;
-//
-//		if(elevatorModule->getButton() && elevatorPower < 0)
-//			elevatorPower = 0;
-//
-//		elevatorModule->setPower(elevatorPower);
+		//		double elevatorPower = xbox->getLY() * MAX_ELEVATOR_UP;
+		//		if(elevatorPower < MAX_ELEVATOR_DOWN)
+		//			elevatorPower = MAX_ELEVATOR_DOWN;
+		//
+		//		if(elevatorModule->getButton() && elevatorPower < 0)
+		//			elevatorPower = 0;
+		//
+		//		elevatorModule->setPower(elevatorPower);
 
 		if(!armModule->isManual()){
 
 			if(xbox->getX()){
-				armModule->setDeltaX(2.5625);
-				leftSetpoint = 4;
+				if(!hasLS){
+					deltaX = 2.5625 + 2.5;
+					leftSetpoint = 4;
+					hasLS = true;
+				}
 			}
 			else if(xbox->getStart()) {
-				armModule->setDeltaX(5.8);
-				leftSetpoint = 4;
+				if(!hasLS){
+					deltaX = 5.8;
+					leftSetpoint = 4;
+					hasLS = true;
+				}
 			}
 			else{
-				//			armModule->setDeltaX(13.5);
-				armModule->setDeltaX(13.5);
-				//armModule->setRightArm(armModule->getRightPosition() + xbox->getRX() / 20.0);
+				deltaX = 13.5;
 				leftSetpoint = 0;
+				hasLS = false;
 			}
 
-			leftSetpoint += xbox->getLX() / 20.0;
+			if(leftJoy->GetRawButton(4)) {
+				leftSetpoint += .1;
+			}
+			else if(leftJoy->GetRawButton(5)) {
+				leftSetpoint -= .1;
+			}
+			else if(leftJoy->GetRawButton(3)) {
+				deltaX+=.1;
+			}
+			else if(leftJoy->GetRawButton(2)) {
+				deltaX-=.1;
+			}
+
+
+			//			leftSetpoint += xbox->getLX() / 10.0;
+			//			deltaX += + xbox->getRY() / 10.0;
 
 			armModule->setLeftArm(leftSetpoint);
+			armModule->setDeltaX(deltaX);
+
 		}else{
 			armModule->setLeftPower(xbox->getLX());
 			armModule->setRightPower(xbox->getRX());
@@ -270,17 +299,24 @@ private:
 
 		}
 
+		if(leftJoy->GetRawButton(9)) {
+			elevatorModule->disablePID();
+			elevatorModule->setPower(0);
+		} else {
+			elevatorModule->enablePID();
+			elevatorModule->setPosition(elevatorModule->getEncoderDistance());
+		}
 		if(printCounter % 20 == 0){
-			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
+			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() <<  " DX: " << armModule->getDiffSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
 			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
 			cout << "angle: " << driveModule->getAngle() << endl;
 			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: " << elevatorModule->getEncoderTicks() << " BUTTON: "<<elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
 		}
 
-//		if (printCounter % logCounter == 0) {
-//			logs->update();
-//		}
+		//		if (printCounter % logCounter == 0) {
+		//			logs->update();
+		//		}
 
 		printCounter++;
 		Wait(0.01);
@@ -291,12 +327,12 @@ private:
 		try{
 
 			armModule->disable();
-			driveModule->disable();
-			elevatorModule->enable();
-			intakeModule->disable();
+			driveModule->enable();
+			elevatorModule->disable();
+			intakeModule->enable();
 
-			elevatorModule->calibrate();
-			elevatorModule->enablePID();
+			//			elevatorModule->calibrate();
+			//			elevatorModule->enablePID();
 		}catch(EaglestrikeError &e){
 			cerr << "EaglestrikeError" << endl;
 			cerr << e.toString() << endl;

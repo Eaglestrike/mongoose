@@ -33,6 +33,7 @@ void DriveModule::enable(){
 
 void DriveModule::disable() {
 	reset();
+	RobotModule::disable();
 }
 
 void DriveModule::reset() {
@@ -41,6 +42,8 @@ void DriveModule::reset() {
 }
 
 void DriveModule::setPower(double left, double right) {
+	if(!m_Enabled) return;
+
 	m_Left_Victor_1->Set(left);
 	m_Left_Victor_2->Set(left);
 	m_Right_Victor_1->Set(-right);
