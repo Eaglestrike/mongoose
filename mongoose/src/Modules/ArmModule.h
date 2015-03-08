@@ -103,6 +103,8 @@ public:
 	double getRightError();
 
 
+	void grab(double deltaX);
+
 private:
 	void setSetPoint(float setPoint);
 

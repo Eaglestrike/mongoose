@@ -100,6 +100,7 @@ void ElevatorModule::setPower(double power){
 }
 
 void ElevatorModule::calibrate() {
+	if(!m_Enabled) return;
 	Timer timeOut;
 	timeOut.Start();
 

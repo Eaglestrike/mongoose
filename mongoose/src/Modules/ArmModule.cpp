@@ -217,6 +217,12 @@ void ArmModule::disableDeltaX() {
 	m_DeltaX = 0;
 }
 
+void ArmModule::grab(double deltaX) {
+	enablePID();
+	setLeftArm(6);
+	setDeltaX(deltaX);
+}
+
 void ArmModule::disable() {
 	RobotModule::disable();
 	disableDeltaX();

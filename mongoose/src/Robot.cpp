@@ -137,7 +137,7 @@ private:
 
 		printL("TeleopInit()");
 
-		elevatorModule->enable();
+		elevatorModule->disable();
 		driveModule->enable();
 		armModule->enable();
 		scorpionModule->disable();
@@ -174,6 +174,7 @@ private:
 	}
 
 	double leftSetpoint = 0, deltaX = 13.5;
+	double startDeltaX = 4.5625;
 
 	bool hasLS = false;
 
@@ -218,7 +219,7 @@ private:
 
 			if(xbox->getX()){
 				if(!hasLS){
-					deltaX = 2.5625 + 2.5;
+					deltaX = startDeltaX;//2.5625 + 2.5;
 					leftSetpoint = 4;
 					hasLS = true;
 				}
@@ -243,10 +244,10 @@ private:
 				leftSetpoint -= .1;
 			}
 			else if(leftJoy->GetRawButton(3)) {
-				deltaX+=.1;
+				startDeltaX+=.1;
 			}
 			else if(leftJoy->GetRawButton(2)) {
-				deltaX-=.1;
+				startDeltaX-=.1;
 			}
 
 
@@ -323,7 +324,6 @@ private:
 	}
 
 	void TestInit(){
-
 		try{
 
 			armModule->disable();
@@ -371,18 +371,30 @@ private:
 		printCounter++;
 
 	}
-
+	int autoState = 0;
 	void TestPeriodic()
 	{
 
 
-		updatePID();
+//		updatePID();
+//
+//		if(xbox->getX()) {
+//			elevatorModule->setPosition(40);
+//		}
+//		else {
+//			elevatorModule->setPosition(0);
+//		}
+		if(autoState  == 0)
+			autonomousDriver->move(76/12, 6);
+		else if(autoState == 1)  {
 
-		if(xbox->getX()) {
-			elevatorModule->setPosition(40);
+
 		}
-		else {
-			elevatorModule->setPosition(0);
+		else if(autoState == 2) {
+
+		}
+		else if(autoState == 3) {
+
 		}
 		lw->Run();
 
