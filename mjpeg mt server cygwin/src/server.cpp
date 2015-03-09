@@ -8,8 +8,10 @@
 #include "server.hpp"
 
 
-server::server(int port):
+server::server(const char* ip, int port, double d):
+	ipaddr(ip),
 	portno(port),
+	delay(d),
 	header("HTTP/1.1 200 OK\r\nServer: MJPG/1.0\r\nAccept-Range: bytes\r\nConnection: close\r\nContent-Type: multipart/x-mixed-replace; boundary=mjpegstream\r\n\r\n")
 {
 
@@ -32,12 +34,13 @@ server::server(int port):
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(portno);
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+//	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	inet_pton(AF_INET, ip, &serv_addr.sin_addr);
 
 	printf("bind()\n");
 
 	if(bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0){
-		printf("bind < 0\n");
+		printf("can't bind to: %s\n", ip);
 		exit(-2);
 	}
 
@@ -49,8 +52,12 @@ server::server(int port):
 
 	printf("server() end\n");
 
-	waitThread.join();
+//	waitThread.join();
 
+}
+
+void server::join(){
+	waitThread.join();
 }
 
 void server::callWaitAndListen(void* t){
@@ -70,7 +77,9 @@ void server::waitAndListen(){
 		}
 
 		printf("spwaing new trhead\n");
-		pthread_create(&threads[numThreads], NULL, server::callHandleClient, this);
+		thread = (pthread_t*)malloc(sizeof(pthread_t));
+		pthread_create(thread, NULL, server::callHandleClient, this);
+		printf("after pthread_create\n");
 		numThreads++;
 	}
 }
@@ -82,16 +91,32 @@ void* server::callHandleClient(void* t){
 }
 
 void server::handleClient(){
-	printf("asdfasdfasdf\n");
+	printf("server::handleClient()\n");
+	const int sock = newsockfd;
+	printf("sock_fd: %d\n", sock);
+	write(sock, header.c_str(), header.size());
+
+	while(true){
+		char delim_header[128];
+		sprintf(delim_header, "--mjpegstream\r\nContent-Type: image/jpeg\r\nContent-Length: %lu\r\n\r\n", image.size());
+		write(sock, delim_header, strlen(delim_header));
+		printf("sending %d bytes\n", image.size());
+		write(sock, &image[0], image.size());
+
+		usleep((int)(delay * 1000000));
+	}
 }
 
 std::vector<uchar> server::matToJpeg(const cv::Mat& image){
+	printf("server::matToJpeg()\n");
 	std::vector<uchar> jpeg;
-//	cv::imencode(".jpg", image, jpeg, parameters);
+	cv::imencode(".jpg", image, jpeg, parameters);
+	printf("Size after conversion: %d\n", jpeg.size());
 	return jpeg;
 }
 
 void server::setImage(cv::Mat image){
+	printf("server::setImage()\n");
 	this->image = matToJpeg(image);
 }
 

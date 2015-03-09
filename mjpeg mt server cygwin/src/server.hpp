@@ -16,15 +16,18 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <opencv2/opencv.hpp>
 #include <pthread.h>
 
 class server{
 public:
-	explicit server(int port);
+	server(const char* ip, int port, double delay = 0.1);
 	void setImage(cv::Mat image);
+	void join();
 
 private:
+	double delay;
 	std::vector<uchar> matToJpeg(const cv::Mat& image);
 
 	std::string header;
@@ -32,9 +35,10 @@ private:
 	std::vector<int> parameters;
 
 	//server variables
+	const char* ipaddr;
 	int sockfd, newsockfd, portno, clilen, n;
 	struct sockaddr_in serv_addr, cli_addr;
-	pthread_t threads[20];
+	pthread_t* thread;
 	int numThreads;
 
 	std::thread waitThread;
