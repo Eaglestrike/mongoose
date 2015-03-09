@@ -24,7 +24,8 @@ private:
 	ElevatorModule* elevatorModule;
 	DriveModule* driveModule;
 	ArmModule* armModule;
-	ScorpionModule* scorpionModule;
+	//ScorpionModule* scorpionModule;
+	MantaCoreModule* mantaCoreModule;
 	IntakeModule* intakeModule;
 
 	Timer* timer;
@@ -59,9 +60,11 @@ private:
 		printL("\tArmModule()");
 		armModule = new ArmModule(RIGHT_ARM_MOTOR, LEFT_ARM_MOTOR, RIGHT_ARM_BUTTON, MID_ARM_BUTTON, LEFT_ARM_BUTTON, RIGHT_ARM_ENCODER_A, RIGHT_ARM_ENCODER_B, LEFT_ARM_ENCODER_A, LEFT_ARM_ENCODER_B);
 		printL("\tScorpionModule()");
-		scorpionModule = new ScorpionModule(SCORPION_PORT);
+		//scorpionModule = new ScorpionModule(SCORPION_PORT);
 		printL("\tIntakeModule()");
 		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
+		printL("\tMantacoreModule()");
+		mantaCoreModule = new MantaCoreModule(MANTA_CORE_SPIKE_PORT, SCORPION_PORT);
 
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
 
@@ -122,9 +125,9 @@ private:
 	{
 		if(printCounter % 50 == 0){
 			cout << "T: " << timer->Get()	<< " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-													<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
-													<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl
-													<< "DeltaX: " << SmartDashboard::GetNumber("DeltaX") << endl;
+															<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
+															<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl
+															<< "DeltaX: " << SmartDashboard::GetNumber("DeltaX") << endl;
 		}
 
 		printCounter++;
@@ -140,8 +143,9 @@ private:
 		elevatorModule->enable();
 		driveModule->enable();
 		armModule->enable();
-		scorpionModule->disable();
+		//scorpionModule->disable();
 		intakeModule->enable();
+		mantaCoreModule->enable();
 		toggleY = 0;
 
 		try{
@@ -156,7 +160,6 @@ private:
 		}
 
 		try{
-
 			elevatorModule->calibrate();
 			elevatorModule->enablePID();
 
@@ -174,6 +177,7 @@ private:
 	}
 
 	double leftSetpoint = 0, deltaX = 13.5;
+	double startDeltaX = 4.5625;
 
 	bool hasLS = false;
 
@@ -183,7 +187,7 @@ private:
 		lw->Run();
 
 		driveModule->drive(-leftJoy->GetY(), -rightJoy->GetX());
-		scorpionModule->Set(rightJoy->GetRawButton(4));
+		//scorpionModule->Set(rightJoy->GetRawButton(4));
 
 		//		double leftArmPower = xbox->getLX() * MAX_ARM_POWER;
 		//		double rightArmPower = xbox->getRX() * MAX_ARM_POWER;
@@ -218,7 +222,7 @@ private:
 
 			if(xbox->getX()){
 				if(!hasLS){
-					deltaX = 2.5625 + 2.5;
+					deltaX = startDeltaX;//2.5625 + 2.5;
 					leftSetpoint = 4;
 					hasLS = true;
 				}
@@ -243,10 +247,10 @@ private:
 				leftSetpoint -= .1;
 			}
 			else if(leftJoy->GetRawButton(3)) {
-				deltaX+=.1;
+				startDeltaX+=.1;
 			}
 			else if(leftJoy->GetRawButton(2)) {
-				deltaX-=.1;
+				startDeltaX-=.1;
 			}
 
 
@@ -299,13 +303,29 @@ private:
 
 		}
 
-		if(leftJoy->GetRawButton(9)) {
-			elevatorModule->disablePID();
-			elevatorModule->setPower(0);
-		} else {
-			elevatorModule->enablePID();
-			elevatorModule->setPosition(elevatorModule->getEncoderDistance());
+		if(leftJoy->GetRawButton(6)) {
+			mantaCoreModule->on();
 		}
+		else if(leftJoy->GetRawButton(7)) {
+			mantaCoreModule->reverse();
+		}
+		else mantaCoreModule->off();
+
+		if(leftJoy->GetRawButton(8)) {
+			mantaCoreModule->setPneumatics(true);
+		}
+		else if(leftJoy->GetRawButton(9)) {
+			mantaCoreModule->setPneumatics(false);
+		}
+
+//		if(leftJoy->GetRawButton(10)) {
+//			elevatorModule->disablePID();
+//			elevatorModule->setPower(0);
+//		} else {
+//			elevatorModule->enablePID();
+//			elevatorModule->setPosition(elevatorModule->getEncoderDistance());
+//		}
+
 		if(printCounter % 20 == 0){
 			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() <<  " DX: " << armModule->getDiffSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
 			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
@@ -323,13 +343,13 @@ private:
 	}
 
 	void TestInit(){
-
 		try{
 
 			armModule->disable();
-			driveModule->enable();
-			elevatorModule->disable();
+			driveModule->disable();
+			elevatorModule->enable();
 			intakeModule->enable();
+			elevatorModule->disablePID();
 
 			//			elevatorModule->calibrate();
 			//			elevatorModule->enablePID();
@@ -371,21 +391,36 @@ private:
 		printCounter++;
 
 	}
-
+	int autoState = 0;
 	void TestPeriodic()
 	{
 
 
-		updatePID();
+		//		updatePID();
+		//
+		//		if(xbox->getX()) {
+		//			elevatorModule->setPosition(40);
+		//		}
+		//		else {
+		//			elevatorModule->setPosition(0);
+		//		}
+//		if(autoState  == 0)
+//			autonomousDriver->move(76/12, 6);
+//		else if(autoState == 1)  {
+//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+//			Wait(.01);
+//
+//		}
+//		else if(autoState == 2) {
+//
+//		}
+//		else if(autoState == 3) {
+//
+//		}
 
-		if(xbox->getX()) {
-			elevatorModule->setPosition(40);
-		}
-		else {
-			elevatorModule->setPosition(0);
-		}
+		elevatorModule->setPower(xbox->getRX() * .4);
 		lw->Run();
-
+//
 
 		Wait(0.05);
 	}

@@ -8,5 +8,6 @@
 #include "Modules/ScorpionModule.h"
 #include "Modules/ArmModule.h"
 #include "Modules/IntakeModule.h"
+#include "Modules/MantaCoreModule.h"
 
 #endif
