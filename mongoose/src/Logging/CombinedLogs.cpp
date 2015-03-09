@@ -51,4 +51,17 @@ void CombinedLogs::update() {
 	}
 }
 
+void CombinedLogs::start() {
+	waitTime = .05;
+	this->addHeaders();
+	updateThread = std::thread(CombinedLogs::callUpdate, this);
+}
+
+void CombinedLogs::callUpdate(void* t) {
+	while(true) {
+		((CombinedLogs*)t)->update();
+		Wait(((CombinedLogs*)t)->waitTime);
+	}
+}
+
 #endif
