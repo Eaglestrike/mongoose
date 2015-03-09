@@ -19,6 +19,7 @@
 #define MIN_ELEVATOR_INPUT 0
 
 #define SCORPION_PORT 0
+#define MANTA_CORE_SPIKE_PORT 0
 
 /*Elevator*/
 #define ELEVATOR_1 4

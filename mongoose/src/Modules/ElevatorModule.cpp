@@ -38,6 +38,7 @@ void ElevatorModule::enablePID() {
 
 void ElevatorModule::disablePID() {
 	m_PIDController->Disable();
+	RobotModule::enable();
 	m_Manual = true;
 }
 
@@ -93,6 +94,7 @@ void ElevatorModule::setPosition(double height){
 }
 
 void ElevatorModule::setPower(double power){
+	std::cout << "*****POWER: " << power << " **Lifter button: " << m_SafteyButton->Get() << " ****** enabled: " << m_Enabled << " manual:  "  << m_Manual << " ***"<< std::endl;
 	if(m_Enabled && m_Manual)
 		m_Lifter->Set(power);
 	else
@@ -100,9 +102,20 @@ void ElevatorModule::setPower(double power){
 }
 
 void ElevatorModule::calibrate() {
-	if(!m_Enabled) return;
-	Timer timeOut;
+
+	if(!m_Enabled)
+		return;
+
+	Timer timeOut, timeOut2;
 	timeOut.Start();
+
+	bool renablePID = false;
+
+	disablePID();
+
+	if(m_PIDController->IsEnabled()){
+		renablePID = true;
+	}
 
 	std::cout << "button: " << getButton() << std::endl;
 
@@ -112,6 +125,7 @@ void ElevatorModule::calibrate() {
 			throw CalibrationError(this, "ElevatorModule::calibrate()" , "calibrate timed out");
 		}
 		setPower(CALIBRATE_ELEVATOR_DOWN);
+		Wait(0.005);
 	}
 
 	std::cout << " done" << std::endl;
@@ -119,15 +133,14 @@ void ElevatorModule::calibrate() {
 	setPower(0);
 	m_Encoder->Reset();
 
-	timeOut.Stop();
-	timeOut.Reset();
-	timeOut.Start();
 
-
+	timeOut2.Start();
 	std::cout << "while(timeOut.Get())";
 
-	while(timeOut.Get() < MAX_ELEVATOR_CALIBRATE_TIME_UP) {
+	while(timeOut2.Get() < MAX_ELEVATOR_CALIBRATE_TIME_UP) {
+		std::cout << "******************SETTING POWER***************" << std::endl;
 		setPower(CALIBRATE_ELEVATOR_UP);
+		Wait(0.005);
 	}
 
 	setPower(0);
@@ -141,6 +154,8 @@ void ElevatorModule::calibrate() {
 		throw CalibrationError(this, "ElevatorModule::calibrate()" , "check your encoder");
 	}
 
+	if(renablePID)
+		m_PIDController->Enable();
 
 	m_Calibration_Is_Done = true;
 }

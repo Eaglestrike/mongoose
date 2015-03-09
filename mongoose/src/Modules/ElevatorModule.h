@@ -30,6 +30,7 @@ public:
 	}
 
 	void Set(float power){
+		std::cout << "DUAL MOTOR: " << power << std::endl;
 		m_Motor_1->Set(power);
 		m_Motor_2->Set(power);
 	}
