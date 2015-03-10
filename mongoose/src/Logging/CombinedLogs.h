@@ -20,11 +20,15 @@ public:
 	void initializeFolder(std::string FolderName);
 	void addHeaders();
 	void update();
+	void start();
+	static void callUpdate(void *t);
 private:
 	std::string folderName;
 	std::vector<Logger> logs;
 	std::vector<RobotModule*> modules;
 	int version;
+	double waitTime;
+	std::thread updateThread;
 
 };
 

@@ -13,7 +13,7 @@
 #include "Peripherals/AutonomousCode/AutonomousCommandBase.h"
 #include "Peripherals/AutonomousCode/DistanceProfile.h"
 #include "Logging/EaglestrikeErrorLogger.h"
-//#include "Logging/CombinedLogs.h"
+#include "Logging/CombinedLogs.h"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ private:
 	unsigned long printCounter = 0;
 
 	int logCounter = 100; //How many milliseconds between logging entries
-	//	CombinedLogs* logs;
+	CombinedLogs* logs;
 
 	NamedSendable* sendable;
 
@@ -69,13 +69,14 @@ private:
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
 
 
-		//		logs = new CombinedLogs();
-		//		logs->addModule(elevatorModule);
-		//		logs->addModule(driveModule);
-		//		logs->addModule(armModule);
-		//		logs->addModule(scorpionModule);
-		//		logs->addModule(intakeModule);
-		//		logs->addHeaders();
+		logs = new CombinedLogs();
+		logs->addModule(elevatorModule);
+		logs->addModule(driveModule);
+		logs->addModule(armModule);
+		logs->addModule(mantaCoreModule);
+		logs->addModule(intakeModule);
+		logs->addHeaders();
+		logs->start();
 
 		timer = new Timer();
 		timer->Start();
@@ -342,10 +343,6 @@ private:
 			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: " << elevatorModule->getEncoderTicks() << " BUTTON: "<<elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
 		}
-
-		//		if (printCounter % logCounter == 0) {
-		//			logs->update();
-		//		}
 
 		printCounter++;
 		Wait(0.01);
