@@ -134,7 +134,7 @@ private:
 
 		Wait(0.01);
 	}
-
+	bool hasEnabled = false;
 	void TeleopInit()
 	{
 
@@ -180,6 +180,7 @@ private:
 	double startDeltaX = 4.5625;
 
 	bool hasLS = false;
+
 
 	void TeleopPeriodic()
 	{
@@ -318,13 +319,21 @@ private:
 			mantaCoreModule->setPneumatics(false);
 		}
 
-//		if(leftJoy->GetRawButton(10)) {
-//			elevatorModule->disablePID();
-//			elevatorModule->setPower(0);
-//		} else {
-//			elevatorModule->enablePID();
-//			elevatorModule->setPosition(elevatorModule->getEncoderDistance());
-//		}
+		if(xbox->getLB()) {
+			elevatorModule->disablePID();
+			elevatorModule->setPower(0);
+			hasEnabled = false;
+		} else if(xbox->getRB()) {
+			elevatorModule->disablePID();
+			elevatorModule->setPower(CALIBRATE_ELEVATOR_UP);
+			hasEnabled = false;
+		} else {
+			elevatorModule->enablePID();
+			if(!hasEnabled)
+				elevatorModule->setPosition(elevatorModule->getEncoderDistance());
+			hasEnabled = true;
+
+		}
 
 		if(printCounter % 20 == 0){
 			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() <<  " DX: " << armModule->getDiffSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
@@ -404,21 +413,19 @@ private:
 		//		else {
 		//			elevatorModule->setPosition(0);
 		//		}
-//		if(autoState  == 0)
-//			autonomousDriver->move(76/12, 6);
-//		else if(autoState == 1)  {
-//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-//			Wait(.01);
-//
-//		}
-//		else if(autoState == 2) {
-//
-//		}
-//		else if(autoState == 3) {
-//
-//		}
+		if(autoState  == 0)
+			autonomousDriver->move(76/12, 6);
+		else if(autoState == 1)  {
+			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+			Wait(.01);
 
-		elevatorModule->setPower(xbox->getRX() * .4);
+		}
+		else if(autoState == 2) {
+
+		}
+		else if(autoState == 3) {
+
+		}
 		lw->Run();
 //
 
