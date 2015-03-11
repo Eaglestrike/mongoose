@@ -104,6 +104,7 @@ public:
 
 
 	void grab(double deltaX);
+	void open();
 
 private:
 	void setSetPoint(float setPoint);
