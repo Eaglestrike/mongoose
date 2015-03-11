@@ -413,8 +413,12 @@ private:
 		if(autoState  == 0)
 			autonomousDriver->move(76/12, 6);
 		else if(autoState == 1)  {
+			/* Start By grabbing one tote */
 			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
 			Wait(.01);
+			autonomousDriver->turnAngle(90);
+			Wait(.01);
+			autonomousDriver->move(76/12, 6);
 
 		}
 		else if(autoState == 2) {
