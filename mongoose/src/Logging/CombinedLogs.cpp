@@ -24,13 +24,17 @@ void CombinedLogs::addModule(RobotModule* module) {
 int CombinedLogs::getVersion() {
 	std::ifstream versionLogRead;
 	std::ofstream versionLogWrite;
-	versionLogRead.open("version.txt");
+	versionLogRead.open("/home/lvuser/version.txt");
 	std::string stringNum;
 	getline(versionLogRead, stringNum);
-	version = stoi(stringNum); //Reads from the file to get version
+	if (stringNum == "") {
+		version = 0;
+	} else {
+		version = stoi(stringNum); //Reads from the file to get version
+	}
 
 	versionLogWrite.open("version.txt");
-	versionLogWrite << std::to_string(version + 1); //Writes the next version to the file
+	versionLogWrite << std::to_string(version + 1) << std::endl; //Writes the next version to the file
 	return version;
 }
 
