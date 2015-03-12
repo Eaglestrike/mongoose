@@ -51,7 +51,12 @@ void AutonomousCommandBase::move(DistanceProfile* path) {
 }
 
 void AutonomousCommandBase::move(double distance, double totalTime) {
-	DistanceProfile* path = new DistanceProfile(0, distance, totalTime);
+	DistanceProfile* path;
+	if(distance >= 0)
+		path = new DistanceProfile(0, distance, totalTime);
+	else {
+		path = new DistanceProfile(-distance, 0, totalTime);
+	}
 	move(path);
 }
 

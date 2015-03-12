@@ -178,7 +178,7 @@ private:
 	}
 
 	double leftSetpoint = 0, deltaX = 13.5;
-	double startDeltaX = 4.5625;
+	double startDeltaX = ARM_CLOSED_TOTE_DISTANCE;
 
 	bool hasLS = false;
 
@@ -351,20 +351,22 @@ private:
 	void TestInit(){
 		try{
 
-			armModule->disable();
-			driveModule->disable();
-			elevatorModule->enable();
+			armModule->enable();
+			driveModule->enable();
+			elevatorModule->disable();
 			intakeModule->enable();
 			elevatorModule->disablePID();
 
-			//			elevatorModule->calibrate();
+			armModule->calibrate();
+			armModule->enablePID();
+				//elevatorModule->calibrate();
 			//			elevatorModule->enablePID();
 		}catch(EaglestrikeError &e){
 			cerr << "EaglestrikeError" << endl;
 			cerr << e.toString() << endl;
 			if(e.shouldBeFatal()){
 				Wait(0.05);
-				exit(1);
+				e.getModule()->handleFatalError();
 			}
 		}
 	}
@@ -397,7 +399,8 @@ private:
 		printCounter++;
 
 	}
-	int autoState = 0;
+	int autoState = 1;
+	bool finished = false;
 	void TestPeriodic()
 	{
 
@@ -411,14 +414,17 @@ private:
 		//			elevatorModule->setPosition(0);
 		//		}
 		if(autoState  == 0)
-			autonomousDriver->move(76/12, 6);
-		else if(autoState == 1)  {
+			autonomousDriver->move(-76.0/12, 6);
+		else if(autoState == 1 && !finished)  {
 			/* Start By grabbing one tote */
 			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-			Wait(.01);
+			Wait(0.5);
 			autonomousDriver->turnAngle(90);
-			Wait(.01);
-			autonomousDriver->move(76/12, 6);
+			Wait(0.1);
+			autonomousDriver->move(-76.0/12, 6);
+			Wait(0.1);
+			armModule->open();
+			finished = true;
 
 		}
 		else if(autoState == 2) {
@@ -427,6 +433,7 @@ private:
 		else if(autoState == 3) {
 
 		}
+
 		lw->Run();
 //
 
