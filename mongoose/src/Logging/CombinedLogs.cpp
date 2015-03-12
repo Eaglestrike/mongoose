@@ -45,13 +45,17 @@ void CombinedLogs::initializeFolder(std::string folderName) {
 
 void CombinedLogs::addHeaders() {
 	for (int i = 0; i < logs.size(); i++) {
-		logs[i].writeHeader(modules[i]->getLoggingHeader());
+		if (modules[i]->getLoggingHeader()) {
+			logs[i].writeHeader(modules[i]->getLoggingHeader());
+		}
 	}
 }
 
 void CombinedLogs::update() {
 	for (int i = 0; i < logs.size(); i++) {
-		logs[i].writeData(modules[i]->getLoggingData());
+		if (modules[i]->getLoggingData()) {
+			logs[i].writeData(modules[i]->getLoggingData());
+		}
 	}
 }
 
