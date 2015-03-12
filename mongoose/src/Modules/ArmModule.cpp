@@ -407,3 +407,38 @@ double ArmModule::getDiffError(){
 double ArmModule::getLeftError(){
 	return m_Left_Arm_Controller->GetError();
 }
+
+std::vector<double> ArmModule::getLoggingData() {
+
+	std::vector<double> data;
+	data.push_back(m_Right_Arm_Controller->Get());
+	data.push_back(m_Right_Arm_Controller->GetSetpoint());
+	data.push_back(m_Right_Arm_Controller->GetError());
+	data.push_back(m_Right_Arm_Controller->IsEnabled());
+
+	data.push_back(m_Left_Arm_Controller->Get());
+	data.push_back(m_Left_Arm_Controller->GetSetpoint());
+	data.push_back(m_Left_Arm_Controller->GetError());
+	data.push_back(m_Left_Arm_Controller->IsEnabled());
+
+	return data;
+
+}
+
+std::vector<std::string> getLoggingHeader() {
+
+	std::vector<std::string> headers;
+
+	headers.push_back("r_get");
+	headers.push_back("r_getSetpoint");
+	headers.push_back("r_getError");
+	headers.push_back("r_isEnabled");
+
+	headers.push_back("l_get");
+	headers.push_back("l_getSetpoint");
+	headers.push_back("l_getError");
+	headers.push_back("l_isEnabled");
+
+	return headers;
+
+}
