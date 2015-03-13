@@ -73,6 +73,9 @@ public:
 	double getEncoderDistance();
 	double getSetpoint();
 
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
+
 private:
 	SafeTalonSRX* m_Motor_1;
 	SafeTalonSRX* m_Motor_2;

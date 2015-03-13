@@ -106,6 +106,10 @@ public:
 	void grab(double deltaX);
 	void open();
 
+
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
+
 private:
 	void setSetPoint(float setPoint);
 

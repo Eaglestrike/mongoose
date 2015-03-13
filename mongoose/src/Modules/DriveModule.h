@@ -132,6 +132,8 @@ public:
 	double getAngle();
 	void setPower(double left, double right);
 
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
 	void disablePID();
 	void enablePID();
 

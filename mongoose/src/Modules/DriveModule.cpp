@@ -172,3 +172,25 @@ double DriveModule::getAngle() {
 DriveModule::~DriveModule() {
 
 }
+
+std::vector<std::string> DriveModule::getLoggingHeader() {
+	std::vector<std::string> headers;
+	headers.push_back("Gyro_angle");
+	headers.push_back("Right_Victor1_Power");
+	headers.push_back("Right_Victor2_Power");
+	headers.push_back("Left_Victor1_Power");
+	headers.push_back("Left_Victor2_Power");
+	headers.push_back("Encoder_Value");
+	return headers;
+}
+std::vector<double> DriveModule::getLoggingData() {
+	std::vector<double> data;
+	data.push_back(m_Gyro->getAngle());
+	data.push_back(m_Right_Victor_1->Get());
+	data.push_back(m_Right_Victor_2->Get());
+	data.push_back(m_Left_Victor_1->Get());
+	data.push_back(m_Left_Victor_2->Get());
+	data.push_back(m_Encoder->Get());
+	return data;
+}
+
