@@ -211,3 +211,29 @@ double ElevatorModule::getError() {
 double ElevatorModule::getSetpoint(){
 	return m_PIDController->GetSetpoint();
 }
+
+std::vector<std::string> ElevatorModule::getLoggingHeader() {
+
+	std::vector<std::string> headers;
+
+	headers.push_back("get");
+	headers.push_back("getSetpoint");
+	headers.push_back("getError");
+	headers.push_back("isEnabled");
+	headers.push_back("encoder_get");
+
+	return headers;
+}
+std::vector<double> ElevatorModule::getLoggingData() {
+
+	std::vector<double> data;
+
+	data.push_back(m_PIDController->Get());
+	data.push_back(m_PIDController->GetSetpoint());
+	data.push_back(m_PIDController->GetError());
+	data.push_back(m_PIDController->IsEnabled());
+	data.push_back(m_Encoder->Get());
+
+	return data;
+
+}
