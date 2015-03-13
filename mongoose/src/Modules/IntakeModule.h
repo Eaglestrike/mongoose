@@ -30,6 +30,10 @@ public:
 	void disable();
 	void reset();
 
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
+
+
 };
 
 #endif /* INTAKEMODULE_H_ */

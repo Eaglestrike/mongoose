@@ -50,3 +50,24 @@ void IntakeModule::reset(){
 	RobotModule::reset();
 }
 
+std::vector<std::string> IntakeModule::getLoggingHeader() {
+
+	std::vector<std::string> header;
+	header.push_back("Solenoid_1 get()");
+	header.push_back("Solenoid_2 get()");
+	header.push_back("Motor_1 get()");
+	header.push_back("Motor_2 get()");
+
+	return header;
+}
+
+std::vector<double> IntakeModule::getLoggingData() {
+
+	std::vector<double> data;
+	data.push_back(m_Solenoid_1->Get());
+	data.push_back(m_Solenoid_2->Get());
+	data.push_back(m_Motor_1->Get());
+	data.push_back(m_Motor_2->Get());
+
+	return data;
+}
