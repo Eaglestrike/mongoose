@@ -51,3 +51,22 @@ MantaCoreModule::~MantaCoreModule() {
 	// TODO Auto-generated destructor stub
 }
 
+std::vector<std::string> MantaCoreModule::getLoggingHeader() {
+
+	std::vector<std::string> header;
+	header.push_back("solenoid_get");
+	header.push_back("winch_get");
+
+	return header;
+}
+
+std::vector<double> MantaCoreModule::getLoggingData() {
+
+	std::vector<double> data;
+	data.push_back(m_Solenoid->Get());
+	data.push_back(m_Winch->Get());
+
+	return data;
+
+}
+

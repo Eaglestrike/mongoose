@@ -25,6 +25,9 @@ public:
 	void enable();
 	void disable();
 
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
+
 private:
 	Relay* m_Winch;
 	Solenoid* m_Solenoid;
