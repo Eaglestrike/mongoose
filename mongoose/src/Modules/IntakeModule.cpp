@@ -36,6 +36,14 @@ void IntakeModule::intake(double power){
 	m_Motor_2->Set(-power);
 }
 
+void IntakeModule::intake(double power, bool opposite) {
+	if(opposite) {
+		m_Motor_1->Set(power);
+		m_Motor_2->Set(power);
+	}
+	else intake(power);
+}
+
 void IntakeModule::enable(){
 	RobotModule::enable();
 }

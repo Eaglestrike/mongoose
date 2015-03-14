@@ -14,6 +14,7 @@
 #include "../Settings.h"
 #include "../Error/CalibrationError.h"
 #include "../Error/MovementError.h"
+#include <iostream>
 
 
 class ModifiedEncoder: public Encoder {

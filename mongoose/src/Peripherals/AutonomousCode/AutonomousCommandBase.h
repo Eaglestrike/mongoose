@@ -13,6 +13,7 @@
 
 #include "../../Modules.h"
 #include "DistanceProfile.h"
+#include <iostream>
 
 
 #ifndef PERIPHERALS_AUTONOMOUSCODE_AUTONOMOUSCOMMANDBASE_H_

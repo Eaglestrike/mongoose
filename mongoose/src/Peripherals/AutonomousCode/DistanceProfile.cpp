@@ -39,6 +39,17 @@ LogisticFunction DistanceProfile::getFunction() {
 		double K = end -start;
 		double h = 0;
 		h = start;
+		double exp1 = log((K - .10)/.10);
+		double exp2 = log(K/(K-.10) - 1);
+		double j = totalTime * exp1/(exp1 - exp2);
+		double k = (-log((K/(K - .10) - 1)) + log((K - .10)/.10))/totalTime;
+		double A = 1;
+		LogisticFunction model(K, A, k, h, j);
+		return model;
+		/*
+		 * double K = end -start;
+		double h = 0;
+		h = start;
 		double exp1 = log((K - .5)/.5);
 		double exp2 = log(K/(K-.5) - 1);
 		double j = totalTime * exp1/(exp1 - exp2);
@@ -46,9 +57,22 @@ LogisticFunction DistanceProfile::getFunction() {
 		double A = 1;
 		LogisticFunction model(K, A, k, h, j);
 		return model;
+		 */
 	}
 	else {
 		double K = -start + end;
+		double h = 0;
+		h = -end;
+		double exp1 = log((K + .10)/-.10);
+		double exp2 = log(K/(K+.10) - 1);
+		double k = (exp1 - exp2)/totalTime;
+		double j = exp1/k;
+		double A = 1;
+		LogisticFunction model(K, A, k, h, j);
+		return model;
+
+		/*
+		 * double K = -start + end;
 		double h = 0;
 		h = -end;
 		double exp1 = log((K + .5)/-.5);
@@ -58,5 +82,6 @@ LogisticFunction DistanceProfile::getFunction() {
 		double A = 1;
 		LogisticFunction model(K, A, k, h, j);
 		return model;
+		 */
 	}
 }

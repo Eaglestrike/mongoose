@@ -44,6 +44,16 @@ void DriveModule::reset() {
 void DriveModule::setPower(double left, double right) {
 	if(!m_Enabled) return;
 
+	if(left > 1)
+		left = 1;
+	else if(left < -1)
+		left = -1;
+
+	if(right > 1)
+		right = 1;
+	else if(right < -1)
+		right = -1;
+
 	m_Left_Victor_1->Set(left);
 	m_Left_Victor_2->Set(left);
 	m_Right_Victor_1->Set(-right);
@@ -53,6 +63,8 @@ void DriveModule::setPower(double left, double right) {
 
 
 void DriveModule::drive(double throttle, double angle) {
+
+
 	throttle = driveFunc.transformThrottle(throttle);
 	angle = driveFunc.transformAngle(angle);
 
@@ -192,5 +204,9 @@ std::vector<double> DriveModule::getLoggingData() {
 	data.push_back(m_Left_Victor_2->Get());
 	data.push_back(m_Encoder->Get());
 	return data;
+}
+
+void DriveModule::setAngleOutputRange(double min, double max) {
+	m_Angle_Controller->SetOutputRange(min, max);
 }
 

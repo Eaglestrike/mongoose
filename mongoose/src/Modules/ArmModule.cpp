@@ -35,6 +35,8 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
 	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
 	m_Difference_Controller = new PIDController(0, 0, 0, m_Arm_Difference_Input, m_Diff_Output);
+
+
 }
 
 
@@ -106,6 +108,7 @@ void ArmModule::enablePID(){
 
 	if(!m_Has_Calibrated){
 		disablePID();
+		std::cout << "PID DISABLED" << std::endl;
 		return;
 	}
 
@@ -139,8 +142,10 @@ void ArmModule::setSetPoint(float setPoint) {
 
 void ArmModule::setLeftArm(float setpoint) {
 
-	if(m_Manual)
+	if(m_Manual) {
+		std::cout << "PDIS" << std::endl;
 		return;
+	}
 
 	if(setpoint < 0)
 		setpoint = 0;
@@ -219,14 +224,14 @@ void ArmModule::disableDeltaX() {
 
 void ArmModule::grab(double deltaX) {
 	enablePID();
-	setLeftArm(6);
 	setDeltaX(deltaX);
+	setLeftArm(6);
 }
 
 void ArmModule::open() { 
 	enablePID();
-	setLeftArm(1);
 	setDeltaX(11.5);
+	setLeftArm(1);
 }
 
 void ArmModule::disable() {
@@ -333,12 +338,13 @@ void ArmModule::calibrate() {
 
 	timeTaken->Stop();
 
+	m_Calibrating = false;
+	m_Has_Calibrated = true;
+
 	if(renablePid)
 		enablePID();
 
 	std::cout << "calibrate() end" << std::endl;
-	m_Calibrating = false;
-	m_Has_Calibrated = true;
 }
 
 void ArmModule::reset(){

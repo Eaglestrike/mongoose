@@ -1,6 +1,4 @@
-
 #include <iostream>
-
 
 #include "Error/EaglestrikeError.h"
 #include "Modules/RobotModule.h"
@@ -17,8 +15,7 @@
 
 using namespace std;
 
-class Robot: public IterativeRobot
-{
+class Robot: public IterativeRobot {
 private:
 	LiveWindow *lw;
 	ElevatorModule* elevatorModule;
@@ -44,39 +41,45 @@ private:
 
 	NamedSendable* sendable;
 
-	void RobotInit()
-	{
+	void RobotInit() {
 
-		eaglestrikeLogger = new EaglestrikeErrorLogger("/home/lvuser/eaglestrike.log");
+		eaglestrikeLogger = new EaglestrikeErrorLogger(
+				"/home/lvuser/eaglestrike.log");
 		printL("\nBooting up mongoose");
 		printL("RobotInit()");
 
 		lw = LiveWindow::GetInstance();
 
 		printL("\tElevatorModule()");
-		elevatorModule = new ElevatorModule(ELEVATOR_1, ELEVATOR_2, ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
+		elevatorModule = new ElevatorModule(ELEVATOR_1, ELEVATOR_2,
+				ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
 		printL("\tDriveModule()");
-		driveModule = new DriveModule(DRIVE_LEFT_1, DRIVE_LEFT_2, DRIVE_RIGHT_1, DRIVE_RIGHT_2, DRIVE_ENCODER_A, DRIVE_ENCODER_B, DRIVE_GYRO);
+		driveModule = new DriveModule(DRIVE_LEFT_1, DRIVE_LEFT_2, DRIVE_RIGHT_1,
+				DRIVE_RIGHT_2, DRIVE_ENCODER_A, DRIVE_ENCODER_B, DRIVE_GYRO);
 		printL("\tArmModule()");
-		armModule = new ArmModule(RIGHT_ARM_MOTOR, LEFT_ARM_MOTOR, RIGHT_ARM_BUTTON, MID_ARM_BUTTON, LEFT_ARM_BUTTON, RIGHT_ARM_ENCODER_A, RIGHT_ARM_ENCODER_B, LEFT_ARM_ENCODER_A, LEFT_ARM_ENCODER_B);
+		armModule = new ArmModule(RIGHT_ARM_MOTOR, LEFT_ARM_MOTOR,
+				RIGHT_ARM_BUTTON, MID_ARM_BUTTON, LEFT_ARM_BUTTON,
+				RIGHT_ARM_ENCODER_A, RIGHT_ARM_ENCODER_B, LEFT_ARM_ENCODER_A,
+				LEFT_ARM_ENCODER_B);
 		printL("\tScorpionModule()");
 		//scorpionModule = new ScorpionModule(SCORPION_PORT);
 		printL("\tIntakeModule()");
-		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2, INTAKE_MOTOR_1, INTAKE_MOTOR_2);
+		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2,
+				INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 		printL("\tMantacoreModule()");
-		mantaCoreModule = new MantaCoreModule(MANTA_CORE_SPIKE_PORT, SCORPION_PORT);
+		mantaCoreModule = new MantaCoreModule(MANTA_CORE_SPIKE_PORT,
+				SCORPION_PORT);
 
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
 
-
-//		logs = new CombinedLogs();
-//		logs->addModule(elevatorModule);
-//		logs->addModule(driveModule);
-//		logs->addModule(armModule);
-//		logs->addModule(mantaCoreModule);
-//		logs->addModule(intakeModule);
-//		logs->addHeaders();
-//		logs->start();
+		//		logs = new CombinedLogs();
+		//		logs->addModule(elevatorModule);
+		//		logs->addModule(driveModule);
+		//		logs->addModule(armModule);
+		//		logs->addModule(mantaCoreModule);
+		//		logs->addModule(intakeModule);
+		//		logs->addHeaders();
+		//		logs->start();
 
 		timer = new Timer();
 		timer->Start();
@@ -88,11 +91,10 @@ private:
 		printL("\tAutonomousCommandBase()");
 		autonomousDriver = new AutonomousCommandBase(driveModule);
 
-
 		printL("RobotInit() end");
 	}
 
-	void DisabledInit(){
+	void DisabledInit() {
 
 		elevatorModule->disable();
 		driveModule->disable();
@@ -102,6 +104,7 @@ private:
 		driveModule->reset();
 		armModule->reset();
 
+		elevatorModule->setPosition(0);
 		timer->Reset();
 
 		printCounter = 0;
@@ -109,26 +112,32 @@ private:
 		armModule->disablePID();
 	}
 
-	void DisabledPeriodic(){
+	void DisabledPeriodic() {
 		DisabledInit();
 		//updatePID();
 		Wait(0.05);
 	}
 
-	void AutonomousInit()
-	{
+	void AutonomousInit() {
 		//		int autostate = 0;
 		printL("AutonomousInit()");
 		DisabledInit();
 	}
 
-	void AutonomousPeriodic()
-	{
-		if(printCounter % 50 == 0){
-			cout << "T: " << timer->Get()	<< " EB: " << elevatorModule->getButton() << " ALB: " << armModule->getLeftButton() << " AMB: " << armModule->getMidButton() << " ARB: " << armModule->getRightButton()
-															<< " RE: " << armModule->getRightPosition() << " LE: " << armModule->getLeftPosition() << endl
-															<< " DE: " << driveModule->getEncoderDistance() << " EE: " << elevatorModule->getEncoderDistance()  << " EB: " << elevatorModule->getButton() << endl
-															<< "DeltaX: " << SmartDashboard::GetNumber("DeltaX") << endl;
+	void AutonomousPeriodic() {
+		if (printCounter % 50 == 0) {
+			cout << "T: " << timer->Get() << " EB: "
+					<< elevatorModule->getButton() << " ALB: "
+					<< armModule->getLeftButton() << " AMB: "
+					<< armModule->getMidButton() << " ARB: "
+					<< armModule->getRightButton() << " RE: "
+					<< armModule->getRightPosition() << " LE: "
+					<< armModule->getLeftPosition() << endl << " DE: "
+					<< driveModule->getEncoderDistance() << " EE: "
+					<< elevatorModule->getEncoderDistance() << " EET: "
+					<< elevatorModule->getEncoderTicks() << " EB: "
+					<< elevatorModule->getButton() << endl << "DeltaX: "
+					<< SmartDashboard::GetNumber("DeltaX") << endl;
 		}
 
 		printCounter++;
@@ -136,8 +145,7 @@ private:
 		Wait(0.01);
 	}
 	bool hasEnabled = false;
-	void TeleopInit()
-	{
+	void TeleopInit() {
 
 		printL("TeleopInit()");
 
@@ -149,25 +157,26 @@ private:
 		mantaCoreModule->enable();
 		toggleY = 0;
 
-		try{
+		try {
 			armModule->calibrate();
 			armModule->enablePID();
-		}catch(EaglestrikeError &e){
+		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
-			if(e.shouldBeFatal())
+			if (e.shouldBeFatal())
 				e.getModule()->handleFatalError();
 
 		}
 
-		try{
+		try {
 			elevatorModule->calibrate();
 			elevatorModule->enablePID();
+			elevatorModule->setPosition(0);
 
-		}catch(EaglestrikeError &e){
+		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
-			if(e.shouldBeFatal())
+			if (e.shouldBeFatal())
 				e.getModule()->handleFatalError();
 
 		}
@@ -182,9 +191,7 @@ private:
 
 	bool hasLS = false;
 
-
-	void TeleopPeriodic()
-	{
+	void TeleopPeriodic() {
 
 		lw->Run();
 
@@ -220,41 +227,35 @@ private:
 		//
 		//		elevatorModule->setPower(elevatorPower);
 
-		if(!armModule->isManual()){
+		if (!armModule->isManual()) {
 
-			if(xbox->getX()){
-				if(!hasLS){
-					deltaX = startDeltaX;//2.5625 + 2.5;
+			if (xbox->getX()) {
+				if (!hasLS) {
+					deltaX = startDeltaX;		//2.5625 + 2.5;
 					leftSetpoint = 4;
 					hasLS = true;
 				}
-			}
-			else if(xbox->getStart()) {
-				if(!hasLS){
+			} else if (xbox->getStart()) {
+				if (!hasLS) {
 					deltaX = 5.8;
 					leftSetpoint = 4;
 					hasLS = true;
 				}
-			}
-			else{
+			} else {
 				deltaX = 13.5;
 				leftSetpoint = 0;
 				hasLS = false;
 			}
 
-			if(leftJoy->GetRawButton(4)) {
+			if (leftJoy->GetRawButton(4)) {
 				leftSetpoint += .1;
-			}
-			else if(leftJoy->GetRawButton(5)) {
+			} else if (leftJoy->GetRawButton(5)) {
 				leftSetpoint -= .1;
+			} else if (leftJoy->GetRawButton(3)) {
+				startDeltaX += .1;
+			} else if (leftJoy->GetRawButton(2)) {
+				startDeltaX -= .1;
 			}
-			else if(leftJoy->GetRawButton(3)) {
-				startDeltaX+=.1;
-			}
-			else if(leftJoy->GetRawButton(2)) {
-				startDeltaX-=.1;
-			}
-
 
 			//			leftSetpoint += xbox->getLX() / 10.0;
 			//			deltaX += + xbox->getRY() / 10.0;
@@ -262,186 +263,221 @@ private:
 			armModule->setLeftArm(leftSetpoint);
 			armModule->setDeltaX(deltaX);
 
-		}else{
+		} else {
 			armModule->setLeftPower(xbox->getLX());
 			armModule->setRightPower(xbox->getRX());
 		}
 
-		if(previous != xbox->getY()) {
+		if (previous != xbox->getY()) {
 			toggleY++;
 		}
 		previous = xbox->getY();
 
-		if(toggleY % 4 == 0) {
+		if (toggleY % 4 == 0) {
 			intakeModule->retract();
-		}
-		else if(toggleY % 2 == 0) {
+		} else if (toggleY % 2 == 0) {
 			intakeModule->extend();
 		}
 
-		if(xbox->getA()) {
+		if (xbox->getA()) {
 			intakeModule->intake(1);
-		}
-		else if(xbox->getB()) {
+		} else if (xbox->getB()) {
 			intakeModule->intake(-1);
-		}
-		else {
+		} else {
 			intakeModule->intake(0);
 		}
 
-		if(rightJoy->GetRawButton(6)){
+		if (rightJoy->GetRawButton(6)) {
 			elevatorModule->setPosition(0);
-		}else if(rightJoy->GetRawButton(7)){
+		} else if (rightJoy->GetRawButton(7)) {
 			elevatorModule->setPosition(12.5);
-		}else if(rightJoy->GetRawButton(8)){
+		} else if (rightJoy->GetRawButton(8)) {
 			elevatorModule->setPosition(25);
-		}else if(rightJoy->GetRawButton(9)){
+		} else if (rightJoy->GetRawButton(9)) {
 			elevatorModule->setPosition(37);
-		}else if(rightJoy->GetRawButton(10)){
+		} else if (rightJoy->GetRawButton(10)) {
 			elevatorModule->setPosition(52);
-		}else if(rightJoy->GetRawButton(11)){
+		} else if (rightJoy->GetRawButton(11)) {
 			elevatorModule->setPosition(53);
-		}else{
+		} else {
 
 		}
 
-		if(leftJoy->GetRawButton(6)) {
+		if (leftJoy->GetRawButton(6)) {
 			mantaCoreModule->on();
-		}
-		else if(leftJoy->GetRawButton(7)) {
+		} else if (leftJoy->GetRawButton(7)) {
 			mantaCoreModule->reverse();
-		}
-		else mantaCoreModule->off();
+		} else
+			mantaCoreModule->off();
 
-		if(leftJoy->GetRawButton(8)) {
+		if (leftJoy->GetRawButton(8)) {
 			mantaCoreModule->setPneumatics(true);
-		}
-		else if(leftJoy->GetRawButton(9)) {
+		} else if (leftJoy->GetRawButton(9)) {
 			mantaCoreModule->setPneumatics(false);
 		}
 
-		if(xbox->getLB()) {
+		if (xbox->getLB()) {
 			elevatorModule->disablePID();
-			elevatorModule->setPower(0);
+			elevatorModule->setPower(-0.1);
 			hasEnabled = false;
-		} else if(xbox->getRB()) {
+		} else if (xbox->getRB()) {
 			elevatorModule->disablePID();
-			elevatorModule->setPower(CALIBRATE_ELEVATOR_UP);
+			elevatorModule->setPower(0.5);
 			hasEnabled = false;
 		} else {
 			elevatorModule->enablePID();
-			if(!hasEnabled)
-				elevatorModule->setPosition(elevatorModule->getEncoderDistance());
+			if (!hasEnabled)
+				elevatorModule->setPosition(
+						elevatorModule->getEncoderDistance());
 			hasEnabled = true;
 
 		}
 
-		if(printCounter % 20 == 0){
-			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: " << armModule->getRightSetpoint() <<  " DX: " << armModule->getDiffSetpoint() << " la: " << armModule->getLeftPower() << " ra: " << armModule->getRightPower() << endl;
-			cout << "time: " << timer->Get() << " LD: " << driveModule->getLeftPower() << " RD: " << driveModule->getRightPower() << " LA: " << armModule->getLeftPower() << " RA: " << armModule->getRightPower() << " E: " << elevatorModule->Get() << " xboxLX :" << xbox->getLX() << " xboxRX: " << xbox->getRX() << endl;
+		if (printCounter % 20 == 0) {
+			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: "
+					<< armModule->getRightSetpoint() << " DX: "
+					<< armModule->getDiffSetpoint() << " la: "
+					<< armModule->getLeftPower() << " ra: "
+					<< armModule->getRightPower() << endl;
+			cout << "time: " << timer->Get() << " LD: "
+					<< driveModule->getLeftPower() << " RD: "
+					<< driveModule->getRightPower() << " LA: "
+					<< armModule->getLeftPower() << " RA: "
+					<< armModule->getRightPower() << " E: "
+					<< elevatorModule->Get() << " xboxLX :" << xbox->getLX()
+					<< " xboxRX: " << xbox->getRX() << endl;
 			cout << "angle: " << driveModule->getAngle() << endl;
-			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: " << elevatorModule->getEncoderTicks() << " BUTTON: "<<elevatorModule->getButton() << endl;
-			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()  << " Elevator height: " << elevatorModule->getEncoderDistance() << endl;
+			cout << "POWER:::::::::: " << elevatorModule->Get() << " Encoder: "
+					<< elevatorModule->getEncoderTicks() << " BUTTON: "
+					<< elevatorModule->getButton() << endl;
+			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()
+									<< " Elevator height: "
+									<< elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
 		Wait(0.01);
 	}
 
-	void TestInit(){
-		try{
-
-			armModule->enable();
-			driveModule->enable();
-			elevatorModule->disable();
-			intakeModule->enable();
-			elevatorModule->disablePID();
-
-			armModule->calibrate();
-			armModule->enablePID();
-				//elevatorModule->calibrate();
-			//			elevatorModule->enablePID();
-		}catch(EaglestrikeError &e){
-			cerr << "EaglestrikeError" << endl;
-			cerr << e.toString() << endl;
-			if(e.shouldBeFatal()){
-				Wait(0.05);
-				e.getModule()->handleFatalError();
-			}
-		}
-	}
-
-	void updatePID(){
-		if(xbox->getA()) {
-			elevatorModule->setPID(elevatorModule->getP() - .01/10, elevatorModule->getI(), elevatorModule->getD());
-		}
-		else if(xbox->getY()) {
-			elevatorModule->setPID(elevatorModule->getP() + .01/10, elevatorModule->getI(), elevatorModule->getD());
-		}
-		else if(xbox->getL3()) {
-			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI() - .0001/10, elevatorModule->getD());
-		}
-		else if(xbox->getR3()) {
-			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI()  + .0001/10, elevatorModule->getD());
-		}
-		else if(xbox->getStart()) {
-			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI(), elevatorModule->getD()  + .01/10);
-		}
-		else if(xbox->getBack()) {
-			elevatorModule->setPID(elevatorModule->getP(), elevatorModule->getI(), elevatorModule->getD()  - .01/10);
+	void updatePID() {
+		if (xbox->getA()) {
+			elevatorModule->setPID(elevatorModule->getP() - .01 / 10,
+					elevatorModule->getI(), elevatorModule->getD());
+		} else if (xbox->getY()) {
+			elevatorModule->setPID(elevatorModule->getP() + .01 / 10,
+					elevatorModule->getI(), elevatorModule->getD());
+		} else if (xbox->getL3()) {
+			elevatorModule->setPID(elevatorModule->getP(),
+					elevatorModule->getI() - .0001 / 10,
+					elevatorModule->getD());
+		} else if (xbox->getR3()) {
+			elevatorModule->setPID(elevatorModule->getP(),
+					elevatorModule->getI() + .0001 / 10,
+					elevatorModule->getD());
+		} else if (xbox->getStart()) {
+			elevatorModule->setPID(elevatorModule->getP(),
+					elevatorModule->getI(), elevatorModule->getD() + .01 / 10);
+		} else if (xbox->getBack()) {
+			elevatorModule->setPID(elevatorModule->getP(),
+					elevatorModule->getI(), elevatorModule->getD() - .01 / 10);
 		}
 
-
-		if(printCounter % 6 == 0){
-			cout << "p: " << elevatorModule->getP() << " d: " << elevatorModule->getD() << " i: " <<elevatorModule->getI() << " error: " << elevatorModule->getError() << " %error: " << elevatorModule->getError() / elevatorModule->getEncoderDistance() * 100 << " height: " << elevatorModule->getEncoderDistance() << " setpoint: " << elevatorModule->getSetpoint()  << " Elevator Power: " << elevatorModule->Get() << endl;
+		if (printCounter % 6 == 0) {
+			cout << "p: " << elevatorModule->getP() << " d: "
+					<< elevatorModule->getD() << " i: "
+					<< elevatorModule->getI() << " error: "
+					<< elevatorModule->getError() << " %error: "
+					<< elevatorModule->getError()
+					/ elevatorModule->getEncoderDistance() * 100
+					<< " height: " << elevatorModule->getEncoderDistance()
+					<< " setpoint: " << elevatorModule->getSetpoint()
+					<< " Elevator Power: " << elevatorModule->Get() << endl;
 		}
 
 		printCounter++;
 
 	}
+
+	void TestInit() {
+
+		armModule->enable();
+		driveModule->enable();
+		elevatorModule->disable();
+		intakeModule->disable();
+
+		try {
+			armModule->calibrate();
+			armModule->enablePID();
+		} catch (EaglestrikeError &e) {
+			cerr << "EaglestrikeError: " << e.toString() << endl;
+			eaglestrikeLogger->logError(e);
+			if (e.shouldBeFatal())
+				exit(-1);
+
+		}
+
+		try {
+			//			elevatorModule->calibrate();
+			//			elevatorModule->enablePID();
+			//			elevatorModule->setPosition(0);
+
+		} catch (EaglestrikeError &e) {
+			cerr << "EaglestrikeError: " << e.toString() << endl;
+			eaglestrikeLogger->logError(e);
+			if (e.shouldBeFatal())
+				exit(-1);
+		}
+
+		armModule->setLeftArm(4);
+
+
+	}
+
+	int count = 0;
 	int autoState = 1;
 	bool finished = false;
-	void TestPeriodic()
-	{
+	void TestPeriodic() {
+		//updatePID();
 
-
-		//		updatePID();
-		//
 		//		if(xbox->getX()) {
-		//			elevatorModule->setPosition(40);
+		//			elevatorModule->setPosition(12.5);
 		//		}
 		//		else {
 		//			elevatorModule->setPosition(0);
 		//		}
-		if(autoState  == 0)
-			autonomousDriver->move(-76.0/12, 6);
-		else if(autoState == 1 && !finished)  {
+
+		if (autoState == 0)
+			autonomousDriver->move(-76.0 / 12, 6);
+		else if (autoState == 1) {
 			/* Start By grabbing one tote */
-			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-			Wait(0.5);
-			autonomousDriver->turnAngle(90);
-			Wait(0.1);
-			autonomousDriver->move(-76.0/12, 6);
-			Wait(0.1);
-			armModule->open();
+
+			//			Wait(0.5);
+			//			autonomousDriver->turnAngle(90);
+			//			Wait(0.5);
+			//			autonomousDriver->move(new DistanceProfile(0, 9, 5));
+			//			Wait(0.1);
+			//			autonomousDriver->move(-76.0 / 12, 6);
+			//			Wait(0.1);
+			//			armModule->setLeftArm(1);
+			//			armModule->setDeltaX(11.5);
 			finished = true;
 
-		}
-		else if(autoState == 2) {
+		} else if (autoState == 2) {
 
-		}
-		else if(autoState == 3) {
+		} else if (autoState == 3) {
 
 		}
 
+		if(count % 2 == 0)
+			std::cout <<" LE: " << armModule->getLeftError() << " RE: " << armModule->getRightError() << " DE: " << armModule->getDiffError() << " LPower: " << armModule->getLeftPower() << " RPower: "<<  armModule->getRightPower() << std::endl;
+		count++;
 		lw->Run();
-//
+		//
 
 		Wait(0.05);
 	}
 
-
-	void printL(std::string message){
+	void printL(std::string message) {
 		eaglestrikeLogger->log(message);
 		std::cout << message << endl;
 	}

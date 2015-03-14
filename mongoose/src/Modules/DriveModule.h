@@ -120,6 +120,7 @@ public:
 	double getDriveI();
 	void setDrivePID(double p, double i, double d);
 	void setDriveSetpoint(float setpoint);
+	void setAngleOutputRange(double min, double max);
 	double getDriveError();
 
 	double getAngleP();

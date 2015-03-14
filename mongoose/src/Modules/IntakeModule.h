@@ -25,6 +25,7 @@ public:
 	void extend();
 	void retract();
 	void intake(double power);
+	void intake(double power, bool opposite);
 
 	void enable();
 	void disable();
