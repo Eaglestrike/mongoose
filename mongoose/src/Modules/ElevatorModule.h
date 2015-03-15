@@ -54,6 +54,8 @@ public:
 	void checkError();
 	void handleFatalError();
 	void calibrate();
+	void syncCalibrate();
+	static void callSyncCalibrate(void*);
 	void setPosition(double height);
 	void setPower(double power);
 	void setPID(double p, double i, double d);

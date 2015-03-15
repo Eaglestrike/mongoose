@@ -160,6 +160,14 @@ void ElevatorModule::calibrate() {
 	m_Calibration_Is_Done = true;
 }
 
+void ElevatorModule::syncCalibrate() {
+	std::thread t(ElevatorModule::callSyncCalibrate, this);
+}
+
+void ElevatorModule::callSyncCalibrate(void* m) {
+	((ElevatorModule*)m)->calibrate();
+}
+
 void ElevatorModule::setPID(double p, double i, double d){
 	m_PIDController->SetPID(p, i, d);
 }
@@ -237,3 +245,5 @@ std::vector<double> ElevatorModule::getLoggingData() {
 	return data;
 
 }
+
+

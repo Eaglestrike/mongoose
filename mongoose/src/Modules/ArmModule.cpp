@@ -378,7 +378,7 @@ void ArmModule::syncCalibrate(){
 }
 
 void ArmModule::callSyncCalibrate(void* m){
-	((ArmModule*)m)->syncCalibrate();
+	((ArmModule*)m)->calibrate();
 }
 
 void ArmModule::reset(){
