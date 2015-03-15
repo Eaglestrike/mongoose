@@ -156,9 +156,9 @@ void ArmModule::setLeftArm(float setpoint) {
 	}
 
 	if(m_DeltaX != 0) {
-		std::cout << "in Set Left arm; Delta != 0" << std::endl;
+//		std::cout << "in Set Left arm; Delta != 0" << std::endl;
 		setSetPoint(setpoint);
-		std::cout << "SettingSetPoint" << std::endl;
+//		std::cout << "SettingSetPoint" << std::endl;
 	}
 	else {
 		m_Left_Arm_Controller->SetSetpoint(setpoint);

@@ -22,21 +22,29 @@ IntakeModule::~IntakeModule() {
 
 
 void IntakeModule::extend(){
+	if(!m_Enabled)
+		return;
 	m_Solenoid_1->Set(true);
 	m_Solenoid_2->Set(true);
 }
 
 void IntakeModule::retract(){
+	if(!m_Enabled)
+			return;
 	m_Solenoid_1->Set(false);
 	m_Solenoid_2->Set(false);
 }
 
 void IntakeModule::intake(double power){
+	if(!m_Enabled)
+			return;
 	m_Motor_1->Set(power);
 	m_Motor_2->Set(-power);
 }
 
 void IntakeModule::intake(double power, bool opposite) {
+	if(!m_Enabled)
+			return;
 	if(opposite) {
 		m_Motor_1->Set(power);
 		m_Motor_2->Set(power);
