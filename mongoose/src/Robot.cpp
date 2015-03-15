@@ -351,8 +351,8 @@ private:
 					<< elevatorModule->getEncoderTicks() << " BUTTON: "
 					<< elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()
-									<< " Elevator height: "
-									<< elevatorModule->getEncoderDistance() << endl;
+															<< " Elevator height: "
+															<< elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
@@ -417,9 +417,9 @@ private:
 		}
 
 		try {
-			//			elevatorModule->calibrate();
-			//			elevatorModule->enablePID();
-			//			elevatorModule->setPosition(0);
+						elevatorModule->calibrate();
+						elevatorModule->enablePID();
+						elevatorModule->setPosition(0);
 
 		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
@@ -428,7 +428,6 @@ private:
 				exit(-1);
 		}
 
-		armModule->setLeftArm(4);
 
 
 	}
@@ -446,21 +445,30 @@ private:
 		//			elevatorModule->setPosition(0);
 		//		}
 
-		if (autoState == 0)
-			autonomousDriver->move(-76.0 / 12, 6);
+		if (autoState == 0) {
+			autonomousDriver->move(new DistanceProfile(0, 9.5, 6));
+			Wait(0.5);
+			autonomousDriver->turnAngle(90);
+			Wait(0.5);
+		}
 		else if (autoState == 1) {
 			/* Start By grabbing one tote */
-
-			//			Wait(0.5);
-			//			autonomousDriver->turnAngle(90);
-			//			Wait(0.5);
-			//			autonomousDriver->move(new DistanceProfile(0, 9, 5));
-			//			Wait(0.1);
-			//			autonomousDriver->move(-76.0 / 12, 6);
-			//			Wait(0.1);
-			//			armModule->setLeftArm(1);
-			//			armModule->setDeltaX(11.5);
+			if(!finished) {
+				armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+				Wait(0.5);
+				autonomousDriver->turnAngle(90);
+				Wait(0.5);
+				autonomousDriver->move(new DistanceProfile(0, 11.5, 6));
+				Wait(0.5);
+				autonomousDriver->turnAngle(90);
+				Wait(0.5);
+				armModule->open();
+				//										autonomousDriver->move(-76.0 / 12, 6);
+				//										Wait(0.1);
+			}
 			finished = true;
+			armModule->disablePID();
+
 
 		} else if (autoState == 2) {
 

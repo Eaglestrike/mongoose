@@ -130,6 +130,7 @@ void ArmModule::setSetPoint(float setPoint) {
 		return;
 
 	if(m_Enabled){
+		std::cout << "IN SETSETPOINT" << std::endl;
 		m_Left_Arm_Controller->SetSetpoint(setPoint);
 		m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
 		m_Right_Talon->Set(m_Right_Output->getPower() + m_Diff_Output->getPower());
@@ -155,7 +156,9 @@ void ArmModule::setLeftArm(float setpoint) {
 	}
 
 	if(m_DeltaX != 0) {
+		std::cout << "in Set Left arm; Delta != 0" << std::endl;
 		setSetPoint(setpoint);
+		std::cout << "SettingSetPoint" << std::endl;
 	}
 	else {
 		m_Left_Arm_Controller->SetSetpoint(setpoint);
@@ -224,14 +227,37 @@ void ArmModule::disableDeltaX() {
 
 void ArmModule::grab(double deltaX) {
 	enablePID();
-	setDeltaX(deltaX);
-	setLeftArm(6);
+	Timer time;
+	while(time.Get() < .2) {
+		setDeltaX(deltaX);
+		setLeftArm(6);
+		if(getDiffError()/deltaX < .08) {
+			time.Start();
+		}
+		else {
+			time.Stop();
+			time.Reset();
+		}
+	}
 }
 
 void ArmModule::open() { 
 	enablePID();
-	setDeltaX(11.5);
-	setLeftArm(1);
+	Timer time;
+	while(time.Get() < .2) {
+		setDeltaX(11.5);
+		setLeftArm(1);
+		std::cout << "PIDDDD" << std::endl;
+		if(getDiffError()/11.5 < .08) {
+			time.Start();
+		}
+		else {
+			time.Reset();
+			time.Stop();
+		}
+
+	}
+
 }
 
 void ArmModule::disable() {
