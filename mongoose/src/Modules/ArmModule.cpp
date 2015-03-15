@@ -373,6 +373,14 @@ void ArmModule::calibrate() {
 	std::cout << "calibrate() end" << std::endl;
 }
 
+void ArmModule::syncCalibrate(){
+	std::thread t(ArmModule::callSyncCalibrate, this);
+}
+
+void ArmModule::callSyncCalibrate(void* m){
+	((ArmModule*)m)->syncCalibrate();
+}
+
 void ArmModule::reset(){
 	m_Left_Encoder->Reset();
 	m_Right_Encoder->Reset();
