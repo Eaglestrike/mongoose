@@ -82,4 +82,9 @@ AutonomousCommandBase::~AutonomousCommandBase() {
 	// TODO Auto-generated destructor stub
 }
 
+void AutonomousCommandBase::callSyncMove(void* v) {
 
+}
+
+void AutonomousCommandBase::syncMove() {
+}

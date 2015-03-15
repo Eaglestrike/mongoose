@@ -26,6 +26,8 @@ public:
 	void turnAngle(double angle);
 	void move(DistanceProfile* path);
 	void move(double distance, double totalTime);
+	static void callSyncMove();
+	void syncMove();
 
 private:
 	DriveModule* m_Drive;
