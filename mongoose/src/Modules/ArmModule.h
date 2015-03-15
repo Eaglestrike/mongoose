@@ -85,6 +85,8 @@ public:
 	void setLeftPower(float power);
 	void setRightPower(float power);
 	void calibrate();
+	void syncCalibrate();
+	static void callSyncCalibrate(void*);
 	void setManual(bool man);
 
 	bool getLeftButton();
