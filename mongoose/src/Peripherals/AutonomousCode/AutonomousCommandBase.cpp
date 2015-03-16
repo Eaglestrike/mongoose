@@ -82,9 +82,10 @@ AutonomousCommandBase::~AutonomousCommandBase() {
 	// TODO Auto-generated destructor stub
 }
 
-void AutonomousCommandBase::callSyncMove(void* v) {
-
+void AutonomousCommandBase::callSyncMove(void* v, DistanceProfile* path) {
+	((AutonomousCommandBase*)(v))->move(path);
 }
 
-void AutonomousCommandBase::syncMove() {
+void AutonomousCommandBase::syncMove(DistanceProfile* path) {
+	std::thread t(AutonomousCommandBase::callSyncMove, path);
 }

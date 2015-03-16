@@ -161,7 +161,7 @@ private:
 		toggleY = 0;
 
 		try {
-			armModule->calibrate();
+			armModule->syncCalibrate();
 			armModule->enablePID();
 		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
@@ -185,11 +185,11 @@ private:
 		}
 
 		leftSetpoint = 0;
-		deltaX = 13.5;
+		deltaX = MAX_DELTA_X;
 
 	}
 
-	double leftSetpoint = 0, deltaX = 13.5;
+	double leftSetpoint = 0, deltaX = MAX_DELTA_X;
 	double startDeltaX = ARM_CLOSED_TOTE_DISTANCE;
 
 	bool hasLS = false;
@@ -248,7 +248,7 @@ private:
 					hasLS = true;
 				}
 			} else {
-				deltaX = 13.5;
+				deltaX = MAX_DELTA_X;
 				leftSetpoint = 0;
 				hasLS = false;
 			}
@@ -419,7 +419,7 @@ private:
 		intakeModule->enable();
 
 		try {
-			armModule->calibrate();
+			armModule->syncCalibrate();
 			armModule->enablePID();
 		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
