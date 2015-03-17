@@ -46,7 +46,7 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Ben\wpilib\cpp\current\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Adrian\wpilib\cpp\current\include&quot;"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.dialect.std.1060340803" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.1060340803" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1033680971" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.362679811" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>

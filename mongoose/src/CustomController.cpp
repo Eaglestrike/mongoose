@@ -96,3 +96,15 @@ bool CustomController::intake() {
 bool CustomController::extake() {
 	return GetRawButton(15);
 }
+
+bool CustomController::drop() {
+	return GetRawButton(13);
+}
+
+bool CustomController::raise() {
+	return GetRawButton(12);
+}
+
+bool CustomController::dropRelease() {
+	return GetRawButton(11);
+}

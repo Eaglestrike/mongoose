@@ -35,6 +35,9 @@ public:
 	bool toggleIntake();
 	bool intake();
 	bool extake();
+	bool drop();
+	bool raise();
+	bool dropRelease();
 
 };
 

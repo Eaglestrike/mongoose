@@ -130,7 +130,7 @@ void ArmModule::setSetPoint(float setPoint) {
 		return;
 
 	if(m_Enabled){
-		std::cout << "IN SETSETPOINT" << std::endl;
+		//std::cout << "IN SETSETPOINT" << std::endl;
 		m_Left_Arm_Controller->SetSetpoint(setPoint);
 		m_Right_Arm_Controller->SetSetpoint(m_DeltaX + setPoint);
 		m_Right_Talon->Set(m_Right_Output->getPower() + m_Diff_Output->getPower());
@@ -143,7 +143,7 @@ void ArmModule::setSetPoint(float setPoint) {
 
 void ArmModule::setLeftArm(float setpoint) {
 
-	if(m_Manual) {
+	if(m_Manual || !m_Enabled) {
 		std::cout << "PDIS" << std::endl;
 		return;
 	}
@@ -168,7 +168,7 @@ void ArmModule::setLeftArm(float setpoint) {
 
 void ArmModule::setRightArm(float setpoint) {
 
-	if(m_Manual)
+	if(m_Manual || !m_Enabled)
 		return;
 
 	if(setpoint > MAX_DELTA_X)
@@ -187,6 +187,9 @@ void ArmModule::setRightArm(float setpoint) {
 }
 
 void ArmModule::setLeftPower(float power){
+
+	std::cout << "setLeftPower: " << power << std::endl;
+
 	if(!m_Enabled || !m_Manual)
 		power = 0;
 	if(m_Saftey_Button->Get() && power > 0)
@@ -196,6 +199,9 @@ void ArmModule::setLeftPower(float power){
 }
 
 void ArmModule::setRightPower(float power){
+
+	std::cout << "setRightPower: " << power << std::endl;
+
 	if(!m_Enabled || !m_Manual)
 		power = 0;
 

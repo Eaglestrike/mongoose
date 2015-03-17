@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "Modules.h"
 #include "Logger.h"
 
@@ -22,6 +24,7 @@ public:
 	void update();
 	void start();
 	static void callUpdate(void *t);
+	bool checkUSB();
 private:
 	std::string folderName;
 	std::vector<Logger> logs;
@@ -29,7 +32,6 @@ private:
 	int version;
 	double waitTime;
 	std::thread updateThread;
-
 };
 
 #endif

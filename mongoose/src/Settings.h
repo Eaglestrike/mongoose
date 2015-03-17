@@ -10,10 +10,12 @@
 
 #define UNKNOWN_PORT 27
 
+
+/*PRACTICE BOT POWER; CHANGE*/
 #define ELEVATOR_DROP_POWER -0.2
 #define MAX_ELEVATOR_DOWN -0.2
-#define CALIBRATE_ELEVATOR_DOWN -0.3
-#define CALIBRATE_ELEVATOR_UP 0.6
+#define CALIBRATE_ELEVATOR_DOWN -0.4
+#define CALIBRATE_ELEVATOR_UP 0.7
 #define MAX_ELEVATOR_UP 1
 #define MAX_ARM_POWER 1
 #define MAX_ELEVATOR_INPUT 55
@@ -71,7 +73,8 @@
 #define DIFF_ARM_2_KD 0.0
 #define DIFF_ARM_2_KI 0.0
 
-#define MAX_DELTA_X 13.0
+#define MAX_DELTA_X 12
+#define OPEN_LEFT_SETPOINT 1
 #define MAX_CALIBRATE_TIME_IN 0.5
 #define MAX_CALIBRATE_TIME_OUT 4
 #define ARM_CLOSED_TOTE_DISTANCE 3.7625
@@ -89,7 +92,7 @@
 #define DRIVE_ENCODER_B 9
 #define DRIVE_GYRO 0
 
-#define FEET_PER_DRIVE_PULSE .00584
+#define FEET_PER_DRIVE_PULSE 0.00584
 #define DRIVE_1_P 0.33009
 #define DRIVE_1_I 0
 #define DRIVE_1_D 0.00939999
@@ -103,5 +106,12 @@
 #define INTAKE_SOLENOID_2 2
 #define INTAKE_MOTOR_1 8
 #define INTAKE_MOTOR_2 13
+
+
+/*Logging*/
+#define USB_DIRECTORY "/media/sda1"
+#define BACKUP_DIRECTORY "/home/lvuser/logs"
+
+
 
 #endif /* SETTINGS_H_ */

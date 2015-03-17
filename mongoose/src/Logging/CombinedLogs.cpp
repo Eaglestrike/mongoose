@@ -9,9 +9,20 @@
 #if 1
 
 CombinedLogs::CombinedLogs() {
+
+	if(checkUSB())
+		folderName = USB_DIRECTORY;
+	else
+		folderName = BACKUP_DIRECTORY;
+
 	version = getVersion();
 	std::string folderName = "log" + std::to_string(version);
 	initializeFolder(folderName);
+}
+
+bool CombinedLogs::checkUSB(){
+	struct stat info;
+	return !(stat(USB_DIRECTORY, &info) != 0 || !(info.st_mode & S_IFDIR));
 }
 
 void CombinedLogs::addModule(RobotModule* module) {
@@ -24,7 +35,7 @@ void CombinedLogs::addModule(RobotModule* module) {
 int CombinedLogs::getVersion() {
 	std::ifstream versionLogRead;
 	std::ofstream versionLogWrite;
-	versionLogRead.open("/home/lvuser/version.txt");
+	versionLogRead.open("/media/sda1/version.txt");
 	std::string stringNum;
 	getline(versionLogRead, stringNum);
 	if (stringNum == "") {

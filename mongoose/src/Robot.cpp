@@ -76,6 +76,7 @@ private:
 
 		//		logs = new CombinedLogs();
 		//		logs->addModule(elevatorModule);
+		//
 		//		logs->addModule(driveModule);
 		//		logs->addModule(armModule);
 		//		logs->addModule(mantaCoreModule);
@@ -102,6 +103,7 @@ private:
 		elevatorModule->disable();
 		driveModule->disable();
 		armModule->disable();
+		armModule->disablePID();
 
 		elevatorModule->reset();
 		driveModule->reset();
@@ -147,22 +149,30 @@ private:
 
 		Wait(0.01);
 	}
-	bool hasEnabled = false;
+	bool hasEnabled = true;
 	void TeleopInit() {
 
 		printL("TeleopInit()");
 
-		elevatorModule->enable();
+		elevatorModule->disable();
+		printL("Elevator");
 		driveModule->enable();
-		armModule->enable();
+		printL("Drive");
+		armModule->disable();
+		printL("Arm");
 		//scorpionModule->disable();
 		intakeModule->enable();
+		printL("Intake");
 		mantaCoreModule->enable();
+		printL("MantaCore");
 		toggleY = 0;
 
 		try {
-			armModule->syncCalibrate();
-			armModule->enablePID();
+			printL("Before cal");
+			armModule->calibrate();
+			printL("After cal");
+			//			armModule->enablePID();
+			printL("Arm Module enabled");
 		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
@@ -171,9 +181,15 @@ private:
 
 		}
 
+		//		armModule->setRightPower(0);
+		//		armModule->setLeftPower(0);
+
 		try {
+			printL("Before Elevator Module calibrate");
 			elevatorModule->calibrate();
+			printL("After Elevator Module calibrate");
 			elevatorModule->enablePID();
+			printL("elevator Pid enabled");
 			elevatorModule->setPosition(0);
 
 		} catch (EaglestrikeError &e) {
@@ -184,18 +200,26 @@ private:
 
 		}
 
-		leftSetpoint = 0;
+		armModule->enablePID();
+		leftSetpoint = OPEN_LEFT_SETPOINT;
 		deltaX = MAX_DELTA_X;
-
+		elevatorModule->setPosition(0);
 	}
 
-	double leftSetpoint = 0, deltaX = MAX_DELTA_X;
+	double leftSetpoint = OPEN_LEFT_SETPOINT, deltaX = MAX_DELTA_X;
 	double startDeltaX = ARM_CLOSED_TOTE_DISTANCE;
 
 	bool hasLS = false;
 
 	bool lastManta = true;
 	int mantacounter = 0;
+	int state = 0;
+
+	bool lastArmManual = false;
+	int armManualCounter = 0;
+
+	bool lastElevatorManual = false;
+	int elevatorManualCounter = 0;
 
 	void TeleopPeriodic() {
 
@@ -236,32 +260,45 @@ private:
 		if (!armModule->isManual()) {
 
 			if (controller->grabTote()) {
-				if (!hasLS) {
-					deltaX = startDeltaX;		//2.5625 + 2.5;
-					leftSetpoint = 4;
-					hasLS = true;
-				}
+				state = 1;
+				//					deltaX = startDeltaX;		//2.5625 + 2.5;
+				//					leftSetpoint = 4;
+
 			} else if (controller->grabContainer()) {
-				if (!hasLS) {
-					deltaX = 5.8;
-					leftSetpoint = 4;
-					hasLS = true;
-				}
-			} else {
-				deltaX = MAX_DELTA_X;
-				leftSetpoint = 0;
-				hasLS = false;
+				state = 2;
+//				deltaX = 5.8;
+//				leftSetpoint = 3;
+//				hasLS = true;
+			} else if(controller->getLevel6()){
+				state = 0;
+//				deltaX = MAX_DELTA_X;
+//				leftSetpoint = OPEN_LEFT_SETPOINT;
+//				hasLS = false;
 			}
 
-			if (leftJoy->GetRawButton(4)) {
-				leftSetpoint += .1;
-			} else if (leftJoy->GetRawButton(5)) {
-				leftSetpoint -= .1;
-			} else if (leftJoy->GetRawButton(3)) {
-				startDeltaX += .1;
-			} else if (leftJoy->GetRawButton(2)) {
-				startDeltaX -= .1;
+			if(state == 0) {
+				deltaX = MAX_DELTA_X;
+				leftSetpoint = OPEN_LEFT_SETPOINT;
+//				hasLS = false;
+			} else if(state == 1)  {
+				deltaX = startDeltaX;		//2.5625 + 2.5;
+				leftSetpoint = 4;
+//				hasLS = true;
+			} else if(state == 2) {
+				deltaX = 5.8;
+				leftSetpoint = 3;
+//				hasLS = true;
 			}
+
+//			if (leftJoy->GetRawButton(4)) {
+//				leftSetpoint += .1;
+//			} else if (leftJoy->GetRawButton(5)) {
+//				leftSetpoint -= .1;
+//			} else if (leftJoy->GetRawButton(3)) {
+//				startDeltaX += .1;
+//			} else if (leftJoy->GetRawButton(2)) {
+//				startDeltaX -= .1;
+//			}
 
 			//			leftSetpoint += xbox->getLX() / 10.0;
 			//			deltaX += + xbox->getRY() / 10.0;
@@ -305,8 +342,8 @@ private:
 			elevatorModule->setPosition(52);
 		} else if (controller->getLevel5()) {
 			elevatorModule->setPosition(53);
-		} else if (controller->getLevel6()){
-			DriverStation::ReportError("ROBOT OVERLOAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		} else if (controller->getLevel6()){
+//			DriverStation::ReportError("ROBOT OVERLOAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		} else {}
 
 
@@ -329,15 +366,21 @@ private:
 			mantaCoreModule->setPneumatics(false);
 		}
 
-		if (xbox->getLB()) {
+		if (controller->drop()) {
 			elevatorModule->disablePID();
 			elevatorModule->setPower(ELEVATOR_DROP_POWER);
 			hasEnabled = false;
-		} else if (xbox->getRB()) {
+		} else if (controller->raise()) {
 			elevatorModule->disablePID();
 			elevatorModule->setPower(0.5);
 			hasEnabled = false;
-		} else {
+		} else if(controller->dropRelease()){
+			elevatorModule->disablePID();
+			elevatorModule->setPower(ELEVATOR_DROP_POWER);
+			armModule->setLeftArm(OPEN_LEFT_SETPOINT);
+			armModule->setDeltaX(MAX_DELTA_X);
+			hasEnabled = false;
+		}else {
 			elevatorModule->enablePID();
 			if (!hasEnabled)
 				elevatorModule->setPosition(
@@ -346,10 +389,34 @@ private:
 
 		}
 
-		if (printCounter % 20 == 0) {
+		if(lastArmManual != controller->getRight3())
+			armManualCounter++;
+		lastArmManual = controller->getRight3();
+
+		if(armManualCounter % 4 == 0){
+			if(armManualCounter != 0)
+				armModule->enablePID();
+		} else if(armManualCounter % 2 == 0){
+			armModule->disablePID();
+		}
+
+		if(lastElevatorManual != controller->getLeft3())
+			elevatorManualCounter++;
+		lastElevatorManual = controller->getLeft3();
+
+		if(elevatorManualCounter % 4 == 0){
+			if(elevatorManualCounter != 0)
+				elevatorModule->enablePID();
+		} else if(elevatorManualCounter % 2 == 0){
+			elevatorModule->disablePID();
+		}
+
+		if (printCounter % 12 == 0) {
 			cout << "lsp: " << armModule->getLeftSetpoint() << " rsp: "
 					<< armModule->getRightSetpoint() << " DX: "
-					<< armModule->getDiffSetpoint() << " la: "
+					<< armModule->getDiffSetpoint() << " LAE: "
+					<< armModule->getLeftPosition() <<  " RAE: "
+					<< armModule->getRightPosition() << " la: "
 					<< armModule->getLeftPower() << " ra: "
 					<< armModule->getRightPower() << endl;
 			cout << "time: " << timer->Get() << " LD: "
@@ -364,8 +431,8 @@ private:
 					<< elevatorModule->getEncoderTicks() << " BUTTON: "
 					<< elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()
-																	<< " Elevator height: "
-																	<< elevatorModule->getEncoderDistance() << endl;
+																									<< " Elevator height: "
+																									<< elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
@@ -419,7 +486,7 @@ private:
 		intakeModule->enable();
 
 		try {
-			armModule->syncCalibrate();
+			armModule->calibrate();
 			armModule->enablePID();
 		} catch (EaglestrikeError &e) {
 			cerr << "EaglestrikeError: " << e.toString() << endl;
@@ -478,26 +545,27 @@ private:
 				Wait(0.3);
 				intakeModule->extend();
 				Wait(0.2);
-//				intakeModule->intake(-1, true);
-//				Wait(1);
-//				autonomousDriver->move(new DistanceProfile(0, 4, 2));
+				intakeModule->intake(-1, true);
+				Wait(1);
+				autonomousDriver->move(new DistanceProfile(0, 4, 2));
 				Wait(10);
-//				Wait(0.25);
-//				intakeModule->intake(1);
-//				Wait(0.25);
-//				autonomousDriver->turnAngle(90);
-//				Wait(0.25);
-//				autonomousDriver->move(new DistanceProfile(0, 10.5, 6));
-//				Wait(0.25);
-//				autonomousDriver->turnAngle(90);
-//				Wait(0.25);
-//				armModule->open();
-//				elevatorModule->setPosition(0);
-//				Wait(.2);
-//				armModule->open();
+				//				Wait(0.25);
+				//				intakeModule->intake(1);
+				//				Wait(0.25);
+				//				autonomousDriver->turnAngle(90);
+				//				Wait(0.25);
+				//				autonomousDriver->move(new DistanceProfile(0, 10.5, 6));
+				//				Wait(0.25);
+				//				autonomousDriver->turnAngle(90);
+				//				Wait(0.25);
+				//				armModule->open();
+				//				elevatorModule->setPosition(0);
+				//				Wait(.2);
+				//				armModule->open();
 
 			}
 			finished = true;
+			//elevatorModule->setPosition(0);
 			armModule->disablePID();
 			intakeModule->intake(0);
 

@@ -87,5 +87,5 @@ void AutonomousCommandBase::callSyncMove(void* v, DistanceProfile* path) {
 }
 
 void AutonomousCommandBase::syncMove(DistanceProfile* path) {
-	std::thread t(AutonomousCommandBase::callSyncMove, path);
+	std::thread t(AutonomousCommandBase::callSyncMove, this, path);
 }
