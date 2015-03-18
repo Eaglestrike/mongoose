@@ -13,6 +13,7 @@
 
 #include "../../Modules.h"
 #include "DistanceProfile.h"
+#include <thread>
 #include <iostream>
 
 
@@ -25,11 +26,13 @@ public:
 	virtual ~AutonomousCommandBase();
 	void turnAngle(double angle);
 	void move(DistanceProfile* path);
+	void join();
 	void move(double distance, double totalTime);
 	static void callSyncMove(void* v, DistanceProfile* path);
 	void syncMove(DistanceProfile* path);
 private:
 	DriveModule* m_Drive;
+	std::thread t;
 
 	void runDistanceProf(DistanceProfile* path);
 };

@@ -586,13 +586,13 @@ private:
 
 
 		} else if (autoState == 2 && !finished) {
-			autonomousDriver->move(new DistanceProfile(3.3, 0, 3));
-			Wait(.5);
+			autonomousDriver->syncMove(new DistanceProfile(3.3, 0, 3));
 			mantaCoreModule->setPneumatics(true);
+			autonomousDriver->join();
 			Wait(1);
-			autonomousDriver->move(new DistanceProfile(0, 10.3, 5));
-			Wait(.5);
+			autonomousDriver->syncMove(new DistanceProfile(0, 10.3, 5));
 			mantaCoreModule->setPneumatics(false);
+			autonomousDriver->join();
 			finished = true;
 		} else if (autoState == 3) {
 
