@@ -24,7 +24,7 @@
 
 class server{
 public:
-	server(const char* ip, int port, double delay = 0.1);
+	server(int port, double delay = 0.1);
 	void setImage(cv::Mat image);
 	void join();
 	int numClients();

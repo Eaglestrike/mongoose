@@ -8,8 +8,7 @@
 #include "server.hpp"
 
 
-server::server(const char* ip, int port, double d):
-	ipaddr(ip),
+server::server(int port, double d):
 	portno(port),
 	delay(d),
 	header("HTTP/1.1 200 OK\r\nServer: MJPG/1.0\r\nAccept-Range: bytes\r\nConnection: close\r\nContent-Type: multipart/x-mixed-replace; boundary=mjpegstream\r\n\r\n")
@@ -31,21 +30,23 @@ server::server(const char* ip, int port, double d):
 		exit(-1);
 	}
 
-
+#if DEBUG
 	printf("bzero()\n");
+#endif
+
 	bzero((char*) &serv_addr, sizeof(serv_addr));
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(portno);
-//	serv_addr.sin_addr.s_addr = INADDR_ANY;
-	inet_pton(AF_INET, ip, &serv_addr.sin_addr);
+	serv_addr.sin_addr.s_addr = INADDR_ANY;
+//	inet_pton(AF_INET, ip, &serv_addr.sin_addr);
 
 #if DEBUG
 	printf("bind()\n");
 #endif
 
 	if(bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0){
-		printf("can't bind to: %s\n", ip);
+		printf("can't bind to port: %d\n", port);
 		exit(-2);
 	}
 

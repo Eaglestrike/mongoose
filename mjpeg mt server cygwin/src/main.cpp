@@ -9,21 +9,32 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 
-int main(){
+int main(int argc, char** argv){
 
-	setvbuf(stdout, NULL, _IONBF, 0);
-	setvbuf(stderr, NULL, _IONBF, 0);
+	uint16_t port = 80;
+
+	if(argc == 2){
+		port = atoi(argv[1]);
+	}
+
 
 	printf("main()\n");
 	double fps = 10.0;
-	server s("10.1.14.20" ,80);
+	server s(port);
 	s.setFrameRate(fps);
-	s.setQuality(0);
+	s.setQuality(100);
 	cv::VideoCapture vc(0);
 	cv::Mat frame;
+	cv::Mat resolution;
 
+//	double factor = 0.1;
 	while(true){
 		vc >> frame;
+
+
+//		resize(frame, resolution, cv::Size(), factor, factor, cv::INTER_NEAREST);
+//		resize(resolution, frame, cv::Size(), 1/factor, 1/factor, cv::INTER_NEAREST);
+
 		s.setImage(frame);
 		usleep(s.getDelay() * 1000000);
 	}
