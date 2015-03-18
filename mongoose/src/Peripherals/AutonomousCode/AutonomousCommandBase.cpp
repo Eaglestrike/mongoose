@@ -17,7 +17,7 @@ AutonomousCommandBase::AutonomousCommandBase(DriveModule* drive) {
 
 void AutonomousCommandBase::turnAngle(double angle) {
 	m_Drive->setAngleOutputRange(-.75, .75);
-	m_Drive->reset();
+	//m_Drive->reset();
 	m_Drive->enablePID();
 	m_Drive->setAngleSetpoint(angle);
 	Timer* time = new Timer();
@@ -47,7 +47,7 @@ void AutonomousCommandBase::move(DistanceProfile* path) {
 	m_Drive->enablePID();
 	m_Drive->setAngleSetpoint(0);
 	runDistanceProf(path);
-	m_Drive->reset();
+	//m_Drive->reset();
 	m_Drive->disablePID();
 
 }

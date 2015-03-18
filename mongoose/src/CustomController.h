@@ -24,7 +24,7 @@ public:
 	bool getLevel6();
 	bool grabTote();
 	bool grabContainer();
-	bool winchIn();
+	bool open();
 	bool getMantaCorePneumatics();
 	double getRightX();
 	double getLeftX();

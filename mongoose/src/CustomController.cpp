@@ -53,7 +53,7 @@ bool CustomController::grabContainer() {
 	return GetRawButton(9);
 }
 
-bool CustomController::winchIn() {
+bool CustomController::open() {
 	return GetRawButton(8);
 }
 

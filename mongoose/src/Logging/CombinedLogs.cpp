@@ -38,6 +38,7 @@ int CombinedLogs::getVersion() {
 	versionLogRead.open("/media/sda1/version.txt");
 	std::string stringNum;
 	getline(versionLogRead, stringNum);
+	std::cout << stringNum << std::endl;
 	if (stringNum == "") {
 		version = 0;
 	} else {
