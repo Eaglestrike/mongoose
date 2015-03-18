@@ -14,8 +14,6 @@
 #include "Logging/CombinedLogs.h"
 #include "CustomController.h"
 
-#define MANTA_CORE_AUTO 0
-#define DRIVE_STRAIGHT_AUTO 1
 
 using namespace std;
 
