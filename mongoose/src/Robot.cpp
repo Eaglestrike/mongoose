@@ -14,6 +14,9 @@
 #include "Logging/CombinedLogs.h"
 #include "CustomController.h"
 
+#define MANTA_CORE_AUTO 0
+#define DRIVE_STRAIGHT_AUTO 1
+
 using namespace std;
 
 class Robot: public IterativeRobot {
@@ -122,16 +125,76 @@ private:
 	void DisabledPeriodic() {
 		DisabledInit();
 		//updatePID();
+		
 		Wait(0.05);
 	}
+	
+	int autoState = 2;
 
 	void AutonomousInit() {
+		mantaCoreModule->enable();
+		driveModule->enable();
 		//		int autostate = 0;
 		printL("AutonomousInit()");
 		DisabledInit();
 	}
 
 	void AutonomousPeriodic() {
+		if(autoState == MANTA_CORE_AUTO && !finished) { 
+			autonomousDriver->syncMove(new DistanceProfile(3.3, 0, 3));
+			Wait(1.5);
+			mantaCoreModule->setPneumatics(true);
+			autonomousDriver->join();
+			autonomousDriver->syncMove(new DistanceProfile(0, 10.3, 4));
+			Wait(3);
+			mantaCoreModule->setPneumatics(false);
+			autonomousDriver->join();
+			finished = true;
+		} else if(autoState == DRIVE_STRAIGHT_AUTO) { 
+			autonomousDriver->move(new DistanceProfile(0, 9.5, 6));
+			Wait(0.5);
+			autonomousDriver->turnAngle(90);
+			Wait(0.5);
+		} else if(autoState == 2) { 
+				/* Start By grabbing one tote */
+			if(!finished) {
+				elevatorModule->setPosition(0);
+				Wait(0.5);
+				armModule->grab(ARM_CLOSED_TOTE_DISTANCE + 2.7);
+				Wait(1);
+				//autonomousDriver->move(new DistanceProfile(1.5 , 0, 2));
+				//Wait(0.25);
+				elevatorModule->setPosition(35);
+				Wait(0.3);
+				intakeModule->extend();
+				Wait(2);
+				intakeModule->intake(1, true);
+				Wait(1.0);
+				autonomousDriver->move(new DistanceProfile(0, 5, 4));
+				Wait(1);
+				autonomousDriver->turnAngle(0);
+				Wait(.5);
+				intakeModule->intake(1);
+				autonomousDriver->move(new DistanceProfile(0, 2, 2));
+				Wait(1);
+				elevatorModule->setPosition(12.5);
+				Wait(1);
+				//armModule->open();
+				//				Wait(0.25);
+				//				intakeModule->intake(1);
+				//				Wait(0.25);
+				//				autonomousDriver->turnAngle(90);
+				//				Wait(0.25);
+				//				autonomousDriver->move(new DistanceProfile(0, 10.5, 6));
+				//				Wait(0.25);
+				//				autonomousDriver->turnAngle(90);
+				//				Wait(0.25);
+				//				armModule->open();
+				//				elevatorModule->setPosition(0);
+				//				Wait(.2);
+				//				armModule->open();
+			}
+		}
 		if (printCounter % 50 == 0) {
 			cout << "T: " << timer->Get() << " EB: "
 					<< elevatorModule->getButton() << " ALB: "
@@ -484,43 +547,12 @@ private:
 
 	void TestInit() {
 
-		armModule->disable();
-		driveModule->enable();
-		elevatorModule->disable();
-		intakeModule->enable();
-		mantaCoreModule->enable();
-
-		try {
-//			armModule->calibrate();
-//			armModule->enablePID();
-		} catch (EaglestrikeError &e) {
-			cerr << "EaglestrikeError: " << e.toString() << endl;
-			eaglestrikeLogger->logError(e);
-			if (e.shouldBeFatal())
-				exit(-1);
-
-		}
-
-		try {
-//			elevatorModule->calibrate();
-//			elevatorModule->enablePID();
-//			elevatorModule->setPosition(0);
-
-		} catch (EaglestrikeError &e) {
-			cerr << "EaglestrikeError: " << e.toString() << endl;
-			eaglestrikeLogger->logError(e);
-			if (e.shouldBeFatal())
-				exit(-1);
-		}
-
-		Wait(1);
-
+		DisabledInit()
 
 
 	}
 
 	int count = 0;
-	int autoState = 2;
 	bool finished = false;
 	void TestPeriodic() {
 		//updatePID();
@@ -531,78 +563,24 @@ private:
 		//		else {
 		//			elevatorModule->setPosition(0);
 		//		}
-
-		if (autoState == 0 && !finished) {
-			autonomousDriver->move(new DistanceProfile(0, 9.5, 6));
-			Wait(0.5);
-			autonomousDriver->turnAngle(90);
-			Wait(0.5);
-			finished = true;
-		}
-		else if (autoState == 1) {
-			/* Start By grabbing one tote */
-			if(!finished) {
-				elevatorModule->setPosition(0);
-				Wait(0.5);
-				armModule->grab(ARM_CLOSED_TOTE_DISTANCE + 2.7);
-				Wait(1);
-				//autonomousDriver->move(new DistanceProfile(1.5 , 0, 2));
-				//Wait(0.25);
-				elevatorModule->setPosition(35);
-				Wait(0.3);
-				intakeModule->extend();
-				Wait(2);
-				intakeModule->intake(1, true);
-				Wait(1.0);
-				autonomousDriver->move(new DistanceProfile(0, 5, 4));
-				Wait(1);
-				autonomousDriver->turnAngle(0);
-				Wait(.5);
-				intakeModule->intake(1);
-				autonomousDriver->move(new DistanceProfile(0, 2, 2));
-				Wait(1);
-				elevatorModule->setPosition(12.5);
-				Wait(1);
-				//armModule->open();
-				//				Wait(0.25);
-				//				intakeModule->intake(1);
-				//				Wait(0.25);
-				//				autonomousDriver->turnAngle(90);
-				//				Wait(0.25);
-				//				autonomousDriver->move(new DistanceProfile(0, 10.5, 6));
-				//				Wait(0.25);
-				//				autonomousDriver->turnAngle(90);
-				//				Wait(0.25);
-				//				armModule->open();
-				//				elevatorModule->setPosition(0);
-				//				Wait(.2);
-				//				armModule->open();
-
-			}
-			finished = true;
-			//elevatorModule->setPosition(0);
-			armModule->disablePID();
-			intakeModule->intake(0);
-
-
-		} else if (autoState == 2 && !finished) {
-			autonomousDriver->syncMove(new DistanceProfile(3.3, 0, 3));
-			mantaCoreModule->setPneumatics(true);
-			autonomousDriver->join();
-			Wait(1);
-			autonomousDriver->syncMove(new DistanceProfile(0, 10.3, 5));
-			mantaCoreModule->setPneumatics(false);
-			autonomousDriver->join();
-			finished = true;
-		} else if (autoState == 3) {
-
-		}
-
-		if(count % 2 == 0)
-			std::cout <<" LE: " << armModule->getLeftError() << " RE: " << armModule->getRightError() << " DE: " << armModule->getDiffError() << " LPower: " << armModule->getLeftPower() << " RPower: "<<  armModule->getRightPower() << std::endl;
-		count++;
+		DisabledInit();
 		lw->Run();
 		//
+		if (printCounter % 50 == 0) {
+			cout << "T: " << timer->Get() << " EB: "
+					<< elevatorModule->getButton() << " ALB: "
+					<< armModule->getLeftButton() << " AMB: "
+					<< armModule->getMidButton() << " ARB: "
+					<< armModule->getRightButton() << " RE: "
+					<< armModule->getRightPosition() << " LE: "
+					<< armModule->getLeftPosition() << endl << " DE: "
+					<< driveModule->getEncoderDistance() << " EE: "
+					<< elevatorModule->getEncoderDistance() << " EET: "
+					<< elevatorModule->getEncoderTicks() << " EB: "
+					<< elevatorModule->getButton() << endl << "DeltaX: "
+					<< SmartDashboard::GetNumber("DeltaX") << endl;
+		}
+		printCounter++;
 
 		Wait(0.05);
 	}
