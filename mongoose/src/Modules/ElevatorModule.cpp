@@ -55,8 +55,12 @@ void ElevatorModule::disable(){
 }
 
 void ElevatorModule::reset(){
-	m_PIDController->Reset();
+	resetPersist();
 	m_Encoder->Reset();
+}
+
+void ElevatorModule::resetPersist(){
+	m_PIDController->Reset();
 }
 
 void ElevatorModule::checkError(){
@@ -106,6 +110,8 @@ void ElevatorModule::calibrate() {
 	if(!m_Enabled)
 		return;
 
+	std::cout << "in calibrate" << std::endl;
+
 	Timer timeOut, timeOut2;
 	timeOut.Start();
 
@@ -117,9 +123,6 @@ void ElevatorModule::calibrate() {
 		renablePID = true;
 	}
 
-	std::cout << "button: " << getButton() << std::endl;
-
-	std::cout << "while(!getButton())" ;
 	while(!getButton()) {
 		if(timeOut.Get() > MAX_ELEVATOR_CALIBRATE_TIME_DOWN) {
 			throw CalibrationError(this, "ElevatorModule::calibrate()" , "calibrate timed out");
@@ -128,24 +131,21 @@ void ElevatorModule::calibrate() {
 		Wait(0.005);
 	}
 
-	std::cout << " done" << std::endl;
-
+	std::cout << "After first loop" << std::endl;
 	setPower(0);
 	m_Encoder->Reset();
 
 
 	timeOut2.Start();
-	std::cout << "while(timeOut.Get())";
 
 	while(timeOut2.Get() < MAX_ELEVATOR_CALIBRATE_TIME_UP) {
-		std::cout << "******************SETTING POWER***************" << std::endl;
 		setPower(CALIBRATE_ELEVATOR_UP);
 		Wait(0.005);
 	}
 
+	std::cout << "after second" << std::endl;
 	setPower(0);
 
-	std::cout << " done" << std::endl;
 
 	if(getButton()) {
 		throw CalibrationError(this, "ElevatorModule::calibrate()" ,"check your button");
@@ -158,6 +158,7 @@ void ElevatorModule::calibrate() {
 		m_PIDController->Enable();
 
 	m_Calibration_Is_Done = true;
+	std::cout << "Done with Calibrate" << std::endl;
 }
 
 void ElevatorModule::syncCalibrate() {
@@ -218,6 +219,10 @@ double ElevatorModule::getError() {
 
 double ElevatorModule::getSetpoint(){
 	return m_PIDController->GetSetpoint();
+}
+
+bool ElevatorModule::hasCalibrated(){
+	return m_Calibration_Is_Done;
 }
 
 std::vector<std::string> ElevatorModule::getLoggingHeader() {

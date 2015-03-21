@@ -21,8 +21,8 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
 	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
 	m_Left_Encoder->SetReverseDirection(true);
-	m_Left_Encoder->SetDistancePerPulse(.001);
-	m_Right_Encoder->SetDistancePerPulse(.001* 4);
+	m_Left_Encoder->SetDistancePerPulse(ARM_DISTANCE_PER_PULSE);
+	m_Right_Encoder->SetDistancePerPulse(ARM_DISTANCE_PER_PULSE);
 	m_Left_Output = new ArmOut();
 	m_Right_Output = new ArmOut();
 	m_Arm_Difference_Input = new ArmDifference(m_Right_Encoder, m_Left_Encoder);
@@ -32,8 +32,8 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Calibrating = false;
 	m_Has_Calibrated = false;
 
-	m_Left_Arm_Controller = new PIDController(LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output);
-	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD, m_Right_Encoder, m_Right_Output);
+	m_Left_Arm_Controller = new PIDController(LEFT_ARM_2_KP, LEFT_ARM_2_KI ,LEFT_ARM_2_KD, m_Left_Encoder, m_Left_Output);/*LEFT_ARM_1_KP, LEFT_ARM_1_KI, LEFT_ARM_1_KD, m_Left_Encoder, m_Left_Output*/
+	m_Right_Arm_Controller = new PIDController(RIGHT_ARM_2_KP, RIGHT_ARM_2_KI, RIGHT_ARM_2_KD,/*RIGHT_ARM_1_KP, RIGHT_ARM_1_KI , RIGHT_ARM_1_KD,*/ m_Right_Encoder, m_Right_Output);
 	m_Difference_Controller = new PIDController(0, 0, 0, m_Arm_Difference_Input, m_Diff_Output);
 
 
@@ -42,6 +42,7 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 
 void ArmModule::checkError(){
 
+	return;
 	std::cout << "ARM MODULE: checkError()" << std::endl;
 
 	Timer leftTimer;
@@ -98,10 +99,7 @@ void ArmModule::handleFatalError(){
 
 void ArmModule::enable() {
 	RobotModule::enable();
-	m_Left_Arm_Controller->Enable();
-	m_Right_Arm_Controller->Enable();
-	m_Difference_Controller->Enable();
-	setManual(false);
+
 }
 
 void ArmModule::enablePID(){
@@ -125,6 +123,10 @@ void ArmModule::disablePID(){
 	setManual(true);
 }
 
+bool ArmModule::hasCalibrated(){
+	return m_Has_Calibrated;
+}
+
 void ArmModule::setSetPoint(float setPoint) {
 	if(m_Manual)
 		return;
@@ -144,7 +146,6 @@ void ArmModule::setSetPoint(float setPoint) {
 void ArmModule::setLeftArm(float setpoint) {
 
 	if(m_Manual || !m_Enabled) {
-		std::cout << "PDIS" << std::endl;
 		return;
 	}
 
@@ -188,7 +189,7 @@ void ArmModule::setRightArm(float setpoint) {
 
 void ArmModule::setLeftPower(float power){
 
-	std::cout << "setLeftPower: " << power << std::endl;
+//	std::cout << "setLeftPower: " << power << std::endl;
 
 	if(!m_Enabled || !m_Manual)
 		power = 0;
@@ -200,7 +201,7 @@ void ArmModule::setLeftPower(float power){
 
 void ArmModule::setRightPower(float power){
 
-	std::cout << "setRightPower: " << power << std::endl;
+//	std::cout << "setRightPower: " << power << std::endl;
 
 	if(!m_Enabled || !m_Manual)
 		power = 0;
@@ -236,10 +237,13 @@ void ArmModule::grab(double deltaX) {
 	Timer time;
 	time.Start();
 	double left = (MAX_DELTA_X - deltaX + OPEN_LEFT_SETPOINT) / 2 ;
-	while(time.Get() < 0.2) {
+	while(time.Get() < 0.5) {
 		setDeltaX(deltaX);
 		setLeftArm(left);
 	}
+	disablePID();
+	setRightPower(0);
+	setLeftPower(0);
 }
 
 void ArmModule::open() { 
@@ -248,8 +252,7 @@ void ArmModule::open() {
 	while(time.Get() < .2) {
 		setDeltaX(11.5);
 		setLeftArm(1);
-		std::cout << "PIDDDD" << std::endl;
-		if(getDiffError()/11.5 < .08) {
+		if(abs(getDiffError()/11.5) < .08) {
 			time.Start();
 		}
 		else {
@@ -258,6 +261,9 @@ void ArmModule::open() {
 		}
 
 	}
+	disablePID();
+	setRightPower(0);
+	setLeftPower(0);
 
 }
 
@@ -272,8 +278,6 @@ void ArmModule::disable() {
 
 void ArmModule::calibrate() {
 
-	std::cout << "calibrate()" << std::endl;
-
 	m_Calibrating = true;
 
 	Timer timeout;
@@ -284,8 +288,6 @@ void ArmModule::calibrate() {
 
 	bool renablePid = false;
 
-	std::cout << "checking if pid is enabled" << std::endl;
-
 	if(m_Left_Arm_Controller->IsEnabled() || m_Right_Arm_Controller->IsEnabled()){
 		disablePID();
 		renablePid = true;
@@ -293,8 +295,6 @@ void ArmModule::calibrate() {
 
 	if(m_Right_Talon->getButton() && m_Left_Talon->getButton() && m_Saftey_Button->Get())
 		throw CalibrationError(this, "ArmModule::calibrate()", "All three buttons are pressed (wiring issue)");
-
-	std::cout << "going out" << std::endl;
 
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 
@@ -321,18 +321,14 @@ void ArmModule::calibrate() {
 	m_Left_Talon->Set(0);
 	m_Right_Talon->Set(0);
 
-	std::cout << "resetting encoders()" << std::endl;
-
 	m_Right_Encoder->Reset();
 	m_Left_Encoder->Reset();
 
 	Timer* timeTaken = new Timer();
 	timeTaken->Start();
 
-	std::cout << "going in" << std::endl;
 
 	while(timeTaken->Get() < MAX_CALIBRATE_TIME_IN) {
-		std::cout << "t: " << timeTaken->Get() << " lb: " << m_Left_Talon->getButton() << " rb: " << m_Right_Talon->getButton() << " le: " << m_Left_Encoder->PIDGet() << " re: " << m_Right_Encoder->PIDGet() << std::endl;
 		m_Right_Talon->Set(-.5);
 		m_Left_Talon->Set(.5);
 
@@ -343,8 +339,6 @@ void ArmModule::calibrate() {
 	m_Left_Talon->Set(0);
 	m_Right_Talon->Set(0);
 
-	std::cout << "getting buttons" << std::endl;
-
 	if(m_Right_Talon->getButton()) {
 		throw CalibrationError(this, "ArmModule::calibrate()", "check Right button, it might be unplugged");
 	}
@@ -352,8 +346,6 @@ void ArmModule::calibrate() {
 	if(m_Left_Talon->getButton()) {
 		throw CalibrationError(this, "ArmModule::calibrate()", "check Left button, it might be unplugged");
 	}
-
-	std::cout << "getting buttons" << std::endl;
 
 	if(m_Right_Encoder->PIDGet() > MAX_DELTA_X - MIN_CALIBRATION_DISTANCE) {
 		throw CalibrationError(this, "ArmModule::calibrate()", "Arm right encoder might be unplugged");
@@ -371,7 +363,6 @@ void ArmModule::calibrate() {
 	if(renablePid)
 		enablePID();
 
-	std::cout << "calibrate() end" << std::endl;
 }
 
 void ArmModule::syncCalibrate(){
@@ -385,6 +376,13 @@ void ArmModule::callSyncCalibrate(void* m){
 void ArmModule::reset(){
 	m_Left_Encoder->Reset();
 	m_Right_Encoder->Reset();
+	resetPersist();
+}
+
+void ArmModule::resetPersist(){
+	m_Difference_Controller->Reset();
+	m_Right_Arm_Controller->Reset();
+	m_Left_Arm_Controller->Reset();
 }
 
 void ArmModule::setManual(bool man){
@@ -482,4 +480,55 @@ std::vector<std::string> getLoggingHeader() {
 
 	return headers;
 
+}
+
+void ArmModule::setLeftPID(double p, double i, double d) {
+	m_Left_Arm_Controller->SetPID(p, i, d);
+}
+
+void ArmModule::setRightPID(double p, double i, double d) {
+	m_Right_Arm_Controller->SetPID(p, i, d);
+}
+
+void ArmModule::setDiffPID(double p, double i, double d) {
+	m_Difference_Controller->SetPID(p, i, d);
+}
+
+double ArmModule::getLeftP() {
+	return m_Left_Arm_Controller->GetP();
+}
+
+double ArmModule::getLeftI() {
+	return m_Left_Arm_Controller->GetI();
+}
+
+double ArmModule::getLeftD() {
+	return m_Left_Arm_Controller->GetD();
+}
+
+double ArmModule::getRightP() {
+	return m_Right_Arm_Controller->GetP();
+}
+
+double ArmModule::getRightI() {
+	return m_Right_Arm_Controller->GetI();
+}
+
+double ArmModule::getRightD() {
+	return m_Right_Arm_Controller->GetD();
+}
+
+double ArmModule::getDiffP() {
+	return m_Difference_Controller->GetP();
+}
+
+double ArmModule::getDiffD() {
+	return m_Difference_Controller->GetD();
+}
+
+double ArmModule::getDiffI() {
+	return m_Difference_Controller->GetI();
+}
+
+std::vector<std::string> ArmModule::getLoggingHeader() {
 }

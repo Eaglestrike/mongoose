@@ -108,7 +108,6 @@ public:
 	void disable();
 	void reset();
 	double getPower();
-	void resetEncoders();
 	double getLeftPower();
 	double getRightPower();
 	double getEncoderDistance();
@@ -122,6 +121,7 @@ public:
 	void setDriveSetpoint(float setpoint);
 	void setAngleOutputRange(double min, double max);
 	double getDriveError();
+	void setDriveOutputRange(double min, double max);
 
 	double getAngleP();
 	double getAngleI();

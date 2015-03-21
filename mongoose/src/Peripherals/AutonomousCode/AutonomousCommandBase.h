@@ -30,6 +30,11 @@ public:
 	void move(double distance, double totalTime);
 	static void callSyncMove(void* v, DistanceProfile* path);
 	void syncMove(DistanceProfile* path);
+	void setSetpoint(double distance);
+	void syncSetSetpoint(double distance);
+	void setOutputRange(double min, double max);
+	static void callSyncSetpoint(void* v,double distance);
+
 private:
 	DriveModule* m_Drive;
 	std::thread t;

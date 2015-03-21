@@ -9,6 +9,7 @@ private:
 	Encoder* drive;
 	Encoder* rightArm;
 	Encoder* elevator;
+	DigitalInput* butt;
 
 	void RobotInit()
 	{
@@ -29,6 +30,7 @@ private:
 	{
 		if(i % 15 == 0) {
 			std::cout  << "right arm: " << rightArm->Get() << " leftArm: " << leftArm->Get() << " drive:" << drive->Get() << " elevator: " << elevator->Get() << "\n" ;
+
 		}
 		i++;
 	}

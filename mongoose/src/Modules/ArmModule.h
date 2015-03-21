@@ -78,6 +78,7 @@ public:
 	void enable();
 	void disable();
 	void reset();
+	void resetPersist();
 	void checkError();
 	void handleFatalError();
 	void setLeftArm(float setpoint);
@@ -88,12 +89,26 @@ public:
 	void syncCalibrate();
 	static void callSyncCalibrate(void*);
 	void setManual(bool man);
+	bool hasCalibrated();
 
 	bool getLeftButton();
 	bool getMidButton();
 	bool getRightButton();
 	bool isManual();
 
+	void setLeftPID(double p, double i, double d);
+	void setRightPID(double p, double i, double d);
+	void setDiffPID(double p, double i, double d);
+
+	double getLeftP();
+	double getLeftI();
+	double getLeftD();
+	double getRightP();
+	double getRightI();
+	double getRightD();
+	double getDiffP();
+	double getDiffD();
+	double getDiffI();
 	double getLeftPosition();
 	double getRightPosition();
 	double getLeftPower();

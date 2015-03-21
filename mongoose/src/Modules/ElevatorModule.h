@@ -30,7 +30,7 @@ public:
 	}
 
 	void Set(float power){
-		std::cout << "DUAL MOTOR: " << power << std::endl;
+//		std::cout << "DUAL MOTOR: " << power << std::endl;
 		m_Motor_1->Set(power);
 		m_Motor_2->Set(power);
 	}
@@ -51,6 +51,7 @@ public:
 	void enable();
 	void disable();
 	void reset();
+	void resetPersist();
 	void checkError();
 	void handleFatalError();
 	void calibrate();
@@ -74,6 +75,7 @@ public:
 	double getEncoderTicks();
 	double getEncoderDistance();
 	double getSetpoint();
+	bool hasCalibrated();
 
 	std::vector<std::string> getLoggingHeader();
 	std::vector<double> getLoggingData();

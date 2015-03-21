@@ -44,6 +44,8 @@ void MantaCoreModule::reverse() {
 }
 
 void MantaCoreModule::setPneumatics(bool on) {
+	if(!m_Enabled) return;
+
 	m_Solenoid->Set(on);
 }
 
