@@ -46,7 +46,7 @@ int CombinedLogs::getVersion() {
 	}
 
 	versionLogWrite.open("version.txt");
-	versionLogWrite << std::to_string(version + 1) << std::endl; //Writes the next version to the file
+	versionLogWrite << std::to_string(version + 1) << "\n"; //Writes the next version to the file
 	return version;
 }
 
@@ -57,13 +57,17 @@ void CombinedLogs::initializeFolder(std::string folderName) {
 
 void CombinedLogs::addHeaders() {
 	for (int i = 0; i < logs.size(); i++) {
-		logs[i].writeHeader(modules[i]->getLoggingHeader());
+		if (modules[i]->getLoggingHeader()) {
+			logs[i].writeHeader(modules[i]->getLoggingHeader());
+		}
 	}
 }
 
 void CombinedLogs::update() {
 	for (int i = 0; i < logs.size(); i++) {
-		logs[i].writeData(modules[i]->getLoggingData());
+		if (modules[i]->getLoggingData()) {
+			logs[i].writeData(modules[i]->getLoggingData());
+		}
 	}
 }
 
