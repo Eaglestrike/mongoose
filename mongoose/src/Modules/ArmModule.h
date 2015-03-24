@@ -124,7 +124,7 @@ public:
 	void grab(double deltaX);
 	void open();
 
-
+	bool endAllLoops = false;
 	std::vector<std::string> getLoggingHeader();
 	std::vector<double> getLoggingData();
 

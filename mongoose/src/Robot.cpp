@@ -35,6 +35,7 @@ private:
 	AutonomousCommandBase* autonomousDriver;
 	Xbox* xbox;
 	CustomController* controller;
+	Timer* autoTimer;
 	int toggleY = 0;
 	bool previous;
 	unsigned long printCounter = 0;
@@ -86,6 +87,7 @@ private:
 		//				logs->start();
 
 		timer = new Timer();
+		autoTimer = new Timer();
 		timer->Start();
 
 		leftJoy = new Joystick(0);
@@ -133,9 +135,12 @@ private:
 
 	int autoState = AUTO_MANTA_CORE;
 
+	static void checkTime() {}
+
+
 	void AutonomousInit() {
 
-		if(autoState == AUTO_GRAB_TOTE){
+		if(autoState == AUTO_GRAB_TOTE || autoState == AUTO_GRAB_THREE_TOTE){
 			armModule->enable();
 			elevatorModule->enable();
 			if(!armModule->hasCalibrated())
@@ -143,7 +148,8 @@ private:
 			if(!elevatorModule->hasCalibrated())
 				calibrateElevator();
 		}
-
+		autoTimer->Start();
+		std::thread t(checkTime);
 		mantaCoreModule->enable();
 		driveModule->enable();
 		printL("AutonomousInit()");
@@ -234,13 +240,51 @@ private:
 		} else if(autoState == AUTO_MANTA_CORE_WITHOUT_BACK && !finished) {
 			mantaCoreModule->setPneumatics(true);
 			Wait(1);
-			autonomousDriver->setOutputRange(-1, 1);
 			autonomousDriver->setSetpoint(12);
 			Wait(0.15);
 			mantaCoreModule->setPneumatics(false);
 			Wait(2);
-			finished = true;
 			mantaCoreModule->on();
+			finished = true;
+
+		} else if(autoState == AUTO_GRAB_THREE_TOTE && !finished) {
+			elevatorModule->setPosition(0);
+			Wait(0.2);
+			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+			Wait(0.2);
+			elevatorModule->setPosition(35);
+			intakeModule->intake(1, true);
+			Wait(0.1);
+			autonomousDriver->move(new DistanceProfile(0, 5, 3));
+			Wait(0.1);
+			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
+			intakeModule->intake(1);
+			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
+			Wait(0.15);
+			armModule->open();
+			Wait(.1);
+			elevatorModule->setPosition(ELEVATOR_LEVEL_0);
+			Wait(.1);
+			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+			Wait(.1);
+			elevatorModule->setPosition(35);
+			Wait(.1);
+			intakeModule->intake(1, true);
+			Wait(.1);
+			autonomousDriver->move(new DistanceProfile(0, 5, 3));
+			Wait(.1);
+			intakeModule->intake(1);
+			Wait(.1);
+			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
+			Wait(.1);
+			elevatorModule->setPosition(0);
+			Wait(.15);
+			armModule->open();
+			Wait(.1);
+			autonomousDriver->setOutputRange(-.5, .5);
+			autonomousDriver->turnAngle(90);
+			Wait(.1);
+			autonomousDriver->move(new DistanceProfile(0, 11.5, 6));
 
 		}
 		else if(autoState == AUTO_DO_NOTHING) {
@@ -566,8 +610,8 @@ private:
 					<< elevatorModule->getEncoderTicks() << " BUTTON: "
 					<< elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()
-																																	<< " Elevator height: "
-																																	<< elevatorModule->getEncoderDistance() << endl;
+																																			<< " Elevator height: "
+																																			<< elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;

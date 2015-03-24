@@ -34,6 +34,7 @@ public:
 	void syncSetSetpoint(double distance);
 	void setOutputRange(double min, double max);
 	static void callSyncSetpoint(void* v,double distance);
+	bool endAllLoops = false;
 
 private:
 	DriveModule* m_Drive;

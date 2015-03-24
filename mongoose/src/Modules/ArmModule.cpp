@@ -238,6 +238,9 @@ void ArmModule::grab(double deltaX) {
 	time.Start();
 	double left = (MAX_DELTA_X - deltaX + OPEN_LEFT_SETPOINT) / 2 ;
 	while(time.Get() < 0.5) {
+		if(endAllLoops) {
+			break;
+		}
 		setDeltaX(deltaX);
 		setLeftArm(left);
 	}
@@ -250,6 +253,9 @@ void ArmModule::open() {
 	enablePID();
 	Timer time;
 	while(time.Get() < .2) {
+		if(endAllLoops) {
+			break;
+		}
 		setDeltaX(11.5);
 		setLeftArm(1);
 		if(abs(getDiffError()/11.5) < .08) {

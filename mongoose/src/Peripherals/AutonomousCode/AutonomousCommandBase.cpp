@@ -25,6 +25,9 @@ void AutonomousCommandBase::turnAngle(double angle) {
 	timeOut->Start();
 	int in = 0;
 	while(time->Get() < .2 && timeOut->Get() < 2) {
+		if(endAllLoops) {
+			break;
+		}
 		m_Drive->setPower(m_Drive->getAngleOutput(), -m_Drive->getAngleOutput());
 		if(in % 1000  == 0)
 			std::cout<< "gyro angle: "<< m_Drive->getAngle() << std::endl;
@@ -74,6 +77,9 @@ void AutonomousCommandBase::setSetpoint(double distance) {
 	Timer timeOut;
 	timeOut.Start();
 	while(abs(m_Drive->getDriveError()) > .15 || timeOut.Get() < 5) {
+		if(endAllLoops) {
+			break;
+		}
 		m_Drive->setPower(m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
 	}
 	std::cout << "out of the loop" << std::endl;
@@ -94,6 +100,9 @@ void AutonomousCommandBase::runDistanceProf(DistanceProfile* path) {
 	time->Start();
 	int i = 0;
 	while(!path->isDone) {
+		if(endAllLoops) {
+			break;
+		}
 		m_Drive->setDriveSetpoint(path->getSetPoint(time->Get()));
 		m_Drive->setPower(m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
 //		if(i%50 == 0)
