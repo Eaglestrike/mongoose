@@ -235,14 +235,24 @@ void ArmModule::disableDeltaX() {
 void ArmModule::grab(double deltaX) {
 	enablePID();
 	Timer time;
-	time.Start();
 	double left = (MAX_DELTA_X - deltaX + OPEN_LEFT_SETPOINT) / 2 ;
+<<<<<<< HEAD
 	while(time.Get() < 0.5) {
 		if(endAllLoops) {
 			break;
 		}
+=======
+	while(time.Get() < 0.2) {
+>>>>>>> e60fa0c48273b0a4d383cb42a784f79d2d83fcd3
 		setDeltaX(deltaX);
 		setLeftArm(left);
+		if(abs(getDiffError()/ deltaX) < .08) { 
+			time.Start();
+		}
+		else {
+			time.Stop();
+			time.Reset();
+		}
 	}
 	disablePID();
 	setRightPower(0);
@@ -253,17 +263,21 @@ void ArmModule::open() {
 	enablePID();
 	Timer time;
 	while(time.Get() < .2) {
+<<<<<<< HEAD
 		if(endAllLoops) {
 			break;
 		}
 		setDeltaX(11.5);
+=======
+		setDeltaX(11.0);
+>>>>>>> e60fa0c48273b0a4d383cb42a784f79d2d83fcd3
 		setLeftArm(1);
 		if(abs(getDiffError()/11.5) < .08) {
 			time.Start();
 		}
 		else {
-			time.Reset();
 			time.Stop();
+			time.Reset();
 		}
 
 	}
