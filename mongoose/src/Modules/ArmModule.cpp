@@ -157,9 +157,9 @@ void ArmModule::setLeftArm(float setpoint) {
 	}
 
 	if(m_DeltaX != 0) {
-//		std::cout << "in Set Left arm; Delta != 0" << std::endl;
+		//		std::cout << "in Set Left arm; Delta != 0" << std::endl;
 		setSetPoint(setpoint);
-//		std::cout << "SettingSetPoint" << std::endl;
+		//		std::cout << "SettingSetPoint" << std::endl;
 	}
 	else {
 		m_Left_Arm_Controller->SetSetpoint(setpoint);
@@ -189,7 +189,7 @@ void ArmModule::setRightArm(float setpoint) {
 
 void ArmModule::setLeftPower(float power){
 
-//	std::cout << "setLeftPower: " << power << std::endl;
+	//	std::cout << "setLeftPower: " << power << std::endl;
 
 	if(!m_Enabled || !m_Manual)
 		power = 0;
@@ -201,7 +201,7 @@ void ArmModule::setLeftPower(float power){
 
 void ArmModule::setRightPower(float power){
 
-//	std::cout << "setRightPower: " << power << std::endl;
+	//	std::cout << "setRightPower: " << power << std::endl;
 
 	if(!m_Enabled || !m_Manual)
 		power = 0;
@@ -236,14 +236,10 @@ void ArmModule::grab(double deltaX) {
 	enablePID();
 	Timer time;
 	double left = (MAX_DELTA_X - deltaX + OPEN_LEFT_SETPOINT) / 2 ;
-<<<<<<< HEAD
-	while(time.Get() < 0.5) {
+	while(time.Get() < 0.2) {
 		if(endAllLoops) {
 			break;
 		}
-=======
-	while(time.Get() < 0.2) {
->>>>>>> e60fa0c48273b0a4d383cb42a784f79d2d83fcd3
 		setDeltaX(deltaX);
 		setLeftArm(left);
 		if(abs(getDiffError()/ deltaX) < .08) { 
@@ -263,14 +259,9 @@ void ArmModule::open() {
 	enablePID();
 	Timer time;
 	while(time.Get() < .2) {
-<<<<<<< HEAD
-		if(endAllLoops) {
-			break;
-		}
 		setDeltaX(11.5);
-=======
 		setDeltaX(11.0);
->>>>>>> e60fa0c48273b0a4d383cb42a784f79d2d83fcd3
+
 		setLeftArm(1);
 		if(abs(getDiffError()/11.5) < .08) {
 			time.Start();
