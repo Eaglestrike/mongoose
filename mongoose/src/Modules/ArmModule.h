@@ -14,6 +14,7 @@
 #include "../Settings.h"
 #include "../Error/CalibrationError.h"
 #include "../Error/MovementError.h"
+#include <iostream>
 
 
 class ModifiedEncoder: public Encoder {
@@ -77,6 +78,7 @@ public:
 	void enable();
 	void disable();
 	void reset();
+	void resetPersist();
 	void checkError();
 	void handleFatalError();
 	void setLeftArm(float setpoint);
@@ -84,13 +86,29 @@ public:
 	void setLeftPower(float power);
 	void setRightPower(float power);
 	void calibrate();
+	void syncCalibrate();
+	static void callSyncCalibrate(void*);
 	void setManual(bool man);
+	bool hasCalibrated();
 
 	bool getLeftButton();
 	bool getMidButton();
 	bool getRightButton();
 	bool isManual();
 
+	void setLeftPID(double p, double i, double d);
+	void setRightPID(double p, double i, double d);
+	void setDiffPID(double p, double i, double d);
+
+	double getLeftP();
+	double getLeftI();
+	double getLeftD();
+	double getRightP();
+	double getRightI();
+	double getRightD();
+	double getDiffP();
+	double getDiffD();
+	double getDiffI();
 	double getLeftPosition();
 	double getRightPosition();
 	double getLeftPower();
@@ -106,7 +124,7 @@ public:
 	void grab(double deltaX);
 	void open();
 
-
+	bool endAllLoops = false;
 	std::vector<std::string> getLoggingHeader();
 	std::vector<double> getLoggingData();
 

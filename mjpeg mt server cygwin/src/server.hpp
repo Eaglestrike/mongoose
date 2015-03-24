@@ -8,6 +8,8 @@
 #ifndef SRC_SERVER_HPP_
 #define SRC_SERVER_HPP_
 
+#define DEBUG 1
+
 #include <vector>
 #include <string>
 #include <thread>
@@ -22,10 +24,17 @@
 
 class server{
 public:
-	server(const char* ip, int port, double delay = 0.1);
+	server(int port, double delay = 0.1);
 	void setImage(cv::Mat image);
 	void join();
+	int numClients();
 
+	void setQuality(int);
+	void setFrameRate(double d);
+	void setDelay(double d);
+	int getQuality();
+	double getFrameRate();
+	double getDelay();
 private:
 	double delay;
 	std::vector<uchar> matToJpeg(const cv::Mat& image);

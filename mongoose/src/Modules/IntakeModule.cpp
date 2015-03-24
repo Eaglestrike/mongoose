@@ -22,18 +22,34 @@ IntakeModule::~IntakeModule() {
 
 
 void IntakeModule::extend(){
+	if(!m_Enabled)
+		return;
 	m_Solenoid_1->Set(true);
 	m_Solenoid_2->Set(true);
 }
 
 void IntakeModule::retract(){
+	if(!m_Enabled)
+		return;
 	m_Solenoid_1->Set(false);
 	m_Solenoid_2->Set(false);
 }
 
 void IntakeModule::intake(double power){
+	if(!m_Enabled)
+		return;
 	m_Motor_1->Set(power);
 	m_Motor_2->Set(-power);
+}
+
+void IntakeModule::intake(double power, bool opposite) {
+	if(!m_Enabled)
+		return;
+	if(opposite) {
+		m_Motor_1->Set(power);
+		m_Motor_2->Set(power);
+	}
+	else intake(power);
 }
 
 void IntakeModule::enable(){
@@ -50,3 +66,24 @@ void IntakeModule::reset(){
 	RobotModule::reset();
 }
 
+std::vector<std::string> IntakeModule::getLoggingHeader() {
+
+	std::vector<std::string> header;
+	header.push_back("Solenoid_1 get()");
+	header.push_back("Solenoid_2 get()");
+	header.push_back("Motor_1 get()");
+	header.push_back("Motor_2 get()");
+
+	return header;
+}
+
+std::vector<double> IntakeModule::getLoggingData() {
+
+	std::vector<double> data;
+	data.push_back(m_Solenoid_1->Get());
+	data.push_back(m_Solenoid_2->Get());
+	data.push_back(m_Motor_1->Get());
+	data.push_back(m_Motor_2->Get());
+
+	return data;
+}

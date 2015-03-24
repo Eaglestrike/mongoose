@@ -16,27 +16,36 @@ AutonomousCommandBase::AutonomousCommandBase(DriveModule* drive) {
 }
 
 void AutonomousCommandBase::turnAngle(double angle) {
-	m_Drive->reset();
+	m_Drive->setAngleOutputRange(-.75, .75);
+	//m_Drive->reset();
 	m_Drive->enablePID();
 	m_Drive->setAngleSetpoint(angle);
 	Timer* time = new Timer();
+	Timer* timeOut = new Timer();
+	timeOut->Start();
 	int in = 0;
-	while(time->Get() < .2) {
+	while(time->Get() < .2 && timeOut->Get() < 2) {
+		if(endAllLoops) {
+			break;
+		}
 		m_Drive->setPower(m_Drive->getAngleOutput(), -m_Drive->getAngleOutput());
-		if(in % 100000  == 0)
+		if(in % 1000  == 0)
 			std::cout<< "gyro angle: "<< m_Drive->getAngle() << std::endl;
-		if(abs(m_Drive->getAngleError()) < 7.5) {
+		if(abs(m_Drive->getAngleError()) < 8.5) {
 			time->Start();
 		}
 		else {
+			time->Stop();
 			time->Reset();
 		}
 		in++;
+		Wait(0.01);
 	}
+	timeOut->Stop();
 	m_Drive->setPower(0,0);
 	m_Drive->reset();
 	m_Drive->disablePID();
-
+	m_Drive->setAngleOutputRange(-1, 1);
 }
 
 
@@ -45,7 +54,7 @@ void AutonomousCommandBase::move(DistanceProfile* path) {
 	m_Drive->enablePID();
 	m_Drive->setAngleSetpoint(0);
 	runDistanceProf(path);
-	m_Drive->reset();
+	//m_Drive->reset();
 	m_Drive->disablePID();
 
 }
@@ -60,12 +69,46 @@ void AutonomousCommandBase::move(double distance, double totalTime) {
 	move(path);
 }
 
+void AutonomousCommandBase::setSetpoint(double distance) {
+	m_Drive->enablePID();
+	m_Drive->reset();
+	m_Drive->setDriveSetpoint(distance);
+	m_Drive->setAngleSetpoint(0);
+	Timer timeOut;
+	timeOut.Start();
+	while(abs(m_Drive->getDriveError()) > .15 || timeOut.Get() < 5) {
+		if(endAllLoops) {
+			break;
+		}
+		m_Drive->setPower(m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
+	}
+	std::cout << "out of the loop" << std::endl;
+	m_Drive->setPower(0, 0);
+	m_Drive->disablePID();
+}
+
+void AutonomousCommandBase::syncSetSetpoint(double distance) {
+	t = std::thread(callSyncSetpoint, this, distance);
+}
+
+void AutonomousCommandBase::callSyncSetpoint(void* v, double distance) {
+	((AutonomousCommandBase*)v)->setSetpoint(distance);
+}
+
 void AutonomousCommandBase::runDistanceProf(DistanceProfile* path) {
 	Timer* time = new Timer();
 	time->Start();
+	int i = 0;
 	while(!path->isDone) {
+		if(endAllLoops) {
+			break;
+		}
 		m_Drive->setDriveSetpoint(path->getSetPoint(time->Get()));
-		m_Drive->setPower(-m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), -m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
+		m_Drive->setPower(m_Drive->getDriveOutput() + m_Drive->getAngleOutput(), m_Drive->getDriveOutput() - m_Drive->getAngleOutput());
+//		if(i%50 == 0)
+			std::cout << "time: " << time->Get() <<  " driveOutput: " << m_Drive->getDriveOutput() << " angelout: " << m_Drive->getAngleOutput() << " sp: " << path->getSetPoint(time->Get()) << std::endl;
+		i++;
+		Wait(0.01);
 	}
 	time->Stop();
 	m_Drive->setPower(0,0);
@@ -75,4 +118,19 @@ AutonomousCommandBase::~AutonomousCommandBase() {
 	// TODO Auto-generated destructor stub
 }
 
+void AutonomousCommandBase::callSyncMove(void* v, DistanceProfile* path) {
+	((AutonomousCommandBase*)(v))->move(path);
+}
 
+void AutonomousCommandBase::syncMove(DistanceProfile* path) {
+	t = std::thread(AutonomousCommandBase::callSyncMove, this, path);
+}
+
+void AutonomousCommandBase::join() {
+	t.join();
+}
+
+void AutonomousCommandBase::setOutputRange(double min, double max) {
+	m_Drive->setDriveOutputRange(min, max);
+	m_Drive->setAngleOutputRange(min, max);
+}

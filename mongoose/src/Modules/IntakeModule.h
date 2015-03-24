@@ -25,10 +25,15 @@ public:
 	void extend();
 	void retract();
 	void intake(double power);
+	void intake(double power, bool opposite);
 
 	void enable();
 	void disable();
 	void reset();
+
+	std::vector<std::string> getLoggingHeader();
+	std::vector<double> getLoggingData();
+
 
 };
 
