@@ -34,7 +34,7 @@ int CombinedLogs::getVersion() {
 	}
 
 	versionLogWrite.open("version.txt");
-	versionLogWrite << std::to_string(version + 1) << std::endl; //Writes the next version to the file
+	versionLogWrite << std::to_string(version + 1) << "\n"; //Writes the next version to the file
 	return version;
 }
 
