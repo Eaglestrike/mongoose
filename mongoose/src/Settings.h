@@ -130,7 +130,7 @@
 
 /*Logging*/
 #define USB_DIRECTORY "/media/sda1"
-#define BACKUP_DIRECTORY "/home/lvuser/logs"
+#define BACKUP_DIRECTORY "/home/lvuser"
 
 
 

@@ -1,9 +1,11 @@
-#include <iostream>
 
 #include "Error/EaglestrikeError.h"
 #include "Modules/RobotModule.h"
 
-#include "WPIlib.h"
+#include "WPILib.h"
+#include <iostream>
+
+
 #include "Modules.h"
 #include "Error/CalibrationError.h"
 #include "Settings.h"
@@ -41,16 +43,16 @@ private:
 	unsigned long printCounter = 0;
 	std::thread t;
 
-	int logCounter = 100; //How many milliseconds between logging entries
 	CombinedLogs* logs;
 
 	NamedSendable* sendable;
 
 	void RobotInit() {
 		printL("ehh baby");
+
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
 				"/home/lvuser/eaglestrike.log");
-		printL("\nBooting up mongoose");
+		printL("\nBooting up	 mongoose");
 		printL("RobotInit()");
 
 		lw = LiveWindow::GetInstance();
@@ -76,16 +78,14 @@ private:
 				SCORPION_PORT);
 
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
-
-		//				logs = new CombinedLogs();
-		//				logs->addModule(elevatorModule);
-		//
-		//				logs->addModule(driveModule);
-		//				logs->addModule(armModule);
-		//				logs->addModule(mantaCoreModule);
-		//				logs->addModule(intakeModule);
-		//				logs->addHeaders();
-		//				logs->start();
+//		logs = new CombinedLogs();
+//		logs->addModule(elevatorModule);
+//		logs->addModule(driveModule);
+//		logs->addModule(armModule);
+//		logs->addModule(mantaCoreModule);
+//		logs->addModule(intakeModule);
+//		logs->addHeaders();
+//		logs->start();
 
 		timer = new Timer();
 		autoTimer = new Timer();
@@ -315,7 +315,8 @@ private:
 					<< elevatorModule->getEncoderDistance() << " EET: "
 					<< elevatorModule->getEncoderTicks() << " EB: "
 					<< elevatorModule->getButton() << endl << "DeltaX: "
-					<< SmartDashboard::GetNumber("DeltaX") << endl;
+//					<< SmartDashboard::GetNumber("DeltaX")
+					<< endl;
 		}
 		//t.join();
 		printCounter++;
@@ -737,7 +738,8 @@ private:
 					<< elevatorModule->getEncoderDistance() << " EET: "
 					<< elevatorModule->getEncoderTicks() << " EB: "
 					<< elevatorModule->getButton() << endl <<"DeltaX: "
-					<< SmartDashboard::GetNumber("DeltaX") << endl;
+//					<< SmartDashboard::GetNumber("DeltaX") <<
+					<<endl;
 		}
 		printCounter++;
 
@@ -762,4 +764,4 @@ private:
 
 };
 
-START_ROBOT_CLASS(Robot);
+START_ROBOT_CLASS(Robot)
