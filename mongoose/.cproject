@@ -80,6 +80,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.1104744751.1214888287" name="CombinedLogs.cpp" rcbsApplicability="disable" resourcePath="src/Logging/CombinedLogs.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1505235107.1708246171">
+						<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1505235107.1708246171" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1505235107">
+							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.488235722" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
 						<entry excluding="src|Helpers" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>

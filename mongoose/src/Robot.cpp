@@ -40,16 +40,16 @@ private:
 	bool previous;
 	unsigned long printCounter = 0;
 
-	int logCounter = 100; //How many milliseconds between logging entries
 	CombinedLogs* logs;
 
 	NamedSendable* sendable;
 
 	void RobotInit() {
 
+
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
 				"/home/lvuser/eaglestrike.log");
-		printL("\nBooting up mongoose");
+		printL("\nBooting up	 mongoose");
 		printL("RobotInit()");
 
 		lw = LiveWindow::GetInstance();
@@ -76,15 +76,14 @@ private:
 
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
 
-		//				logs = new CombinedLogs();
-		//				logs->addModule(elevatorModule);
-		//
-		//				logs->addModule(driveModule);
-		//				logs->addModule(armModule);
-		//				logs->addModule(mantaCoreModule);
-		//				logs->addModule(intakeModule);
-		//				logs->addHeaders();
-		//				logs->start();
+		logs = new CombinedLogs();
+		logs->addModule(elevatorModule);
+		logs->addModule(driveModule);
+		logs->addModule(armModule);
+		logs->addModule(mantaCoreModule);
+		logs->addModule(intakeModule);
+		logs->addHeaders();
+//		logs->start();
 
 		timer = new Timer();
 		autoTimer = new Timer();
