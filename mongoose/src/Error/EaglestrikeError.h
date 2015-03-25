@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include "Modules/RobotModule.h"
+#include "ErrorReporting.h"
 
 class RobotModule;
 
