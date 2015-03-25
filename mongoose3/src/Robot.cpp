@@ -152,7 +152,7 @@ private:
 
 	void AutonomousInit() {
 		updateSmartDashboard();
-		if(autoState == AUTO_GRAB_TOTE || autoState == AUTO_GRAB_THREE_TOTE){
+		if(autoState == AUTO_GRAB_TOTE /*|| autoState == AUTO_GRAB_THREE_TOTE*/){
 			armModule->enable();
 			elevatorModule->enable();
 			if(!armModule->hasCalibrated())
@@ -261,38 +261,38 @@ private:
 			finished = true;
 
 		} else if(autoState == AUTO_GRAB_THREE_TOTE && !finished) {
-			elevatorModule->setPosition(0);
-			Wait(0.2);
-			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-			Wait(0.2);
-			elevatorModule->setPosition(35);
-			intakeModule->intake(1, true);
-			Wait(0.1);
+//			elevatorModule->setPosition(0);
+//			Wait(0.2);
+//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+//			Wait(0.2);
+//			elevatorModule->setPosition(35);
+//			intakeModule->intake(1, true);
+//			Wait(0.1);
 			autonomousDriver->move(new DistanceProfile(0, 5, 3));
 			Wait(0.1);
-			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
-			intakeModule->intake(1);
+//			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
+//			intakeModule->intake(1);
 			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
-			Wait(0.15);
-			armModule->open();
-			Wait(.1);
-			elevatorModule->setPosition(ELEVATOR_LEVEL_0);
-			Wait(.1);
-			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-			Wait(.1);
-			elevatorModule->setPosition(35);
-			Wait(.1);
-			intakeModule->intake(1, true);
+//			Wait(0.15);
+//			armModule->open();
+//			Wait(.1);
+//			elevatorModule->setPosition(ELEVATOR_LEVEL_0);
+//			Wait(.1);
+//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+//			Wait(.1);
+//			elevatorModule->setPosition(35);
+//			Wait(.1);
+//			intakeModule->intake(1, true);
 			Wait(.1);
 			autonomousDriver->move(new DistanceProfile(0, 5, 3));
-			Wait(.1);
-			intakeModule->intake(1);
+//			Wait(.1);
+//			intakeModule->intake(1);
 			Wait(.1);
 			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
-			Wait(.1);
-			elevatorModule->setPosition(0);
-			Wait(.15);
-			armModule->open();
+//			Wait(.1);
+//			elevatorModule->setPosition(0);
+//			Wait(.15);
+//			armModule->open();
 			Wait(.1);
 			autonomousDriver->setOutputRange(-.5, .5);
 			autonomousDriver->turnAngle(90);
