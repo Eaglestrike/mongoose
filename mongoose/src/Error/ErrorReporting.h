@@ -10,10 +10,10 @@
 
 #include "EaglestrikeError.h"
 
-void reportError(EaglestrikeError* error){
-	DriverStation::ReportError(error->toString());
-
-}
+//void reportError(EaglestrikeError* error){
+//	DriverStation::ReportError(error->toString());
+//
+//}
 
 
 #endif /* ERROR_ERRORREPORTING_H_ */
