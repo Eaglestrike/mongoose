@@ -766,8 +766,13 @@ private:
 	void updateSmartDashboard(){
 		SmartDashboard::PutBoolean("Arm Calibrated", armModule->hasCalibrated());
 		SmartDashboard::PutBoolean("Elevator Calibrated", elevatorModule->hasCalibrated());
-		SmartDashboard::PutNumber("Elevator Position", elevatorModule->getEncoderDistance());
-		SmartDashboard::PutBoolean("Teleop", DriverStation::GetInstance()->IsOperatorControl());
+
+		SmartDashboard::PutNumber("Elev Setpoint", elevatorModule->getSetpoint());
+		SmartDashboard::PutNumber("Elev Position", elevatorModule->getEncoderDistance());
+		SmartDashboard::PutNumber("LArm Setpoint", armModule->getLeftSetpoint());
+		SmartDashboard::PutNumber("RArm Setpoint", armModule->getRightSetpoint());
+		SmartDashboard::PutNumber("LArm Position", armModule->getLeftPosition());
+		SmartDashboard::PutNumber("RArm Position", armModule->getRightPosition());
 	}
 
 };
