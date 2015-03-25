@@ -6,6 +6,7 @@
  */
 
 #include "EaglestrikeError.h"
+#include "ErrorReporting.h"
 #include <WPILib.h>
 
 EaglestrikeError::EaglestrikeError(RobotModule* c_module, std::string c_where, std::string c_what, bool c_fatal){
@@ -16,7 +17,7 @@ EaglestrikeError::EaglestrikeError(RobotModule* c_module, std::string c_where, s
 	m_Error = c_what;
 	m_Fatal = c_fatal;
 
-	//reportError(this);
+	reportError(this);
 }
 
 std::string EaglestrikeError::what(){

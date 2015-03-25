@@ -11,9 +11,9 @@
 #include <string>
 #include <iostream>
 #include "Modules/RobotModule.h"
-#include "ErrorReporting.h"
 
 class RobotModule;
+
 
 class EaglestrikeError {
 public:
@@ -30,5 +30,6 @@ private:
 	RobotModule * m_Module;
 	bool m_Fatal;
 };
+
 
 #endif /* EAGLESTRIKEERROR_H_ */

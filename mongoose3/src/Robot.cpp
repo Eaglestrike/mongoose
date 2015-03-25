@@ -51,7 +51,7 @@ private:
 
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
 				"/home/lvuser/eaglestrike.log");
-		printL("\nBooting up	 mongoose");
+		printL("\nBooting up mongoose");
 		printL("RobotInit()");
 
 		lw = LiveWindow::GetInstance();
@@ -151,7 +151,7 @@ private:
 
 
 	void AutonomousInit() {
-
+		updateSmartDashboard();
 		if(autoState == AUTO_GRAB_TOTE || autoState == AUTO_GRAB_THREE_TOTE){
 			armModule->enable();
 			elevatorModule->enable();
@@ -168,6 +168,7 @@ private:
 	}
 
 	void AutonomousPeriodic() {
+		updateSmartDashboard();
 		if(autoState == AUTO_MANTA_CORE && !finished) {
 			mantaCoreModule->setPneumatics(true);
 			autonomousDriver->setOutputRange(-.5, .5);
@@ -404,6 +405,7 @@ private:
 	void TeleopPeriodic() {
 
 		lw->Run();
+		updateSmartDashboard();
 
 		driveModule->drive(-leftJoy->GetY(), -rightJoy->GetX());
 
@@ -759,6 +761,13 @@ private:
 	void printL(std::string message) {
 		std::cout << message << endl;
 		eaglestrikeLogger->log(message);
+	}
+
+	void updateSmartDashboard(){
+		SmartDashboard::PutBoolean("Arm Calibrated", armModule->hasCalibrated());
+		SmartDashboard::PutBoolean("Elevator Calibrated", elevatorModule->hasCalibrated());
+		SmartDashboard::PutNumber("Elevator Position", elevatorModule->getEncoderDistance());
+		SmartDashboard::PutBoolean("Teleop", DriverStation::GetInstance()->IsOperatorControl());
 	}
 
 };
