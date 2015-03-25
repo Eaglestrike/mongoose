@@ -48,7 +48,6 @@ private:
 	NamedSendable* sendable;
 
 	void RobotInit() {
-		printL("ehh baby");
 
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
 				"/home/lvuser/eaglestrike.log");
@@ -758,8 +757,8 @@ private:
 	}
 
 	void printL(std::string message) {
-		eaglestrikeLogger->log(message);
 		std::cout << message << endl;
+		eaglestrikeLogger->log(message);
 	}
 
 };
