@@ -47,7 +47,7 @@ private:
 	NamedSendable* sendable;
 
 	void RobotInit() {
-
+		printL("ehh baby");
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
 				"/home/lvuser/eaglestrike.log");
 		printL("\nBooting up mongoose");
