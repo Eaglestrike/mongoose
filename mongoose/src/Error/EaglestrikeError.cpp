@@ -16,7 +16,7 @@ EaglestrikeError::EaglestrikeError(RobotModule* c_module, std::string c_where, s
 	m_Error = c_what;
 	m_Fatal = c_fatal;
 
-	DriverStation::ReportError(toString());
+	reportError(this);
 }
 
 std::string EaglestrikeError::what(){
