@@ -39,6 +39,7 @@ private:
 	int toggleY = 0;
 	bool previous;
 	unsigned long printCounter = 0;
+	std::thread t;
 
 	int logCounter = 100; //How many milliseconds between logging entries
 	CombinedLogs* logs;
@@ -133,9 +134,21 @@ private:
 		Wait(0.05);
 	}
 
-	int autoState = AUTO_MANTA_CORE;
+	int autoState = AUTO_DO_NOTHING;
 
-	static void checkTime() {}
+	static void checkTime(void* v) {
+		((Robot*)(v))->time();
+	}
+	void time() {
+		while(true) {
+			if(autoTimer->Get() >= 2) {
+				printL("In the thread");
+				armModule->endAllLoops = true;
+				autonomousDriver->endAllLoops = true;
+				break;
+			}
+		}
+	}
 
 
 	void AutonomousInit() {
@@ -149,7 +162,7 @@ private:
 				calibrateElevator();
 		}
 		autoTimer->Start();
-		std::thread t(checkTime);
+		t = thread(checkTime, this);
 		mantaCoreModule->enable();
 		driveModule->enable();
 		printL("AutonomousInit()");
@@ -304,7 +317,7 @@ private:
 					<< elevatorModule->getButton() << endl << "DeltaX: "
 					<< SmartDashboard::GetNumber("DeltaX") << endl;
 		}
-
+		//t.join();
 		printCounter++;
 
 		Wait(0.01);
