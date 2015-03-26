@@ -271,11 +271,11 @@ private:
 //			elevatorModule->setPosition(35);
 //			intakeModule->intake(1, true);
 //			Wait(0.1);
-			autonomousDriver->setSetpoint(5);
+			autonomousDriver->move(new DistanceProfile(0, 5, 3));
 			Wait(0.1);
 //			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
 //			intakeModule->intake(1);
-			autonomousDriver->setSetpoint(2);
+			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
 //			Wait(0.15);
 //			armModule->open();
 //			Wait(.1);
@@ -287,12 +287,12 @@ private:
 //			Wait(.1);
 //			intakeModule->intake(1, true);
 			Wait(.1);
-			autonomousDriver->setSetpoint(5);
+			autonomousDriver->move(new DistanceProfile(0, 5, 3));
 //			Wait(.1);
 //			intakeModule->intake(1);
 			Wait(.1);
-			autonomousDriver->setSetpoint(2);
-			//			Wait(.1);
+			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
+//			Wait(.1);
 //			elevatorModule->setPosition(0);
 //			Wait(.15);
 //			armModule->open();
@@ -300,9 +300,7 @@ private:
 			autonomousDriver->setOutputRange(-.5, .5);
 			autonomousDriver->turnAngle(90);
 			Wait(.1);
-			autonomousDriver->setOutputRange(-1, 1);
-			autonomousDriver->move(new DistanceProfile(0, 10.5, 4.0));
-			finished = true;
+			autonomousDriver->move(new DistanceProfile(0, 11.5, 6));
 
 		}
 		else if(autoState == AUTO_DO_NOTHING) {
@@ -641,32 +639,32 @@ private:
 
 	void updatePID() {
 		if (controller->getLevel0()) {
-			driveModule->setDrivePID(driveModule->getDriveP() - .01 / 10,
-					driveModule->getDriveI(), driveModule->getDriveD());
+			driveModule->setAnglePID(driveModule->getAngleP() - .01 / 10,
+					driveModule->getAngleI(), driveModule->getAngleD());
 		} else if (controller->getLevel1()) {
-			driveModule->setDrivePID(driveModule->getDriveP() + .01 / 10,
-					driveModule->getDriveI(), driveModule->getDriveD());
+			driveModule->setAnglePID(driveModule->getAngleP() + .01 / 10,
+					driveModule->getAngleI(), driveModule->getAngleD());
 		} else if (controller->getLevel2()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI() - .001, driveModule->getDriveD());
+			driveModule->setAnglePID(driveModule->getAngleP(),
+					driveModule->getAngleI() - .001, driveModule->getAngleD());
 		} else if (controller->getLevel3()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI() + .001, driveModule->getDriveD());
+			driveModule->setAnglePID(driveModule->getAngleP(),
+					driveModule->getAngleI() + .001, driveModule->getAngleD());
 		} else if (controller->getLevel4()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI(), driveModule->getDriveD() - .01);
+			driveModule->setAnglePID(driveModule->getAngleP(),
+					driveModule->getAngleI(), driveModule->getAngleD() - .01);
 		} else if (controller->getLevel5()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI(), driveModule->getDriveD() + .001);
+			driveModule->setAnglePID(driveModule->getAngleP(),
+					driveModule->getAngleI(), driveModule->getAngleD() + .001);
 		}
 
 		if (printCounter % 6 == 0) {
-			cout << "p: " << driveModule->getDriveP() << " d: "
-					<< driveModule->getDriveD() << " i: "
-					<< driveModule->getDriveI() << " error: "
-					<< driveModule->getDriveError()
-					<< " Position: " << driveModule->getEncoderDistance()
-					<< " setpoint: " << driveModule->getDriveSetpoint()
+			cout << "p: " << driveModule->getAngleP() << " d: "
+					<< driveModule->getAngleD() << " i: "
+					<< driveModule->getAngleI() << " error: "
+					<< driveModule->getAngleError()
+					<< " Position: " << driveModule->getAngle()
+					<< " setpoint: " << driveModule->getAngleSetpoint()
 					<< endl;
 		}
 
@@ -674,7 +672,7 @@ private:
 
 	}
 
-	int testMode = 2;
+	int testMode = 1;
 
 	void TestInit() {
 //Cole Was Here
@@ -704,19 +702,14 @@ private:
 		DisabledInit();
 	}
 
-	void TestInit3(){
-		armModule->enable();
-		armModule->enablePID();
-		calibrateArm();
-	}
-
 	void TestPeriodic1() {
 		updatePID();
 		if(controller->getRight3()) {
-			driveModule->setDriveSetpoint(5);
+			driveModule->setAngleSetpoint(90);
 		}
-		else driveModule->setDriveSetpoint(0);
-		driveModule->setPower(driveModule->getDriveOutput() + driveModule->getAngleOutput(), driveModule->getDriveOutput() -driveModule->getAngleOutput());
+		else driveModule->setAngleSetpoint(0);
+
+		driveModule->setPower(driveModule->getAngleOutput(), -driveModule->getAngleOutput());
 		Wait(.05);
 	}
 
@@ -763,23 +756,15 @@ private:
 		Wait(0.05);
 	}
 
-	double startTestDeltaX = 7;
-
 	void TestPeriodic3()  {
-		if(controller->grabTote()){
-			armModule->setLeftArm(OPEN_LEFT_SETPOINT);
-			armModule->setDeltaX(startTestDeltaX);
-		}else{
-			armModule->setLeftArm(OPEN_LEFT_SETPOINT);
-			armModule->setDeltaX(MAX_DELTA_X);
+		double power = controller->getLeftX();
+		if(power > .7) {
+			power = .7;
 		}
-
-		if(controller->GetRawButton(9))
-			startTestDeltaX += 0.1;
-		else if(controller->GetRawButton(8))
-			startTestDeltaX -= 0.1;
-
-		Wait(0.05);
+		else if(power < -.2) {
+			power = -.2;
+		}
+		elevatorModule->setPower(power);
 	}
 
 	void printL(std::string message) {

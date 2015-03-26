@@ -121,7 +121,6 @@ public:
 	void setDriveSetpoint(float setpoint);
 	void setAngleOutputRange(double min, double max);
 	double getDriveError();
-	double getDriveSetpoint();
 	void setDriveOutputRange(double min, double max);
 
 	double getAngleP();

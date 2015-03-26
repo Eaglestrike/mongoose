@@ -211,7 +211,3 @@ void DriveModule::setAngleOutputRange(double min, double max) {
 void DriveModule::setDriveOutputRange(double min, double max) {
 	m_Angle_Controller->SetOutputRange(min, max);
 }
-
-double DriveModule::getDriveSetpoint() {
-	return m_Drive_Controller->GetSetpoint();
-}
