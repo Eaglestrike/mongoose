@@ -2,7 +2,7 @@
  * ErrorReporting.h
  *
  *  Created on: Mar 23, 2015
- *      Author: LAHS
+ *      Author: Cole Brinsfield
  */
 
 #ifndef ERROR_ERRORREPORTING_H_

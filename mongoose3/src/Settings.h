@@ -104,22 +104,25 @@
 #define DRIVE_GYRO 0
 
 #define FEET_PER_DRIVE_PULSE 0.00584
-#define DRIVE_1_P 0.33009
-#define DRIVE_1_I 0
-#define DRIVE_1_D 0.00939999
+#define DRIVE_REAL_P 0.33009
+#define DRIVE_REAL_I 0
+#define DRIVE_REAL_D 0.00939999
 
-#define ANGLE_1_P .0523
-#define ANGLE_1_I 0
-#define ANGLE_1_D 0.1091
+#define ANGLE_REAL_P .0523
+#define ANGLE_REAL_I 0
+#define ANGLE_REAL_D 0.1091
 
 #define FEET_PER_DRIVE_PULSE_2 0.00584
-#define DRIVE_2_P 0.33009
-#define DRIVE_2_I 0
-#define DRIVE_2_D 0.00939999
+#define DRIVE_PRAC_P 0.138
+#define DRIVE_PRAC_I 0
+#define DRIVE_PRAC_D 0
 
-#define ANGLE_2_P 0.0333
-#define ANGLE_2_I 0
-#define ANGLE_2_D 0.1091
+#define ANGLE_PRAC_P 0.0333
+#define ANGLE_PRAC_I 0
+#define ANGLE_PRAC_D 0.1091
+
+#define GYRO_ADJUSTMENT_REAL -.40315
+#define GYRO_ADJUSTMENT_PRAC .20677
 
 /*Intake*/
 #define INTAKE_SOLENOID_1 1

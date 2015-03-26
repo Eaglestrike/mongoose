@@ -1,4 +1,3 @@
-
 #include "Error/EaglestrikeError.h"
 #include "Modules/RobotModule.h"
 
@@ -97,6 +96,7 @@ private:
 
 		printL("\tAutonomousCommandBase()");
 		autonomousDriver = new AutonomousCommandBase(driveModule);
+		updateSmartDashboard();
 
 		printL("RobotInit() end");
 	}
@@ -124,6 +124,7 @@ private:
 		printCounter = 0;
 
 		armModule->disablePID();
+		updateSmartDashboard();
 	}
 
 	void DisabledPeriodic() {
@@ -133,7 +134,7 @@ private:
 		Wait(0.05);
 	}
 
-	int autoState = AUTO_DO_NOTHING;
+	int autoState = AUTO_GRAB_THREE_TOTE;
 
 	static void checkTime(void* v) {
 		((Robot*)(v))->time();
@@ -164,6 +165,7 @@ private:
 		t = thread(checkTime, this);
 		mantaCoreModule->enable();
 		driveModule->enable();
+		updateSmartDashboard();
 		printL("AutonomousInit()");
 	}
 
@@ -268,11 +270,11 @@ private:
 //			elevatorModule->setPosition(35);
 //			intakeModule->intake(1, true);
 //			Wait(0.1);
-			autonomousDriver->move(new DistanceProfile(0, 5, 3));
+			autonomousDriver->setSetpoint(5);
 			Wait(0.1);
 //			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
 //			intakeModule->intake(1);
-			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
+			autonomousDriver->setSetpoint(2);
 //			Wait(0.15);
 //			armModule->open();
 //			Wait(.1);
@@ -284,12 +286,12 @@ private:
 //			Wait(.1);
 //			intakeModule->intake(1, true);
 			Wait(.1);
-			autonomousDriver->move(new DistanceProfile(0, 5, 3));
+			autonomousDriver->setSetpoint(5);
 //			Wait(.1);
 //			intakeModule->intake(1);
 			Wait(.1);
-			autonomousDriver->move(new DistanceProfile(0, 2, 1.5));
-//			Wait(.1);
+			autonomousDriver->setSetpoint(2);
+			//			Wait(.1);
 //			elevatorModule->setPosition(0);
 //			Wait(.15);
 //			armModule->open();
@@ -297,7 +299,9 @@ private:
 			autonomousDriver->setOutputRange(-.5, .5);
 			autonomousDriver->turnAngle(90);
 			Wait(.1);
-			autonomousDriver->move(new DistanceProfile(0, 11.5, 6));
+			autonomousDriver->setOutputRange(-1, 1);
+			autonomousDriver->move(new DistanceProfile(0, 10.5, 4.0));
+			finished = true;
 
 		}
 		else if(autoState == AUTO_DO_NOTHING) {
@@ -350,6 +354,7 @@ private:
 		leftSetpoint = OPEN_LEFT_SETPOINT;
 		deltaX = MAX_DELTA_X;
 		elevatorModule->setPosition(0);
+		updateSmartDashboard();
 	}
 
 	void calibrateArm(){
@@ -635,32 +640,32 @@ private:
 
 	void updatePID() {
 		if (controller->getLevel0()) {
-			driveModule->setAnglePID(driveModule->getAngleP() - .01 / 10,
-					driveModule->getAngleI(), driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP() - .01 / 10,
+					driveModule->getDriveI(), driveModule->getDriveD());
 		} else if (controller->getLevel1()) {
-			driveModule->setAnglePID(driveModule->getAngleP() + .01 / 10,
-					driveModule->getAngleI(), driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP() + .01 / 10,
+					driveModule->getDriveI(), driveModule->getDriveD());
 		} else if (controller->getLevel2()) {
-			driveModule->setAnglePID(driveModule->getAngleP(),
-					driveModule->getAngleI() - .001, driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP(),
+					driveModule->getDriveI() - .001, driveModule->getDriveD());
 		} else if (controller->getLevel3()) {
-			driveModule->setAnglePID(driveModule->getAngleP(),
-					driveModule->getAngleI() + .001, driveModule->getAngleD());
+			driveModule->setDrivePID(driveModule->getDriveP(),
+					driveModule->getDriveI() + .001, driveModule->getDriveD());
 		} else if (controller->getLevel4()) {
-			driveModule->setAnglePID(driveModule->getAngleP(),
-					driveModule->getAngleI(), driveModule->getAngleD() - .01);
+			driveModule->setDrivePID(driveModule->getDriveP(),
+					driveModule->getDriveI(), driveModule->getDriveD() - .01);
 		} else if (controller->getLevel5()) {
-			driveModule->setAnglePID(driveModule->getAngleP(),
-					driveModule->getAngleI(), driveModule->getAngleD() + .001);
+			driveModule->setDrivePID(driveModule->getDriveP(),
+					driveModule->getDriveI(), driveModule->getDriveD() + .001);
 		}
 
 		if (printCounter % 6 == 0) {
-			cout << "p: " << driveModule->getAngleP() << " d: "
-					<< driveModule->getAngleD() << " i: "
-					<< driveModule->getAngleI() << " error: "
-					<< driveModule->getAngleError()
-					<< " Position: " << driveModule->getAngle()
-					<< " setpoint: " << driveModule->getAngleSetpoint()
+			cout << "p: " << driveModule->getDriveP() << " d: "
+					<< driveModule->getDriveD() << " i: "
+					<< driveModule->getDriveI() << " error: "
+					<< driveModule->getDriveError()
+					<< " Position: " << driveModule->getEncoderDistance()
+					<< " setpoint: " << driveModule->getDriveSetpoint()
 					<< endl;
 		}
 
@@ -668,16 +673,27 @@ private:
 
 	}
 
-	int testMode = 2;
+	int testMode = 4;
 
 	void TestInit() {
+//Cole Was Here
 
 		std::cout << "TestInit" << testMode << "()" << std::endl;
 		if(testMode == 1)
 			TestInit1();
 		else if(testMode == 2)
 			TestInit2();
+		else if(testMode == 3) {
+			TestInit3();
+		}
+		else if(testMode == 4) {
+			TestInit4();
+		}
 
+		updateSmartDashboard();
+	}
+	void TestInit4() {
+		mantaCoreModule->enable();
 	}
 	void TestInit1() {
 		//		armModule->enable();
@@ -696,14 +712,19 @@ private:
 		DisabledInit();
 	}
 
+	void TestInit3(){
+		armModule->enable();
+		armModule->enablePID();
+		calibrateArm();
+	}
+
 	void TestPeriodic1() {
 		updatePID();
 		if(controller->getRight3()) {
-			driveModule->setAngleSetpoint(90);
+			driveModule->setDriveSetpoint(5);
 		}
-		else driveModule->setAngleSetpoint(0);
-
-		driveModule->setPower(driveModule->getAngleOutput(), -driveModule->getAngleOutput());
+		else driveModule->setDriveSetpoint(0);
+		driveModule->setPower(driveModule->getDriveOutput() + driveModule->getAngleOutput(), driveModule->getDriveOutput() -driveModule->getAngleOutput());
 		Wait(.05);
 	}
 
@@ -714,6 +735,14 @@ private:
 			TestPeriodic1();
 		else if(testMode == 2)
 			TestPeriodic2();
+		else if(testMode == 3) {
+			TestPeriodic3();
+		}
+		else if(testMode == 4) {
+			TestPeriodic4();
+		}
+		updateSmartDashboard();
+		Wait(0.05);
 	}
 	void TestPeriodic2() {
 		//updatePID();
@@ -735,7 +764,8 @@ private:
 					<< armModule->getRightButton() << " RE: "
 					<< armModule->getRightPosition() << " LE: "
 					<< armModule->getLeftPosition() << endl << " DE: "
-					<< driveModule->getEncoderDistance() << " EE: "
+					<< driveModule->getEncoderDistance() << " angle: "
+					<< driveModule->getAngle() << " EE: "
 					<< elevatorModule->getEncoderDistance() << " EET: "
 					<< elevatorModule->getEncoderTicks() << " EB: "
 					<< elevatorModule->getButton() << endl <<"DeltaX: "
@@ -747,15 +777,42 @@ private:
 		Wait(0.05);
 	}
 
+	double startTestDeltaX = 7;
+
 	void TestPeriodic3()  {
-		double power = controller->getLeftX();
-		if(power > .7) {
-			power = .7;
+		if(controller->grabTote()){
+			armModule->setLeftArm(OPEN_LEFT_SETPOINT);
+			armModule->setDeltaX(startTestDeltaX);
+		}else{
+			armModule->setLeftArm(OPEN_LEFT_SETPOINT);
+			armModule->setDeltaX(MAX_DELTA_X);
 		}
-		else if(power < -.2) {
-			power = -.2;
+
+		if(controller->GetRawButton(9))
+			startTestDeltaX += 0.1;
+		else if(controller->GetRawButton(8))
+			startTestDeltaX -= 0.1;
+
+		Wait(0.05);
+	}
+	void TestPeriodic4() {
+		if(controller->getLevel0()) {
+			mantaCoreModule->on();
 		}
-		elevatorModule->setPower(power);
+		else if(controller->getLevel3()) {
+			mantaCoreModule->reverse();
+		}
+		else {
+			mantaCoreModule->off();
+		}
+
+		if(controller->getLevel1()) {
+			mantaCoreModule->setPneumatics(true);
+		}
+		else if(controller->getLevel2()) {
+			mantaCoreModule->setPneumatics(false);
+		}
+
 	}
 
 	void printL(std::string message) {

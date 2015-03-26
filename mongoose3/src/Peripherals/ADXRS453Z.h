@@ -3,6 +3,7 @@
 #define __ADXRS453Z
 
 #include <WPILib.h>
+#include "Settings.h"
 #include <semaphore.h>
 #include <stdio.h>
 
@@ -28,7 +29,7 @@ private:
 
 	double lastTime;
 	double angle;
-	double adjustment = 0.0902 - .49335;
+	double adjustment = GYRO_ADJUSTMENT_PRAC - .0899;
 
 	int ignoreCounter = 0;
 

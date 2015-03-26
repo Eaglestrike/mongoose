@@ -9,7 +9,7 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Left_Victor_2 = new Victor(lv2);
 	m_Right_Victor_1 = new Victor(rv1);
 	m_Right_Victor_2 = new Victor(rv2);
-
+//Cole was here
 	m_Encoder = new Encoder(l_EA, l_EB);
 	m_Encoder->SetReverseDirection(false);
 	m_Encoder->SetDistancePerPulse(FEET_PER_DRIVE_PULSE);
@@ -20,8 +20,8 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Drive_Output = new PIDOut();
 	m_Angle_Output = new PIDOut();
 
-	m_Drive_Controller = new PIDController(DRIVE_1_P, DRIVE_1_I, DRIVE_1_D, m_Encoder, m_Drive_Output);
-	m_Angle_Controller = new PIDController(ANGLE_1_P, ANGLE_1_I, ANGLE_1_D, m_Gyro, m_Angle_Output);
+	m_Drive_Controller = new PIDController(DRIVE_PRAC_P, DRIVE_PRAC_I, DRIVE_PRAC_D, m_Encoder, m_Drive_Output);
+	m_Angle_Controller = new PIDController(ANGLE_PRAC_P, ANGLE_PRAC_I, ANGLE_PRAC_D, m_Gyro, m_Angle_Output);
 
 }
 
@@ -210,4 +210,8 @@ void DriveModule::setAngleOutputRange(double min, double max) {
 
 void DriveModule::setDriveOutputRange(double min, double max) {
 	m_Angle_Controller->SetOutputRange(min, max);
+}
+
+double DriveModule::getDriveSetpoint() {
+	return m_Drive_Controller->GetSetpoint();
 }
