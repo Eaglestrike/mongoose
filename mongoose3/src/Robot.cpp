@@ -674,7 +674,7 @@ private:
 
 	}
 
-	int testMode = 2;
+	int testMode = 4;
 
 	void TestInit() {
 //Cole Was Here
@@ -684,8 +684,17 @@ private:
 			TestInit1();
 		else if(testMode == 2)
 			TestInit2();
+		else if(testMode == 3) {
+			TestInit3();
+		}
+		else if(testMode == 4) {
+			TestInit4();
+		}
 
 		updateSmartDashboard();
+	}
+	void TestInit4() {
+		mantaCoreModule->enable();
 	}
 	void TestInit1() {
 		//		armModule->enable();
@@ -727,6 +736,12 @@ private:
 			TestPeriodic1();
 		else if(testMode == 2)
 			TestPeriodic2();
+		else if(testMode == 3) {
+			TestPeriodic3();
+		}
+		else if(testMode == 4) {
+			TestPeriodic4();
+		}
 		updateSmartDashboard();
 		Wait(0.05);
 	}
@@ -780,6 +795,25 @@ private:
 			startTestDeltaX -= 0.1;
 
 		Wait(0.05);
+	}
+	void TestPeriodic4() {
+		if(controller->getLevel0()) {
+			mantaCoreModule->on();
+		}
+		else if(controller->getLevel3()) {
+			mantaCoreModule->reverse();
+		}
+		else {
+			mantaCoreModule->off();
+		}
+
+		if(controller->getLevel1()) {
+			mantaCoreModule->setPneumatics(true);
+		}
+		else if(controller->getLevel2()) {
+			mantaCoreModule->setPneumatics(false);
+		}
+
 	}
 
 	void printL(std::string message) {
