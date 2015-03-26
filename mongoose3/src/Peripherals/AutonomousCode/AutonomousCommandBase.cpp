@@ -75,10 +75,18 @@ void AutonomousCommandBase::setSetpoint(double distance) {
 	m_Drive->setDriveSetpoint(distance);
 	Wait(0.05);
 	m_Drive->setAngleSetpoint(0);
+	Timer endTimer;
 	Timer timeOut;
 	timeOut.Start();
 	std::cout << "time " << timeOut.Get() << " percentError:" <<(abs(m_Drive->getDriveError()/distance) > .05) << " DriveError" << m_Drive->getDriveError() << " end all loops:"  << endAllLoops<< std::endl;
-	while(abs(m_Drive->getDriveError()) > .4) {
+	while(endTimer.Get() < .2) {
+		if(abs(m_Drive->getDriveError()) < .4) {
+			endTimer.Start();
+		}
+		else {
+			endTimer.Stop();
+			endTimer.Reset();
+		}
 		std::cout << "time " << timeOut.Get() << " percentError:" <<(abs(m_Drive->getDriveError()/distance) > .05)<< " DriveError" << m_Drive->getDriveError() << " end all loops:"  << endAllLoops<< std::endl;
 		if(endAllLoops  || timeOut.Get() > 6) {
 			break;
