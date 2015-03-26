@@ -29,7 +29,7 @@ private:
 	std::string folderName;
 	std::string logFolder;
 	std::vector<Logger> logs;
-	std::vector<RobotModule*> modules;
+	std::vector<RobotModule> modules;
 	int version;
 	double waitTime;
 	std::thread updateThread;

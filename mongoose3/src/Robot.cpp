@@ -77,14 +77,14 @@ private:
 				SCORPION_PORT);
 
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
-//		logs = new CombinedLogs();
-//		logs->addModule(elevatorModule);
-//		logs->addModule(driveModule);
-//		logs->addModule(armModule);
-//		logs->addModule(mantaCoreModule);
-//		logs->addModule(intakeModule);
-//		logs->addHeaders();
-//		logs->start();
+		logs = new CombinedLogs();
+		logs->addModule(elevatorModule);
+		logs->addModule(driveModule);
+		logs->addModule(armModule);
+		logs->addModule(mantaCoreModule);
+		logs->addModule(intakeModule);
+		logs->addHeaders();
+		logs->start();
 
 		timer = new Timer();
 		autoTimer = new Timer();
