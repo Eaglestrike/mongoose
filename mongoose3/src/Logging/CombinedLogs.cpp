@@ -69,15 +69,15 @@ void CombinedLogs::initializeFolder(std::string folderName) {
 
 void CombinedLogs::addHeaders() {
 	std::cout << "Adding Headers" << std::endl;
-	std::vector<int>::size_type sz = logs.size();
-	std::cout << "Vector size: " + std::to_string(sz) << std::endl;
+	size_t sz = logs.size();
+	std::cout << "Vector size: " << sz << std::endl;
 	for (int i = 0; i < sz; i++) {
-		std::cout << "Current header: " + std::to_string(i) << std::endl;
-		for (int j = 0; j < modules[i].getLoggingHeader().size(); j++) {
-			std::cout << modules[i].getLoggingHeader()[j] << std::endl;
+		std::cout << "Current header: " << modules[i]->getLoggingHeader()[0] << std::endl;
+		for (int j = 0; j < modules[i]->getLoggingHeader().size(); j++) {
+			std::cout << modules[i]->getLoggingHeader()[j] << std::endl;
 		}
-		if (!modules[i].getLoggingHeader().empty()) {
-			logs[i].writeHeader(modules[i].getLoggingHeader());
+		if (!modules[i]->getLoggingHeader().empty()) {
+			logs[i].writeHeader(modules[i]->getLoggingHeader());
 		}
 	}
 	std::cout << "Added Headers" << std::endl;
@@ -86,8 +86,8 @@ void CombinedLogs::addHeaders() {
 void CombinedLogs::update() {
 	std::vector<int>::size_type sz = logs.size();
 	for (int i = 0; i < sz; i++) {
-		if (!modules[i].getLoggingData().empty()) {
-			logs[i].writeData(modules[i].getLoggingData());
+		if (!modules[i]->getLoggingData().empty()) {
+			logs[i].writeData(modules[i]->getLoggingData());
 		}
 	}
 }
