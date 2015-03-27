@@ -240,6 +240,46 @@
 				<Property Name="TgtF_targetfileGUID" Type="Str">{AEE2EF3D-7087-47D6-AEAE-9F87F896ED5E}</Property>
 				<Property Name="TgtF_targetfileName" Type="Str">Dashboard.exe</Property>
 			</Item>
+			<Item Name="Dashboard Main" Type="EXE">
+				<Property Name="App_copyErrors" Type="Bool">true</Property>
+				<Property Name="App_INI_aliasGUID" Type="Str">{9163A7FE-79B6-4A44-AA09-4A3C90170631}</Property>
+				<Property Name="App_INI_GUID" Type="Str">{E32D7CB6-9D93-46AD-84B2-374CF459EC14}</Property>
+				<Property Name="App_serverConfig.httpPort" Type="Int">8002</Property>
+				<Property Name="App_winsec.description" Type="Str">http://www.tes114.com</Property>
+				<Property Name="Bld_autoIncrement" Type="Bool">true</Property>
+				<Property Name="Bld_buildCacheID" Type="Str">{A87B673F-7869-4096-A429-EABB1C2EDE5D}</Property>
+				<Property Name="Bld_buildSpecName" Type="Str">Dashboard Main</Property>
+				<Property Name="Bld_excludeInlineSubVIs" Type="Bool">true</Property>
+				<Property Name="Bld_excludeLibraryItems" Type="Bool">true</Property>
+				<Property Name="Bld_excludePolymorphicVIs" Type="Bool">true</Property>
+				<Property Name="Bld_localDestDir" Type="Path">../builds/NI_AB_PROJECTNAME/Dashboard Main</Property>
+				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
+				<Property Name="Bld_modifyLibraryFile" Type="Bool">true</Property>
+				<Property Name="Bld_previewCacheID" Type="Str">{F1A96F30-8B30-4AE0-A121-835EDDD75D85}</Property>
+				<Property Name="Bld_version.build" Type="Int">1</Property>
+				<Property Name="Bld_version.major" Type="Int">1</Property>
+				<Property Name="Destination[0].destName" Type="Str">SmartDashboard.exe</Property>
+				<Property Name="Destination[0].path" Type="Path">../builds/NI_AB_PROJECTNAME/Dashboard Main/SmartDashboard.exe</Property>
+				<Property Name="Destination[0].preserveHierarchy" Type="Bool">true</Property>
+				<Property Name="Destination[0].type" Type="Str">App</Property>
+				<Property Name="Destination[1].destName" Type="Str">Support Directory</Property>
+				<Property Name="Destination[1].path" Type="Path">../builds/NI_AB_PROJECTNAME/Dashboard Main/data</Property>
+				<Property Name="DestinationCount" Type="Int">2</Property>
+				<Property Name="Source[0].itemID" Type="Str">{E0280ACF-EDEF-41A2-869B-223C053766E9}</Property>
+				<Property Name="Source[0].type" Type="Str">Container</Property>
+				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
+				<Property Name="Source[1].itemID" Type="Ref">/My Computer/Dashboard Main.vi</Property>
+				<Property Name="Source[1].sourceInclusion" Type="Str">TopLevel</Property>
+				<Property Name="Source[1].type" Type="Str">VI</Property>
+				<Property Name="SourceCount" Type="Int">2</Property>
+				<Property Name="TgtF_companyName" Type="Str">tes114</Property>
+				<Property Name="TgtF_fileDescription" Type="Str">Dashboard Main</Property>
+				<Property Name="TgtF_internalName" Type="Str">Dashboard Main</Property>
+				<Property Name="TgtF_legalCopyright" Type="Str">Copyright © 2015 tes114</Property>
+				<Property Name="TgtF_productName" Type="Str">Dashboard Main</Property>
+				<Property Name="TgtF_targetfileGUID" Type="Str">{4B136B72-DFCD-44DD-B314-FDA6863DD7A3}</Property>
+				<Property Name="TgtF_targetfileName" Type="Str">SmartDashboard.exe</Property>
+			</Item>
 		</Item>
 	</Item>
 </Project>

@@ -14,7 +14,7 @@
 #include "Logging/EaglestrikeErrorLogger.h"
 #include "Logging/CombinedLogs.h"
 #include "CustomController.h"
-
+#include "Peripherals/HUD/HUDServer.h"
 
 using namespace std;
 
@@ -30,6 +30,7 @@ private:
 
 	Timer* timer;
 	EaglestrikeErrorLogger* eaglestrikeLogger;
+	HUDServer* hudupdater;
 
 	Joystick* leftJoy;
 	Joystick* rightJoy;
@@ -85,6 +86,7 @@ private:
 //		logs->addHeaders();
 //		logs->start();
 
+		hudupdater = new HUDServer(5802);
 		timer = new Timer();
 		autoTimer = new Timer();
 		timer->Start();
@@ -333,11 +335,11 @@ private:
 
 		printL("TeleopInit()");
 
-		elevatorModule->enable();
+		elevatorModule->disable();
 		printL("Elevator");
 		driveModule->enable();
 		printL("Drive");
-		armModule->enable();
+		armModule->disable();
 		printL("Arm");
 		//scorpionModule->disable();
 		intakeModule->enable();
@@ -365,6 +367,7 @@ private:
 			printL("After cal");
 			printL("Arm Module enabled");
 		} catch (EaglestrikeError &e) {
+			hudupdater->updateArm(false);
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
 			if (e.shouldBeFatal())
@@ -384,6 +387,7 @@ private:
 			elevatorModule->setPosition(0);
 
 		} catch (EaglestrikeError &e) {
+			hudupdater->updateElevator(false);
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
 			if (e.shouldBeFatal())

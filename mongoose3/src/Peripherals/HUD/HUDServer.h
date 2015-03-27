@@ -12,11 +12,19 @@
 #include <netinet/in.h>
 #include <iostream>
 #include <unistd.h>
+#include <thread>
+#include "WPILib.h"
+
 class HUDServer {
 public:
 	HUDServer(int);
 	virtual ~HUDServer();
-	int updateStatus(bool, bool);
+	void updateStatus(bool, bool);
+	void updateArm(bool);
+	void updateElevator(bool);
+	static void send(void*, int);
+	void callSend(int);
+	std::thread t;
 };
 
 #endif /* SRC_PERIPHERALS_HUD_HUDSERVER_H_ */

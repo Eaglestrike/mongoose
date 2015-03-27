@@ -333,11 +333,11 @@ private:
 
 		printL("TeleopInit()");
 
-		elevatorModule->enable();
+		elevatorModule->disable();
 		printL("Elevator");
 		driveModule->enable();
 		printL("Drive");
-		armModule->enable();
+		armModule->disable();
 		printL("Arm");
 		//scorpionModule->disable();
 		intakeModule->enable();
