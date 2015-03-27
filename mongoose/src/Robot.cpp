@@ -33,6 +33,7 @@ private:
 	EaglestrikeErrorLogger* eaglestrikeLogger;
 
 	Joystick* leftJoy;
+
 	Joystick* rightJoy;
 	AutonomousCommandBase* autonomousDriver;
 	Xbox* xbox;
@@ -45,6 +46,7 @@ private:
 	CombinedLogs* logs;
 
 	NamedSendable* sendable;
+	SendableChooser* chooser;
 
 	void RobotInit() {
 
@@ -97,6 +99,8 @@ private:
 
 		printL("\tAutonomousCommandBase()");
 		autonomousDriver = new AutonomousCommandBase(driveModule);
+
+		chooser = new SendableChooser();
 
 		printL("RobotInit() end");
 	}
