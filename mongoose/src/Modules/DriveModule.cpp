@@ -11,13 +11,11 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Right_Victor_2 = new Victor(rv2);
 
 	m_Encoder = new Encoder(l_EA, l_EB);
-	m_Encoder->SetReverseDirection(true);
+	m_Encoder->SetReverseDirection(false);
 	m_Encoder->SetDistancePerPulse(FEET_PER_DRIVE_PULSE);
 
 	m_Gyro = new ADXRS453Z(gyroPort);
 	m_Gyro->reset();
-
-	m_Encoder->SetReverseDirection(true);
 
 	m_Drive_Output = new PIDOut();
 	m_Angle_Output = new PIDOut();
@@ -210,3 +208,6 @@ void DriveModule::setAngleOutputRange(double min, double max) {
 	m_Angle_Controller->SetOutputRange(min, max);
 }
 
+void DriveModule::setDriveOutputRange(double min, double max) {
+	m_Angle_Controller->SetOutputRange(min, max);
+}
