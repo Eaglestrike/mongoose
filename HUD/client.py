@@ -111,7 +111,7 @@ def runB():
         
 
 
-        screen.fill((127, 140, 141))
+        screen.fill((46, 204, 113))
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -290,10 +290,8 @@ def runC():
                         for port in pdp:
                             try:
                                 if float(line[portcount+3]) > 1.5:
-                                    
                                     pdp[portcount][0] = 1
                                 else:
-                            
                                     pdp[portcount][0] = 0
                                 portcount+=1
                             except:

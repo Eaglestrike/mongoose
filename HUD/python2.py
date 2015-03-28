@@ -11,6 +11,8 @@ vision = False
 clock = pygame.time.Clock()
 global pdp
 global aspect
+global status
+status = (46, 204, 113)
 pdp = [[0, 1126, 524],[0, 1126, 552],[0, 1126, 580],[0, 1126, 608],[0, 1121, 367],[0, 1121, 406],[0, 1121, 444],[0, 1121, 482],[0, 980, 367],[0, 980, 406],[0, 980, 444],[0, 980, 482],[0, 985, 524],[0, 985, 552],[0, 985, 580],[0, 985, 608]]
 
 def runA():
@@ -61,6 +63,7 @@ def runA():
 
     
 def runB():
+
     print("run b")
     global serverstat
     global clawpos
@@ -68,7 +71,9 @@ def runB():
     global matchtime
     global aspect
     global pdp
+    serverstat = False
     matchtime = 0
+
     percent=0
     timem="2:30"
     clawpos=0
@@ -89,26 +94,26 @@ def runB():
     b = 113
     timer = 0
     timing = True
-    font=pygame.font.Font(None,int(100*aspect))
+    font=pygame.font.Font(None,int(800*aspect))
     visfont = pygame.font.Font(None,int(50*aspect))
-    batteryf = pygame.font.Font(None, int(50*aspect))
+    #batteryf = pygame.font.Font(None, int(50*aspect))
 
     count = 0
     cy = -750
     up = False
     down = False
-    battery = pygame.image.load("images/battery.png").convert_alpha()
-    print("blitted")
-    battery = pygame.transform.scale(battery, (int(battery.get_rect().size[0]*aspect), int(battery.get_rect().size[1]*aspect)))
-    skin1 = pygame.image.load("images/claw.png").convert_alpha()
-    print(skin1.get_rect().size[1])
-    skin1 = pygame.transform.scale(skin1, (int(skin1.get_rect().size[0]*aspect), int(skin1.get_rect().size[1]*aspect)))
-    clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
-    clawclosed = pygame.transform.scale(clawclosed, (int(clawclosed.get_rect().size[0]*aspect), int(clawclosed.get_rect().size[1]*aspect)))
-    pdpimg = pygame.image.load("images/pdp.png").convert_alpha()
-    pdpimg = pygame.transform.scale(pdpimg, (int(pdpimg.get_rect().size[0]*aspect), int(pdpimg.get_rect().size[1]*aspect)))
+    #battery = pygame.image.load("images/battery.png").convert_alpha()
+    #print("blitted")
+    #battery = pygame.transform.scale(battery, (int(battery.get_rect().size[0]*aspect), int(battery.get_rect().size[1]*aspect)))
+    #skin1 = pygame.image.load("images/claw.png").convert_alpha()
+    #print(skin1.get_rect().size[1])
+    #skin1 = pygame.transform.scale(skin1, (int(skin1.get_rect().size[0]*aspect), int(skin1.get_rect().size[1]*aspect)))
+    #clawclosed = pygame.image.load("images/clawclosed.png").convert_alpha()
+    #clawclosed = pygame.transform.scale(clawclosed, (int(clawclosed.get_rect().size[0]*aspect), int(clawclosed.get_rect().size[1]*aspect)))
+    #pdpimg = pygame.image.load("images/pdp.png").convert_alpha()
+    #pdpimg = pygame.transform.scale(pdpimg, (int(pdpimg.get_rect().size[0]*aspect), int(pdpimg.get_rect().size[1]*aspect)))
 
-    clawskin = skin1
+    #clawskin = skin1
 
 
     timekeep = 0
@@ -117,7 +122,7 @@ def runB():
         
 
 
-        screen.fill((127, 140, 141))
+        screen.fill(status)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -197,58 +202,59 @@ def runB():
                   
         
 
-        battext=batteryf.render(str(percent) + ("%"), 1,(255,255,255))
+        #battext=batteryf.render(str(percent) + ("%"), 1,(255,255,255))
         timer1=font.render(timem, 1,(255,255,255))
-        if vision == False:
-            vistext = visfont.render("Vision not working or Robot not on", 1,(255,255,255))
-            screen.blit(vistext,(2858*aspect, 100*aspect))
-        if serverstat == False:
-            servtext = visfont.render("Server not connected or Robot not on", 1,(255,255,255))
-            screen.blit(servtext,(385*aspect, 700*aspect))
-        screen.blit(battery,(1025*aspect,50*aspect))
-        pygame.draw.rect(screen, ((r,g,b)), (1030*aspect,244*aspect,90*aspect,bath*aspect), 0)
-        screen.blit(clawskin,(35*aspect,cy*aspect))
-        screen.blit(pdpimg, (950*aspect, 300*aspect))
-        portcount = 0
-        for port in pdp:
-            if portcount < 4 and portcount > 11:
-                if pdp[portcount][0] == 1:
-                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
-                if pdp[portcount][0] == 0:
-                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
-            if portcount > 3 or portcount < 12:
-                if pdp[portcount][0] == 1:
-                    pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
-                if pdp[portcount][0] == 0:
-                    pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
-            portcount +=1
+        #if vision == False:
+        #    vistext = visfont.render("Vision not working or Robot not on", 1,(255,255,255))
+        #    screen.blit(vistext,(2858*aspect, 100*aspect))
+
+        #if serverstat == False:
+        #    servtext = visfont.render("Server not connected or Robot not on", 1,(255,255,255))
+        #    screen.blit(servtext,(385*aspect, 700*aspect))
+        #screen.blit(battery,(1025*aspect,50*aspect))
+        #pygame.draw.rect(screen, ((r,g,b)), (1030*aspect,244*aspect,90*aspect,bath*aspect), 0)
+        #screen.blit(clawskin,(35*aspect,cy*aspect))
+        #screen.blit(pdpimg, (950*aspect, 300*aspect))
+        #portcount = 0
+        #for port in pdp:
+        #    if portcount < 4 and portcount > 11:
+        #        if pdp[portcount][0] == 1:
+        #            pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
+        #        if pdp[portcount][0] == 0:
+        #            pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 37*aspect, 37*aspect))
+        #    if portcount > 3 or portcount < 12:
+        #        if pdp[portcount][0] == 1:
+        #            pygame.draw.rect(screen, ((39, 174, 96)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
+        #        if pdp[portcount][0] == 0:
+        #            pygame.draw.rect(screen, ((192, 57, 43)), (pdp[portcount][1]*aspect, pdp[portcount][2]*aspect, 29*aspect, 27*aspect))
+        #    portcount +=1
 
 
         
         
-        screen.blit(battext, (1047*aspect, 150*aspect))
-        screen.blit(timer1,(550*aspect,600*aspect))
-        try:
-            screen.blit(img, (285*aspect, 100*aspect))
-        except:
-            pass
+        #screen.blit(battext, (1047*aspect, 150*aspect))
+        screen.blit(timer1,(screen.get_width()/2*aspect,screen.get_height()/2*aspect))
+        #try:
+        #    screen.blit(img, (285*aspect, 100*aspect))
+        #except:
+        #    pass
         timetemp=150-matchtime
 
         timem = str(timetemp//60)+":"+str(timetemp%60)
 
 
-        if bath >= -2000:
-                r = 46 
-                g = 204
-                b = 113
-                if bath > -80:
-                    r = 241
-                    g = 196
-                    b = 15 
-                    if bath >= -40:
-                        r = 192
-                        g = 57
-                        b = 43  
+        #if bath >= -2000:
+        #        r = 46 
+        #        g = 204
+        #        b = 113
+        #        if bath > -80:
+        #            r = 241
+        #            g = 196
+        #            b = 15 
+        #           if bath >= -40:
+        #                r = 192
+        #                g = 57
+        #                b = 43  
 
         
         percent = math.floor(bath/-1.6)
@@ -260,6 +266,7 @@ def runC():
     
     global clawpos
     global serverstat
+    serverstat=False
     global bath
     global matchtime
     HOST="10.1.14.2"
