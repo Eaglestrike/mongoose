@@ -23,6 +23,6 @@
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/cpp/${version}/ant/build.properties"/>
   
-  <import file="${wpilib.ant.dir}/build.xml"/>
+  <import file="C:\Users\Ben Evans\wpilib\cpp\current\ant\build.xml"/>
 
 </project> 

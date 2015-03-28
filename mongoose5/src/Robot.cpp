@@ -697,6 +697,8 @@ private:
 		//intakeModule->enable();
 		armModule->enable();
 		//mantaCoreModule->enable();
+
+		intakeModule->enable();
 	}
 	void TestInit1() {
 		//		armModule->enable();
@@ -815,17 +817,7 @@ private:
 //		else if(controller->getLevel2()) {
 //			mantaCoreModule->setPneumatics(false);
 //		}
-//		if(controller->getLevel0()) {
-//			intakeModule->intake(1);
-//		}
-//		else if(controller->getLevel1()) {
-//			intakeModule->intake(-1);
-//		}
-//		else {
-//			intakeModule->intake(0);
-//		}
-		armModule->setRightPower(controller->getRightX());
-		armModule->setLeftPower(controller->getLeftX());
+
 	}
 
 	void printL(std::string message) {
