@@ -52,10 +52,14 @@ void HUDServer::callSend(int portno) {
 		if (newsockfd < 0) //error checking
 			std::cout<<"ERROR on accept"<<std::endl;
 		std::cout << "listening" <<std::endl;
-		while(retval == 0){ //infinite loops :D
-			int error = 0;
-			socklen_t len = sizeof (error);
-			retval = getsockopt (sockfd), SOL_SOCKET, SO_ERROR, &error, &len );
+		while(true){ //infinite loops :D
+			int err;
+			int sizeerr = sizeof(err);
+			int ret = getsockopt(sock, SOL_SOCKET, SO_ERROR, &err, &sizeerr);
+			if(ret){
+				std::cout<<"HUD disconnected\n";
+				break;
+			}
 			if(armstatus==true){
 				armstring = "True";
 			}

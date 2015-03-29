@@ -698,7 +698,6 @@ private:
 	}
 	void TestInit4() {
 		mantaCoreModule->enable();
-		//intakeModule->enable();
 	}
 	void TestInit1() {
 		//		armModule->enable();
