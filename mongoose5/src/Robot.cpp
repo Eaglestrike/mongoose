@@ -257,7 +257,7 @@ private:
 			Wait(1);
 			autonomousDriver->setSetpoint(10);
 			Wait(0.15);
-			mantaCoreModule->setPneumatics(false);
+			//mantaCoreModule->setPneumatics(false);
 			mantaCoreModule->on();
 			Wait(2);
 			mantaCoreModule->off();
@@ -337,7 +337,7 @@ private:
 		printL("Elevator");
 		driveModule->enable();
 		printL("Drive");
-		armModule->disable();
+		armModule->enable();
 		printL("Arm");
 		//scorpionModule->disable();
 		intakeModule->enable();
@@ -641,7 +641,7 @@ private:
 
 	void updatePID() {
 		if (controller->getLevel0()) {
-			driveModule->setDrivePID(driveModule->getDriveP() - .01 / 10,
+			armModule->setRightPID(armModule->getRightP() - .01 / 10,
 					driveModule->getDriveI(), driveModule->getDriveD());
 		} else if (controller->getLevel1()) {
 			driveModule->setDrivePID(driveModule->getDriveP() + .01 / 10,
@@ -690,12 +690,15 @@ private:
 		else if(testMode == 4) {
 			TestInit4();
 		}
+		else if(testMode == 5) {
+			TestInit5();
+		}
 
 		updateSmartDashboard();
 	}
 	void TestInit4() {
-		//mantaCoreModule->enable();
-		intakeModule->enable();
+		mantaCoreModule->enable();
+		//intakeModule->enable();
 	}
 	void TestInit1() {
 		//		armModule->enable();
@@ -720,6 +723,10 @@ private:
 		calibrateArm();
 	}
 
+	void TestInit5() {
+		intakeModule->enable();
+	}
+
 	void TestPeriodic1() {
 		updatePID();
 		if(controller->getRight3()) {
@@ -742,6 +749,9 @@ private:
 		}
 		else if(testMode == 4) {
 			TestPeriodic4();
+		}
+		else if(testMode == 5) {
+			TestPeriodic5();
 		}
 		updateSmartDashboard();
 		Wait(0.05);
@@ -798,22 +808,35 @@ private:
 		Wait(0.05);
 	}
 	void TestPeriodic4() {
+		if(controller->getLevel0()) {
+			mantaCoreModule->on();
+		}
+		else if(controller->getLevel3()) {
+			mantaCoreModule->reverse();
+		}
+		else {
+			mantaCoreModule->off();
+		}
+
+		if(controller->getLevel1()) {
+			mantaCoreModule->setPneumatics(true);
+		}
+		else if(controller->getLevel2()) {
+			mantaCoreModule->setPneumatics(false);
+		}
 //		if(controller->getLevel0()) {
-//			mantaCoreModule->on();
+//			intakeModule->intake(1);
 //		}
-//		else if(controller->getLevel3()) {
-//			mantaCoreModule->reverse();
+//		else if(controller->getLevel1()) {
+//			intakeModule->intake(-1);
 //		}
 //		else {
-//			mantaCoreModule->off();
+//			intakeModule->intake(0);
 //		}
-//
-//		if(controller->getLevel1()) {
-//			mantaCoreModule->setPneumatics(true);
-//		}
-//		else if(controller->getLevel2()) {
-//			mantaCoreModule->setPneumatics(false);
-//		}
+
+	}
+
+	void TestPeriodic5() {
 		if(controller->getLevel0()) {
 			intakeModule->intake(1);
 		}
@@ -823,7 +846,6 @@ private:
 		else {
 			intakeModule->intake(0);
 		}
-
 	}
 
 	void printL(std::string message) {
