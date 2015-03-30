@@ -42,7 +42,6 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 
 void ArmModule::checkError(){
 
-	return;
 	std::cout << "ARM MODULE: checkError()" << std::endl;
 
 	Timer leftTimer;
@@ -54,6 +53,8 @@ void ArmModule::checkError(){
 	std::cout << "ARM MODULE: while(true) " << std::endl;
 
 	while(true){
+
+		m_HUD_Error = false;
 
 		if(m_Enabled && !m_Manual && m_Calibrating){
 
@@ -78,18 +79,22 @@ void ArmModule::checkError(){
 			std::cout << "LTime: " << leftTimer.Get() << " RTime: " << rightTimer.Get() << " lr: " << m_Left_Encoder->GetRate() << " rr: " << m_Right_Encoder->GetRate() << " lp: " << m_Left_Talon->Get() << " rp: " << m_Right_Talon->Get() << std::endl;
 
 			if(leftTimer.Get() > 0.1){
-				std::cout << "THROWING ERROR" << std::endl;
-				throw MovementError(this, "ArmModule::checkError()", "Left encoder not moving at sufficient rate! (could be unplugged)", true);
+				std::cout << "UPDATING HUD" << std::endl;
+				m_HUD_Error = true;
 			}
 			if(rightTimer.Get() > 0.1){
-				std::cout << "THROWING ERROR" << std::endl;
-				throw MovementError(this, "ArmModule::checkError()", "Right encoder not moving at sufficient rate! (could be unplugged)", true);
+				std::cout << "UPDATING HUD" << std::endl;
+				m_HUD_Error = true;
 			}
 		}
 
 		Wait(0.01);
 
 	}
+}
+
+bool ArmModule::getHUDError(){
+	return m_HUD_Error;
 }
 
 void ArmModule::handleFatalError(){

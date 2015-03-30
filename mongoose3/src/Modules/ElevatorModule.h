@@ -76,6 +76,8 @@ public:
 	double getEncoderDistance();
 	double getSetpoint();
 	bool hasCalibrated();
+	bool getHUDError();
+
 
 	std::vector<std::string> getLoggingHeader();
 	std::vector<double> getLoggingData();
@@ -89,6 +91,7 @@ private:
 	PIDController* m_PIDController;
 	bool m_Manual;
 	bool m_Calibration_Is_Done;
+	bool m_HUD_Error;
 
 };
 

@@ -27,10 +27,9 @@ private:
 	//ScorpionModule* scorpionModule;
 	MantaCoreModule* mantaCoreModule;
 	IntakeModule* intakeModule;
-
+	HUDServer* hud;
 	Timer* timer;
 	EaglestrikeErrorLogger* eaglestrikeLogger;
-	HUDServer* hudupdater;
 
 	Joystick* leftJoy;
 	Joystick* rightJoy;
@@ -55,7 +54,6 @@ private:
 		printL("RobotInit()");
 
 		lw = LiveWindow::GetInstance();
-
 		printL("\tElevatorModule()");
 		elevatorModule = new ElevatorModule(ELEVATOR_1, ELEVATOR_2,
 				ELEVATOR_SAFTEY_BUTTON, ELEVATOR_ENCODER_A, ELEVATOR_ENCODER_B);
@@ -86,7 +84,6 @@ private:
 //		logs->addHeaders();
 //		logs->start();
 
-		hudupdater = new HUDServer(5802);
 		timer = new Timer();
 		autoTimer = new Timer();
 		timer->Start();
@@ -100,7 +97,11 @@ private:
 		autonomousDriver = new AutonomousCommandBase(driveModule);
 		updateSmartDashboard();
 
+		hud = new HUDServer(5802, armModule, elevatorModule);
+
+
 		printL("RobotInit() end");
+
 	}
 
 	void DisabledInit() {
@@ -335,11 +336,11 @@ private:
 
 		printL("TeleopInit()");
 
-		elevatorModule->disable();
+		elevatorModule->enable();
 		printL("Elevator");
 		driveModule->enable();
 		printL("Drive");
-		armModule->disable();
+		armModule->enable();
 		printL("Arm");
 		//scorpionModule->disable();
 		intakeModule->enable();
@@ -367,7 +368,6 @@ private:
 			printL("After cal");
 			printL("Arm Module enabled");
 		} catch (EaglestrikeError &e) {
-			hudupdater->updateArm(false);
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
 			if (e.shouldBeFatal())
@@ -387,7 +387,7 @@ private:
 			elevatorModule->setPosition(0);
 
 		} catch (EaglestrikeError &e) {
-			hudupdater->updateElevator(false);
+
 			cerr << "EaglestrikeError: " << e.toString() << endl;
 			eaglestrikeLogger->logError(e);
 			if (e.shouldBeFatal())
@@ -678,7 +678,7 @@ private:
 
 	}
 
-	int testMode = 4;
+	int testMode = 2;
 
 	void TestInit() {
 //Cole Was Here

@@ -674,7 +674,7 @@ private:
 
 	}
 
-	int testMode = 4;
+	int testMode = 2;
 
 	void TestInit() {
 //Cole Was Here
