@@ -15,7 +15,7 @@
 #include "../Error/CalibrationError.h"
 #include "../Error/MovementError.h"
 #include <iostream>
-
+#include <Peripherals/HUD/HUDServer.h>
 
 class ModifiedEncoder: public Encoder {
 private:
@@ -120,6 +120,7 @@ public:
 	double getDiffError();
 	double getRightError();
 
+	bool getHUDError();
 
 	void grab(double deltaX);
 	void open();
@@ -148,6 +149,7 @@ private:
 	bool m_Manual;
 	bool m_Calibrating;
 	bool m_Has_Calibrated;
+	bool m_HUD_Error;
 
 };
 

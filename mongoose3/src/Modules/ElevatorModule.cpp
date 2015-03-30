@@ -70,16 +70,23 @@ void ElevatorModule::checkError(){
 	encoderTimeOut.Start();
 
 	while(true) {
+		m_HUD_Error = false;
+
 		if(m_Enabled && !m_Manual) {
 			if(abs(m_Encoder->GetRate()) < .05) { }
 			else encoderTimeOut.Reset();
 
 			if(encoderTimeOut.Get() > 0.1) {
-				throw MovementError(this, "ElevatorModule::checkError()" , "check if Encoder is plugged in");
+				m_HUD_Error = true;
 			}
 		}
 	}
 }
+
+bool ElevatorModule::getHUDError(){
+	return m_HUD_Error;
+}
+
 
 void ElevatorModule::handleFatalError(){
 	disablePID();
