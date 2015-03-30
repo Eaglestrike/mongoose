@@ -14,7 +14,7 @@
 
 void reportError(EaglestrikeError* v){
 	DriverStation::ReportError(v->toString());
-	SmartDashboard::PutString("Error log", SmartDashboard::GetString("Error log") + "\n\n" + v->toString());
+	SmartDashboard::PutString("Error log",  v->toString() + "\n" + SmartDashboard::GetString("Error log"));
 
 }
 

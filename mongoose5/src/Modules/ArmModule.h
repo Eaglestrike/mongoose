@@ -85,7 +85,7 @@ public:
 	void setRightArm(float setpoint);
 	void setLeftPower(float power);
 	void setRightPower(float power);
-	void calibrate();
+	bool calibrate();
 	void syncCalibrate();
 	static void callSyncCalibrate(void*);
 	void setManual(bool man);

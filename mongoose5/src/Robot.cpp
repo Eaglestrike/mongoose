@@ -163,6 +163,7 @@ private:
 		}
 		autoTimer->Start();
 		t = thread(checkTime, this);
+		t.detach();
 		mantaCoreModule->enable();
 		driveModule->enable();
 		updateSmartDashboard();
@@ -254,7 +255,7 @@ private:
 			}
 		} else if(autoState == AUTO_MANTA_CORE_WITHOUT_BACK && !finished) {
 			mantaCoreModule->setPneumatics(true);
-			Wait(1);
+			Wait(.5);
 			autonomousDriver->setSetpoint(10);
 			Wait(0.15);
 			//mantaCoreModule->setPneumatics(false);
@@ -333,7 +334,7 @@ private:
 
 		printL("TeleopInit()");
 
-		elevatorModule->disable();
+		elevatorModule->enable();
 		printL("Elevator");
 		driveModule->enable();
 		printL("Drive");
@@ -480,7 +481,7 @@ private:
 				leftSetpoint = 4;
 				//				hasLS = true;
 			} else if(state == 2) {
-				deltaX = 5.8;
+				deltaX = ARM_CLOSED_CONTAINER_DISTANCE;
 				leftSetpoint = 3;
 				//				hasLS = true;
 			}
@@ -674,7 +675,7 @@ private:
 
 	}
 
-	int testMode = 4;
+	int testMode = 2;
 
 	void TestInit() {
 //Cole Was Here

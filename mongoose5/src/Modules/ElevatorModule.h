@@ -54,7 +54,7 @@ public:
 	void resetPersist();
 	void checkError();
 	void handleFatalError();
-	void calibrate();
+	bool calibrate();
 	void syncCalibrate();
 	static void callSyncCalibrate(void*);
 	void setPosition(double height);
