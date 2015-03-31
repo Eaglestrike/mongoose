@@ -56,7 +56,7 @@ void ArmModule::checkError(){
 
 		m_HUD_Error = false;
 
-		if(m_Enabled && !m_Manual && m_Calibrating){
+		if(m_Enabled && !m_Manual && m_Has_Calibrated){
 
 			//TODO possibly not do thread, have a periodic method that gets called every periodic
 			//TODO add a timer. this will not work right now

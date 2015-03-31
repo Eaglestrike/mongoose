@@ -8,7 +8,9 @@
 #include "ElevatorModule.h"
 
 ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonPort, int encoderA, int encoderB):
-RobotModule("Elevator"){
+RobotModule("Elevator"),
+m_HUD_Error(0)
+{
 	m_SafteyButton = new DigitalInput(safteyButtonPort);
 	m_Motor_1 = new SafeTalonSRX(motorPort1, m_SafteyButton);
 	m_Motor_2 = new SafeTalonSRX(motorPort2, m_SafteyButton);
@@ -72,7 +74,7 @@ void ElevatorModule::checkError(){
 	while(true) {
 		m_HUD_Error = false;
 
-		if(m_Enabled && !m_Manual) {
+		if(m_Enabled && !m_Manual && m_Calibration_Is_Done) {
 			if(abs(m_Encoder->GetRate()) < .05) { }
 			else encoderTimeOut.Reset();
 
