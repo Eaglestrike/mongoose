@@ -467,7 +467,7 @@ private:
 			if(controller->dropRelease()){
 				elevatorModule->disablePID();
 				elevatorModule->setPower(ELEVATOR_DROP_POWER);
-				state == 2;
+				state = 2;
 				hasEnabled1 = false;
 			}else {
 				elevatorModule->enablePID();
@@ -596,11 +596,6 @@ private:
 		} else if (controller->raise()) {
 			elevatorModule->disablePID();
 			elevatorModule->setPower(0.5);
-			hasEnabled = false;
-		} else if(controller->dropRelease()){
-			elevatorModule->disablePID();
-			elevatorModule->setPower(ELEVATOR_DROP_POWER);
-			armModule->open();
 			hasEnabled = false;
 		}else {
 			elevatorModule->enablePID();
