@@ -100,11 +100,6 @@ private:
 
 		hud = new HUDServer(5802, armModule, elevatorModule);
 
-
-		camera = CameraServer::GetInstance();
-		camera->SetQuality(50);
-		camera->StartAutomaticCapture("cam0");
-
 		printL("RobotInit() end");
 
 	}

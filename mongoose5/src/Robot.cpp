@@ -142,7 +142,7 @@ private:
 		Wait(0.05);
 	}
 
-	int autoState = AUTO_MANTA_CORE_WITHOUT_BACK;
+	int autoState = AUTO_DO_NOTHING;
 
 	static void checkTime(void* v) {
 		((Robot*)(v))->time();

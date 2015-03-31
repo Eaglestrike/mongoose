@@ -92,6 +92,7 @@ private:
 	bool m_Manual;
 	bool m_Calibration_Is_Done;
 	bool m_HUD_Error;
+	std::thread m_Error_Checking_Thread;
 
 };
 
