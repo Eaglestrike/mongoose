@@ -14,7 +14,7 @@
 #include "Logging/EaglestrikeErrorLogger.h"
 #include "Logging/CombinedLogs.h"
 #include "CustomController.h"
-
+#include "Peripherals/HUD/HUDServer.h"
 
 using namespace std;
 
@@ -46,7 +46,7 @@ private:
 
 	NamedSendable* sendable;
 	CameraServer* camera;
-
+	HUDServer* hud;
 	void RobotInit() {
 
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
@@ -106,6 +106,7 @@ private:
 		updateSmartDashboard();
 
 		printL("RobotInit() end");
+		hud = new HUDServer(5802, armModule, elevatorModule);
 	}
 
 	void DisabledInit() {
