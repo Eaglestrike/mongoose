@@ -58,8 +58,7 @@ void HUDServer::callSend(int portno) {
 //				std::cout << "HUD disconnected\n";
 //				break;
 //			}
-			armstatus = armInstance->getHUDError();
-			elevatorstatus = elevInstance->getHUDError();
+
 			elevcalibratestatus = elevInstance->hasCalibrated();
 			armcalibratestatus = armInstance->hasCalibrated();
 			if (armstatus == true) {

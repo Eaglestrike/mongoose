@@ -77,14 +77,14 @@ private:
 				SCORPION_PORT);
 
 		SmartDashboard::PutNumber("DeltaX", armModule->getDiffSetpoint());
-//		logs = new CombinedLogs();
-//		logs->addModule(elevatorModule);
-//		logs->addModule(driveModule);
-//		logs->addModule(armModule);
-//		logs->addModule(mantaCoreModule);
-//		logs->addModule(intakeModule);
-//		logs->addHeaders();
-//		logs->start();
+		//		logs = new CombinedLogs();
+		//		logs->addModule(elevatorModule);
+		//		logs->addModule(driveModule);
+		//		logs->addModule(armModule);
+		//		logs->addModule(mantaCoreModule);
+		//		logs->addModule(intakeModule);
+		//		logs->addHeaders();
+		//		logs->start();
 
 		timer = new Timer();
 		autoTimer = new Timer();
@@ -263,9 +263,9 @@ private:
 			}
 		} else if(autoState == AUTO_MANTA_CORE_WITHOUT_BACK && !finished) {
 			mantaCoreModule->setPneumatics(true);
-			Wait(.5);
+			Wait(.35);
 			autonomousDriver->setSetpoint(10);
-			Wait(0.15);
+			Wait(0.10);
 			//mantaCoreModule->setPneumatics(false);
 			mantaCoreModule->on();
 			Wait(2);
@@ -273,38 +273,38 @@ private:
 			finished = true;
 
 		} else if(autoState == AUTO_GRAB_THREE_TOTE && !finished) {
-//			elevatorModule->setPosition(0);
-//			Wait(0.2);
-//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-//			Wait(0.2);
-//			elevatorModule->setPosition(35);
-//			intakeModule->intake(1, true);
-//			Wait(0.1);
+			//			elevatorModule->setPosition(0);
+			//			Wait(0.2);
+			//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+			//			Wait(0.2);
+			//			elevatorModule->setPosition(35);
+			//			intakeModule->intake(1, true);
+			//			Wait(0.1);
 			autonomousDriver->setSetpoint(5);
 			Wait(0.1);
-//			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
-//			intakeModule->intake(1);
+			//			elevatorModule->setPosition(ELEVATOR_LEVEL_1);
+			//			intakeModule->intake(1);
 			autonomousDriver->setSetpoint(2);
-//			Wait(0.15);
-//			armModule->open();
-//			Wait(.1);
-//			elevatorModule->setPosition(ELEVATOR_LEVEL_0);
-//			Wait(.1);
-//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
-//			Wait(.1);
-//			elevatorModule->setPosition(35);
-//			Wait(.1);
-//			intakeModule->intake(1, true);
+			//			Wait(0.15);
+			//			armModule->open();
+			//			Wait(.1);
+			//			elevatorModule->setPosition(ELEVATOR_LEVEL_0);
+			//			Wait(.1);
+			//			armModule->grab(ARM_CLOSED_TOTE_DISTANCE);
+			//			Wait(.1);
+			//			elevatorModule->setPosition(35);
+			//			Wait(.1);
+			//			intakeModule->intake(1, true);
 			Wait(.1);
 			autonomousDriver->setSetpoint(5);
-//			Wait(.1);
-//			intakeModule->intake(1);
+			//			Wait(.1);
+			//			intakeModule->intake(1);
 			Wait(.1);
 			autonomousDriver->setSetpoint(2);
 			//			Wait(.1);
-//			elevatorModule->setPosition(0);
-//			Wait(.15);
-//			armModule->open();
+			//			elevatorModule->setPosition(0);
+			//			Wait(.15);
+			//			armModule->open();
 			Wait(.1);
 			autonomousDriver->setOutputRange(-.5, .5);
 			autonomousDriver->turnAngle(90);
@@ -329,7 +329,7 @@ private:
 					<< elevatorModule->getEncoderDistance() << " EET: "
 					<< elevatorModule->getEncoderTicks() << " EB: "
 					<< elevatorModule->getButton() << endl << "DeltaX: "
-//					<< SmartDashboard::GetNumber("DeltaX")
+					//					<< SmartDashboard::GetNumber("DeltaX")
 					<< endl;
 		}
 		//t.join();
@@ -338,6 +338,7 @@ private:
 		Wait(0.01);
 	}
 	bool hasEnabled = true;
+	bool hasEnabled1 = true;
 	void TeleopInit() {
 
 		printL("TeleopInit()");
@@ -462,6 +463,19 @@ private:
 		//		elevatorModule->setPower(elevatorPower);
 
 		if (!armModule->isManual()) {
+
+			if(controller->dropRelease()){
+				elevatorModule->disablePID();
+				elevatorModule->setPower(ELEVATOR_DROP_POWER);
+				state == 2;
+				hasEnabled1 = false;
+			}else {
+				elevatorModule->enablePID();
+				if (!hasEnabled1)
+					elevatorModule->setPosition(
+							elevatorModule->getEncoderDistance());
+				hasEnabled1 = true;
+			}
 
 			if (controller->grabTote()) {
 				state = 1;
@@ -640,8 +654,8 @@ private:
 					<< elevatorModule->getEncoderTicks() << " BUTTON: "
 					<< elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()
-																																			<< " Elevator height: "
-																																			<< elevatorModule->getEncoderDistance() << endl;
+																																													<< " Elevator height: "
+																																													<< elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
@@ -686,7 +700,7 @@ private:
 	int testMode = 2;
 
 	void TestInit() {
-//Cole Was Here
+		//Cole Was Here
 
 		std::cout << "TestInit" << testMode << "()" << std::endl;
 		if(testMode == 1)
@@ -789,7 +803,7 @@ private:
 					<< elevatorModule->getEncoderDistance() << " EET: "
 					<< elevatorModule->getEncoderTicks() << " EB: "
 					<< elevatorModule->getButton() << endl <<"DeltaX: "
-//					<< SmartDashboard::GetNumber("DeltaX") <<
+					//					<< SmartDashboard::GetNumber("DeltaX") <<
 					<<endl;
 		}
 		printCounter++;
@@ -832,15 +846,15 @@ private:
 		else if(controller->getLevel2()) {
 			mantaCoreModule->setPneumatics(false);
 		}
-//		if(controller->getLevel0()) {
-//			intakeModule->intake(1);
-//		}
-//		else if(controller->getLevel1()) {
-//			intakeModule->intake(-1);
-//		}
-//		else {
-//			intakeModule->intake(0);
-//		}
+		//		if(controller->getLevel0()) {
+		//			intakeModule->intake(1);
+		//		}
+		//		else if(controller->getLevel1()) {
+		//			intakeModule->intake(-1);
+		//		}
+		//		else {
+		//			intakeModule->intake(0);
+		//		}
 
 	}
 
