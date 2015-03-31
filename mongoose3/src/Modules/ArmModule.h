@@ -150,6 +150,7 @@ private:
 	bool m_Calibrating;
 	bool m_Has_Calibrated;
 	bool m_HUD_Error;
+	std::thread m_Error_Checking_Thread;
 
 };
 

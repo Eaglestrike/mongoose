@@ -11,7 +11,8 @@
 
 
 ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort, int midButtonPort, int leftButtonPort, int rEncoderA, int rEncoderB, int lEncoderA, int lEncoderB)
-: RobotModule("Arm")
+: RobotModule("Arm"),
+  m_Error_Checking_Thread(ArmModule::callCheckError, this)
 {
 	DigitalInput* rightButton = new DigitalInput(rightButtonPort);
 	DigitalInput* leftButton = new DigitalInput(leftButtonPort);

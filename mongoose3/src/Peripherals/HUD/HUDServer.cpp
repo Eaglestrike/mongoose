@@ -83,7 +83,7 @@ void HUDServer::callSend(int portno) {
 				elevcalibratestring = "False";
 			}
 			std::string time= std::to_string(DriverStation::GetInstance()->GetMatchTime());
-			std::string msg = armstring + " " + armcalibratestring +" " +  elevatorstring + " "+elevcalibratestring+ " " + time + " \n";
+			std::string msg = armcalibratestring +" "+elevcalibratestring+ " " + time + " \n";
 			n = write(newsockfd, msg.c_str(), msg.length()); //send needed data
 
 			if(n < 0)

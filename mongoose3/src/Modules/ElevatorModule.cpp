@@ -9,7 +9,8 @@
 
 ElevatorModule::ElevatorModule(int motorPort1, int motorPort2, int safteyButtonPort, int encoderA, int encoderB):
 RobotModule("Elevator"),
-m_HUD_Error(0)
+m_HUD_Error(0),
+m_Error_Checking_Thread(ElevatorModule::callCheckError, this)
 {
 	m_SafteyButton = new DigitalInput(safteyButtonPort);
 	m_Motor_1 = new SafeTalonSRX(motorPort1, m_SafteyButton);
