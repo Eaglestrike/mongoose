@@ -18,7 +18,7 @@ RobotModule("Elevator"){
 	m_PIDController = new PIDController(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D, m_Encoder, m_Lifter);
 	m_Manual = true;
 
-	m_PIDController->SetOutputRange(MAX_ELEVATOR_DOWN, MAX_ELEVATOR_UP);
+	m_PIDController->SetOutputRange(MAX_ELEVATOR_DOWN, MAX_ELEVATOR_UP_PRACTICE);
 	m_PIDController->SetInputRange(MIN_ELEVATOR_INPUT, MAX_ELEVATOR_INPUT);
 	m_Calibration_Is_Done = false;
 
@@ -105,10 +105,10 @@ void ElevatorModule::setPower(double power){
 		m_Lifter->Set(0);
 }
 
-void ElevatorModule::calibrate() {
+bool ElevatorModule::calibrate() {
 
 	if(!m_Enabled)
-		return;
+		return false;
 
 	std::cout << "in calibrate" << std::endl;
 
@@ -159,6 +159,7 @@ void ElevatorModule::calibrate() {
 
 	m_Calibration_Is_Done = true;
 	std::cout << "Done with Calibrate" << std::endl;
+	return true;
 }
 
 void ElevatorModule::syncCalibrate() {

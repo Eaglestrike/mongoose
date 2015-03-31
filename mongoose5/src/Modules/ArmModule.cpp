@@ -287,7 +287,7 @@ void ArmModule::disable() {
 	m_Right_Talon->Disable();
 }
 
-void ArmModule::calibrate() {
+bool ArmModule::calibrate() {
 
 	m_Calibrating = true;
 
@@ -295,7 +295,7 @@ void ArmModule::calibrate() {
 	timeout.Start();
 
 	if(!m_Enabled)
-		return;
+		return false;
 
 	bool renablePid = false;
 
@@ -304,9 +304,9 @@ void ArmModule::calibrate() {
 		renablePid = true;
 	}
 
-	if(m_Right_Talon->getButton() && m_Left_Talon->getButton() && m_Saftey_Button->Get())
+	if(m_Right_Talon->getButton() && m_Left_Talon->getButton() && m_Saftey_Button->Get()){
 		throw CalibrationError(this, "ArmModule::calibrate()", "All three buttons are pressed (wiring issue)");
-
+	}
 	while (!m_Right_Talon->getButton() || !m_Left_Talon->getButton()) {
 
 		if(timeout.Get() > MAX_CALIBRATE_TIME_OUT){
@@ -374,6 +374,7 @@ void ArmModule::calibrate() {
 	if(renablePid)
 		enablePID();
 
+	return true;
 }
 
 void ArmModule::syncCalibrate(){
