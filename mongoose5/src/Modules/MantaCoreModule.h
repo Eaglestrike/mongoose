@@ -29,7 +29,7 @@ public:
 	std::vector<double> getLoggingData();
 
 private:
-	Relay* m_Winch;
+	Victor* m_Winch;
 	Solenoid* m_Solenoid;
 };
 

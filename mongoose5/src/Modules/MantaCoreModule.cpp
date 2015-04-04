@@ -9,7 +9,8 @@
 
 MantaCoreModule::MantaCoreModule(int relayPort, int solenoid) : RobotModule("Mantacore") {
 	// TODO Auto-generated constructor stub
-	m_Winch = new Relay(relayPort);
+//	m_Winch = new Relay(relayPort, Relay::kBothDirections);
+	m_Winch = new Victor(9);
 	m_Solenoid = new Solenoid(solenoid);
 }
 
@@ -26,20 +27,17 @@ void MantaCoreModule::enable() {
 }
 void MantaCoreModule::on() {
 	if(!m_Enabled) return;
-	m_Winch->Set(Relay::kForward);
-	//m_Winch->Set(Relay::kOn);
+	m_Winch->Set(1);
 }
 
 void MantaCoreModule::off() {
 	if(!m_Enabled) return;
-
-	m_Winch->Set(Relay::kOff);
+	m_Winch->Set(0);
 }
 
 void MantaCoreModule::reverse() {
 	if(!m_Enabled) return;
-
-	m_Winch->Set(Relay::kReverse);
+	m_Winch->Set(-1);
 	//m_Winch->Set(Relay::kOn);
 }
 

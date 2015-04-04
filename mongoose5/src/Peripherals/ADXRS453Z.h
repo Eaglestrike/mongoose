@@ -29,7 +29,7 @@ private:
 
 	double lastTime;
 	double angle;
-	double adjustment = GYRO_ADJUSTMENT_PRAC - .0899;
+	double adjustment = GYRO_ADJUSTMENT_REAL;
 
 	int ignoreCounter = 0;
 

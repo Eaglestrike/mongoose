@@ -21,7 +21,7 @@ ArmModule::ArmModule(int rightTalonPort, int leftTalonPort, int rightButtonPort,
 	m_Left_Encoder = new ModifiedEncoder(lEncoderA, lEncoderB, 0);
 	m_Right_Encoder = new ModifiedEncoder(rEncoderA, rEncoderB, MAX_DELTA_X);
 	m_Left_Encoder->SetReverseDirection(true);
-	m_Left_Encoder->SetDistancePerPulse(ARM_DISTANCE_PER_PULSE/4);
+	m_Left_Encoder->SetDistancePerPulse(ARM_DISTANCE_PER_PULSE/4.0);
 	m_Right_Encoder->SetDistancePerPulse(ARM_DISTANCE_PER_PULSE);
 	m_Left_Output = new ArmOut();
 	m_Right_Output = new ArmOut();
@@ -543,4 +543,14 @@ double ArmModule::getDiffI() {
 }
 
 std::vector<std::string> ArmModule::getLoggingHeader() {
+}
+
+void ArmModule::setOutputRange(float min, float max) {
+	m_Difference_Controller->SetOutputRange(min, max);
+	m_Right_Arm_Controller->SetOutputRange(min, max);
+	m_Left_Arm_Controller->SetOutputRange(min, max);
+}
+
+void ArmModule::setRightOutputRange(float min, float max) {
+	m_Right_Arm_Controller->SetOutputRange(min, max);
 }

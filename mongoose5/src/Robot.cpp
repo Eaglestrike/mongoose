@@ -26,7 +26,7 @@ private:
 	ArmModule* armModule;
 	//ScorpionModule* scorpionModule;
 	MantaCoreModule* mantaCoreModule;
-	IntakeModule* intakeModule;
+//	IntakeModule* intakeModule;
 
 	Timer* timer;
 	EaglestrikeErrorLogger* eaglestrikeLogger;
@@ -46,7 +46,7 @@ private:
 
 	NamedSendable* sendable;
 	CameraServer* camera;
-	HUDServer* hud;
+//	HUDServer* hud;
 	void RobotInit() {
 
 		eaglestrikeLogger = new EaglestrikeErrorLogger(
@@ -69,9 +69,9 @@ private:
 				LEFT_ARM_ENCODER_B);
 		printL("\tScorpionModule()");
 		//scorpionModule = new ScorpionModule(SCORPION_PORT);
-		printL("\tIntakeModule()");
-		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2,
-				INTAKE_MOTOR_1, INTAKE_MOTOR_2);
+//		printL("\tIntakeModule()");
+//		intakeModule = new IntakeModule(INTAKE_SOLENOID_1, INTAKE_SOLENOID_2,
+//				INTAKE_MOTOR_1, INTAKE_MOTOR_2);
 		printL("\tMantacoreModule()");
 		mantaCoreModule = new MantaCoreModule(MANTA_CORE_SPIKE_PORT,
 				SCORPION_PORT);
@@ -106,7 +106,7 @@ private:
 		updateSmartDashboard();
 
 		printL("RobotInit() end");
-		hud = new HUDServer(5802, armModule, elevatorModule);
+//		hud = new HUDServer(5802, armModule, elevatorModule);
 	}
 
 	void DisabledInit() {
@@ -142,7 +142,7 @@ private:
 		Wait(0.05);
 	}
 
-	int autoState = AUTO_DO_NOTHING;
+	int autoState = AUTO_MANTA_CORE_WITHOUT_BACK;
 
 	static void checkTime(void* v) {
 		((Robot*)(v))->time();
@@ -160,6 +160,7 @@ private:
 
 
 	void AutonomousInit() {
+		printL("AutonomousInit()");
 		updateSmartDashboard();
 		if(autoState == AUTO_GRAB_TOTE /*|| autoState == AUTO_GRAB_THREE_TOTE*/){
 			armModule->enable();
@@ -170,12 +171,14 @@ private:
 				calibrateElevator();
 		}
 		autoTimer->Start();
+		printL("thread()");
 		t = thread(checkTime, this);
 		t.detach();
+		printL("thread::detach()");
 		mantaCoreModule->enable();
 		driveModule->enable();
 		updateSmartDashboard();
-		printL("AutonomousInit()");
+		printL("AutonomousInit() end");
 	}
 
 	void AutonomousPeriodic() {
@@ -263,13 +266,13 @@ private:
 			}
 		} else if(autoState == AUTO_MANTA_CORE_WITHOUT_BACK && !finished) {
 			mantaCoreModule->setPneumatics(true);
-			Wait(.35);
-			autonomousDriver->setSetpoint(10);
+			Wait(2);
+//			autonomousDriver->setSetpoint(12);
 			Wait(0.10);
 			//mantaCoreModule->setPneumatics(false);
-			mantaCoreModule->on();
-			Wait(2);
-			mantaCoreModule->off();
+//			mantaCoreModule->on();
+//			Wait(2);
+//			mantaCoreModule->off();
 			finished = true;
 
 		} else if(autoState == AUTO_GRAB_THREE_TOTE && !finished) {
@@ -350,7 +353,7 @@ private:
 		armModule->enable();
 		printL("Arm");
 		//scorpionModule->disable();
-		intakeModule->enable();
+//		intakeModule->enable();
 		printL("Intake");
 		mantaCoreModule->enable();
 		printL("MantaCore");
@@ -415,6 +418,7 @@ private:
 	bool lastArmManual = false;
 	int armManualCounter = 0;
 
+	bool safetyPneumaticbutton = false;
 	bool lastElevatorManual = false;
 	int elevatorManualCounter = 0;
 
@@ -430,6 +434,12 @@ private:
 		}
 		if(rightJoy->GetRawButton(10)){
 			calibrateElevator();
+		}
+		if(rightJoy->GetRawButton(4)) {
+			safetyPneumaticbutton = true;
+		}
+		else {
+			safetyPneumaticbutton = false;
 		}
 		//scorpionModule->Set(rightJoy->GetRawButton(4));
 
@@ -464,10 +474,19 @@ private:
 
 		if (!armModule->isManual()) {
 
+			if(rightJoy->GetRawButton(3)) {
+				if(armModule->getDiffSetpoint() == ARM_CLOSED_CONTAINER_DISTANCE) {
+					state = 2;
+				}
+				else if(armModule->getDiffSetpoint() == ARM_CLOSED_TOTE_DISTANCE) {
+					state = 1;
+				}
+				else state = 0;
+			}
 			if(controller->dropRelease()){
 				elevatorModule->disablePID();
-				elevatorModule->setPower(ELEVATOR_DROP_POWER);
-				state = 2;
+				elevatorModule->setPower(ELEVATOR_DROP_POWER*2);
+				state = 0;
 				hasEnabled1 = false;
 			}else {
 				elevatorModule->enablePID();
@@ -492,20 +511,34 @@ private:
 				//				deltaX = MAX_DELTA_X;
 				//				leftSetpoint = OPEN_LEFT_SETPOINT;
 				//				hasLS = false;
+			} else if(leftJoy->GetTrigger()) {
+				state = 4;
+			} else if(rightJoy->GetTrigger()) {
+				state = 3;
 			}
 
 			if(state == 0) {
 				deltaX = MAX_DELTA_X;
 				leftSetpoint = OPEN_LEFT_SETPOINT;
+				armModule->setOutputRange(-1, 1);
 				//				hasLS = false;
 			} else if(state == 1)  {
 				deltaX = startDeltaX;		//2.5625 + 2.5;
 				leftSetpoint = 4;
+				armModule->setOutputRange(-1, 1);
 				//				hasLS = true;
 			} else if(state == 2) {
-				deltaX = ARM_CLOSED_CONTAINER_DISTANCE;
+				deltaX = ARM_MIDDLE_BUTT_DISTANCE;
 				leftSetpoint = 3;
+				armModule->setOutputRange(-1, 1);
 				//				hasLS = true;
+			} else if(state == 3)  {
+				leftSetpoint = armModule->getLeftSetpoint() + .1;
+				armModule->setOutputRange(-.65, .65);
+
+			} else if(state == 4) {
+				leftSetpoint = armModule->getLeftSetpoint() - .1;
+				armModule->setOutputRange(-.65, .65);
 			}
 
 			//			if (leftJoy->GetRawButton(4)) {
@@ -534,24 +567,24 @@ private:
 		}
 		previous = controller->toggleIntake();
 
-		if (toggleY % 4 == 0) {
-			intakeModule->retract();
-		} else if (toggleY % 2 == 0) {
-			intakeModule->extend();
-		}
-
-		if (controller->intake()) {
-			intakeModule->intake(1);
-		} else if (controller->extake()) {
-			intakeModule->intake(-1);
-		} else if(rightJoy->GetTrigger()) {
-			intakeModule->intake(1, true);
-		}else if(leftJoy->GetTrigger()) {
-			intakeModule->intake(-1, true);
-
-		} else {
-			intakeModule->intake(0);
-		}
+//		if (toggleY % 4 == 0) {
+//			intakeModule->retract();
+//		} else if (toggleY % 2 == 0) {
+//			intakeModule->extend();
+//		}
+////
+////		if (controller->intake()) {
+////			intakeModule->intake(1);
+////		} else if (controller->extake()) {
+////			intakeModule->intake(-1);
+////		} else if(rightJoy->GetTrigger()) {
+////			intakeModule->intake(1, true);
+////		}else if(leftJoy->GetTrigger()) {
+////			intakeModule->intake(-1, true);
+//
+//		} else {
+//			intakeModule->intake(0);
+//		}
 
 		if (controller->getLevel0()) {
 			elevatorModule->setPosition(0);
@@ -572,11 +605,12 @@ private:
 
 		if (leftJoy->GetRawButton(3)) {
 			mantaCoreModule->on();
+			Wait(.001);
 		} else if (leftJoy->GetRawButton(2)) {
 			mantaCoreModule->reverse();
-		} else
+		} else {
 			mantaCoreModule->off();
-
+		}
 
 		if(controller->getMantaCorePneumatics() != lastManta)
 			mantacounter++;
@@ -597,6 +631,11 @@ private:
 			elevatorModule->disablePID();
 			elevatorModule->setPower(0.5);
 			hasEnabled = false;
+		} else if(controller->raise() && state == 2) {
+			elevatorModule->disablePID();
+			elevatorModule->setPower(0.75);
+			hasEnabled = false;
+
 		}else {
 			elevatorModule->enablePID();
 			if (!hasEnabled)
@@ -649,8 +688,8 @@ private:
 					<< elevatorModule->getEncoderTicks() << " BUTTON: "
 					<< elevatorModule->getButton() << endl;
 			cout << "Elevator Setpoint: " << elevatorModule->getSetpoint()
-																																													<< " Elevator height: "
-																																													<< elevatorModule->getEncoderDistance() << endl;
+																																															<< " Elevator height: "
+																																															<< elevatorModule->getEncoderDistance() << endl;
 		}
 
 		printCounter++;
@@ -659,24 +698,23 @@ private:
 
 	void updatePID() {
 		if (controller->getLevel0()) {
-			armModule->setRightPID(armModule->getRightP() - .01 / 10,
-					driveModule->getDriveI(), driveModule->getDriveD());
+			armModule->setDiffPID(armModule->getDiffP() - .01 / 10,
+					armModule->getDiffI(), armModule->getDiffD());
 		} else if (controller->getLevel1()) {
-			driveModule->setDrivePID(driveModule->getDriveP() + .01 / 10,
-					driveModule->getDriveI(), driveModule->getDriveD());
+			armModule->setDiffPID(armModule->getDiffP() + .01 / 10,
+								armModule->getDiffI(), armModule->getDiffD());
 		} else if (controller->getLevel2()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI() - .001, driveModule->getDriveD());
+			armModule->setDiffPID(armModule->getDiffP(),
+								armModule->getDiffI() - .001/10, armModule->getDiffD());
 		} else if (controller->getLevel3()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI() + .001, driveModule->getDriveD());
+			armModule->setDiffPID(armModule->getDiffP(),
+								armModule->getDiffI() + .001/10, armModule->getDiffD());
 		} else if (controller->getLevel4()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI(), driveModule->getDriveD() - .01);
+			armModule->setDiffPID(armModule->getDiffP(),
+											armModule->getDiffI(), armModule->getDiffD() - .01/10);
 		} else if (controller->getLevel5()) {
-			driveModule->setDrivePID(driveModule->getDriveP(),
-					driveModule->getDriveI(), driveModule->getDriveD() + .001);
-		}
+			armModule->setDiffPID(armModule->getDiffP(),
+											armModule->getDiffI(), armModule->getDiffD() + .01/10);		}
 
 		if (printCounter % 6 == 0) {
 			cout << "p: " << driveModule->getDriveP() << " d: "
@@ -695,7 +733,7 @@ private:
 	int testMode = 2;
 
 	void TestInit() {
-		//Cole Was Here
+		//Cole Was Here (giggle)
 
 		std::cout << "TestInit" << testMode << "()" << std::endl;
 		if(testMode == 1)
@@ -718,17 +756,15 @@ private:
 		mantaCoreModule->enable();
 	}
 	void TestInit1() {
-		//		armModule->enable();
-		//		try {
-		//			armModule->calibrate();
-		//			armModule->enablePID();
-		//		} catch(EaglestrikeError &e) {
-		//			if(e.shouldBeFatal()) {
-		//				e.getModule()->handleFatalError();
-		//			}
-		//		}
-		driveModule->enable();
-		driveModule->enablePID();
+				armModule->enable();
+				try {
+					armModule->calibrate();
+					armModule->enablePID();
+				} catch(EaglestrikeError &e) {
+					if(e.shouldBeFatal()) {
+						e.getModule()->handleFatalError();
+					}
+				}
 	}
 	void TestInit2() {
 		DisabledInit();
@@ -741,16 +777,11 @@ private:
 	}
 
 	void TestInit5() {
-		intakeModule->enable();
+//		intakeModule->enable();
 	}
 
 	void TestPeriodic1() {
 		updatePID();
-		if(controller->getRight3()) {
-			driveModule->setDriveSetpoint(5);
-		}
-		else driveModule->setDriveSetpoint(0);
-		driveModule->setPower(driveModule->getDriveOutput() + driveModule->getAngleOutput(), driveModule->getDriveOutput() -driveModule->getAngleOutput());
 		Wait(.05);
 	}
 
@@ -854,16 +885,17 @@ private:
 	}
 
 	void TestPeriodic5() {
-		if(controller->getLevel0()) {
-			intakeModule->intake(1);
-		}
-		else if(controller->getLevel1()) {
-			intakeModule->intake(-1);
-		}
-		else {
-			intakeModule->intake(0);
-		}
+//		if(controller->getLevel0()) {
+//			intakeModule->intake(1);
+//		}
+//		else if(controller->getLevel1()) {
+//			intakeModule->intake(-1);
+//		}
+//		else {
+//			intakeModule->intake(0);
+//		}
 	}
+
 
 	void printL(std::string message) {
 		std::cout << message << endl;

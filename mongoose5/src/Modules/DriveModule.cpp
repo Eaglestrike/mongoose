@@ -20,8 +20,8 @@ DriveModule::DriveModule(int lv1, int lv2, int rv1, int rv2, int l_EA, int l_EB,
 	m_Drive_Output = new PIDOut();
 	m_Angle_Output = new PIDOut();
 
-	m_Drive_Controller = new PIDController(DRIVE_PRAC_P, DRIVE_PRAC_I, DRIVE_PRAC_D, m_Encoder, m_Drive_Output);
-	m_Angle_Controller = new PIDController(ANGLE_PRAC_P, ANGLE_PRAC_I, ANGLE_PRAC_D, m_Gyro, m_Angle_Output);
+	m_Drive_Controller = new PIDController(DRIVE_REAL_P, DRIVE_REAL_I, DRIVE_REAL_D, m_Encoder, m_Drive_Output);
+	m_Angle_Controller = new PIDController(ANGLE_REAL_P, ANGLE_REAL_I, ANGLE_REAL_D, m_Gyro, m_Angle_Output);
 
 }
 

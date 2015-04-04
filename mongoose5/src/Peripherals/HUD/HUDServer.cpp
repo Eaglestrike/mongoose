@@ -88,7 +88,6 @@ void HUDServer::callSend(int portno) {
 			if(n < 0)
 				break;
 
-			std::cout << msg << std::endl;
 			Wait(1);
 		}
 		close(newsockfd);

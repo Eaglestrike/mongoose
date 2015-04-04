@@ -38,16 +38,16 @@ void IntakeModule::retract(){
 void IntakeModule::intake(double power){
 	if(!m_Enabled)
 		return;
-	m_Motor_1->Set(power);
-	m_Motor_2->Set(-power);
+	m_Motor_1->Set(power * .5 * 2);
+	m_Motor_2->Set(-power * .5 * 2);
 }
 
 void IntakeModule::intake(double power, bool opposite) {
 	if(!m_Enabled)
 		return;
 	if(opposite) {
-		m_Motor_1->Set(power);
-		m_Motor_2->Set(power);
+		m_Motor_1->Set(power * .5 * 2);
+		m_Motor_2->Set(power * .5 * 2);
 	}
 	else intake(power);
 }

@@ -89,6 +89,8 @@ public:
 	void syncCalibrate();
 	static void callSyncCalibrate(void*);
 	void setManual(bool man);
+	void setOutputRange(float min, float max);
+	void setRightOutputRange(float min, float max);
 	bool hasCalibrated();
 
 	bool getLeftButton();
